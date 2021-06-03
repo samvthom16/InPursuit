@@ -1,0 +1,22 @@
+#save-action, #preview-action, #visibility, .misc-pub-curtime, .misc-pub-post-status, #commentstatusdiv{ display: none; }
+
+
+#inpursuit-misc .inpursuit-form-field{
+	display: grid;
+	grid-template-columns: 100px 1fr;
+	grid-gap: 15px;
+}
+#inpursuit-misc span.dashicons{
+	margin-right: 10px;
+}
+
+#inpursuit-misc .orbit-form-group{
+	padding-top: 0;
+	margin-top: -3px;
+}
+
+#inpursuit-misc select{
+	line-height: 1.7;
+	min-height: 0;
+	font-size: 12px;
+}
