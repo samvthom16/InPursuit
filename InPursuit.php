@@ -13,7 +13,8 @@
 
 	$inc_files = array(
 		'class-inpursuit-base.php',
-		'admin-ui/class-inpursuit-member-admin-ui.php'
+		'db/db.php',
+		'admin-ui/admin-ui.php'
 	);
 
 	foreach( $inc_files as $inc_file ){
@@ -23,6 +24,7 @@
 	/* PUSH INTO THE GLOBAL VARS OF ORBIT TYPES */
 	add_filter( 'orbit_post_type_vars', function( $post_types ){
 
+		/*
 		$post_types['inpursuit-members'] = array(
 			'slug' 	=> 'inpursuit-members',
 			'labels'	=> array(
@@ -33,6 +35,7 @@
 			'menu_icon'	=> 'dashicons-groups',
 			'supports'	=> array( 'title', 'thumbnail' )
 		);
+		*/
 
 		$post_types['inpursuit-events'] = array(
 			'slug' 	=> 'inpursuit-events',

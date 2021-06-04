@@ -1,34 +1,19 @@
 <?php
 
-class INPURSUIT_MEMBER_ADMIN_UI extends INPURSUIT_BASE{
+class INPURSUIT_MEMBER_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 
 	var $post_type;
 
 	function __construct(){
-
-		$this->post_type = 'inpursuit-members';
-
-		add_action( 'admin_menu', array( $this, 'removeMetaBoxes' ), 100 );
-
-		add_action( 'post_submitbox_misc_actions', array( $this, 'miscActionsDiv' ) );
-
-		/* ENQUEUE SCRIPTS ON ADMIN DASHBOARD */
-		add_action( 'admin_enqueue_scripts', array( $this, 'assets') );
-
-	}
-
-	function assets( $hook ) {
-		global $post_type;
-		if( $post_type == $this->post_type ){
-			wp_enqueue_style( 'inpursuit-admin', plugins_url( 'InPursuit/dist/css/admin-style.css' ), array(), INPURSUIT_VERSION );
-		}
+		$this->setPostType( 'inpursuit-members' );
+		parent::__construct();
 	}
 
 	function miscActionsDiv( $post ){
 
 		$post_type = get_post_type( $post );
 
-		if( $post_type != $this->post_type ) return '';
+		if( $post_type != $this->getPostType() ) return '';
 
 		$taxonomies = array(
 			array(
@@ -62,9 +47,9 @@ class INPURSUIT_MEMBER_ADMIN_UI extends INPURSUIT_BASE{
 	}
 
 	function removeMetaBoxes(){
-		 remove_meta_box( 'genderdiv', $this->post_type, 'side' );
-		 remove_meta_box( 'life-groupdiv', $this->post_type, 'side' );
-		 remove_meta_box( 'inpursuit-statusdiv', $this->post_type, 'side' );
+		 remove_meta_box( 'inpursuit-genderdiv', $this->getPostType(), 'side' );
+		 remove_meta_box( 'inpursuit-groupdiv', $this->getPostType(), 'side' );
+		 remove_meta_box( 'inpursuit-statusdiv', $this->getPostType(), 'side' );
 	}
 
 	function getAttsForTermsDropdown( $taxonomy, $post, $label = 'Select' ){
