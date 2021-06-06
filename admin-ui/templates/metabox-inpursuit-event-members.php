@@ -1,6 +1,7 @@
 All ({{total}}) | Selected ({{total_selected}})
+<p><input type="text" name="search" @input="debounceSearch" placeholder="Search" /></p>
 <ul>
-	<li class='post-item' :class="{selected: post.selected}" v-for="post in posts">
+	<li class='post-item' :class="{selected: post.attended}" v-for="post in posts">
 		<div class="post-item-toggle" @click="toggleSelect(post)">
 			<span class="slider round"></span>
 		</div>

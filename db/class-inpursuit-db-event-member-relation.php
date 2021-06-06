@@ -7,14 +7,27 @@ class INPURSUIT_DB_EVENT_MEMBER_RELATION extends INPURSUIT_DB_BASE{
 
 	function __construct(){
 		$this->setTableSlug( 'event_member_relation' );
+
 		parent::__construct();
 	}
+
+
+
+	function getMembersIDForEvent( $event_id ){
+		$table = $this->getTable();
+		global $wpdb;
+		return $wpdb->get_col( "SELECT member_id FROM $table WHERE event_id = $event_id;" );
+	}
+
+
+
+
 
 	function create(){
 		global $wpdb;
 		$table = $this->getTable();
 		$charset_collate = $this->get_charset_collate();
-		
+
 		$sql = "CREATE TABLE IF NOT EXISTS $table (
 			ID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
 			event_id BIGINT(20) NOT NULL,

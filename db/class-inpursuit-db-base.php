@@ -7,7 +7,8 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 
 	private $table;
 	private $table_slug;
-	var $post_type_options;
+	private $post_type_options;
+	private $post_type;
 
 	function __construct(){
 
@@ -32,6 +33,9 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 	function setPostTypeOptions( $post_type_options ){ $this->post_type_options = $post_type_options; }
 	function getPostTypeOptions(){ return $this->post_type_options; }
 
+	function setPostType( $post_type ){ $this->post_type = $post_type; }
+	function getPostType(){ return $this->post_type; }
+
 	function setTable( $table ){ $this->table = $table; }
 	function getTable(){ return $this->table; }
 	function setTableSlug( $slug ){ $this->table_slug = $slug; }
@@ -41,6 +45,7 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 		return $wpdb->prefix.'ip_';
 	}
 
+	/*
 	function getResponseDB(){
 		require_once( 'class-space-db-response.php' );
 		return SPACE_DB_RESPONSE::getInstance();
@@ -65,6 +70,7 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 		require_once('class-space-db-guest.php');
 		return SPACE_DB_GUEST::getInstance();
 	}
+	*/
 
 	/* GETTER AND SETTER FUNCTIONS */
 
@@ -277,16 +283,17 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 		}
 	}
 
-	// DELETE MULTIPLE ROWS FILTERED BY WHERE QUERY
-	function delete_selected_rows( $col_formats, $col_values ){
-
+	function delete( $where, $where_format = null ){
 		global $wpdb;
-
-		$query = 'Delete'.$this->_from_query().$this->_where_query( $col_formats );
-
-		$wpdb->query( $this->prepare( $query, $col_values ) );
+		return $wpdb->delete(
+			$this->getTable(),
+			$where,
+			$where_format
+		);
 
 	}
+
+
 
 	// TO BE IMPLEMENTED BY CHILD CLASSES - HANDLES TABLE CREATION
 	function create(){}
