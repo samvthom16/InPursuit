@@ -6,3 +6,5 @@
     </div>
   </div>
 </div>
+<p><span class="spinner" :class="{active: loading}"></span></p>
+<p v-if="page < total_pages"><button type="button" class="button" @click="page++">Load More</button></p>

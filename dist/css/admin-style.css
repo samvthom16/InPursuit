@@ -28,12 +28,8 @@
 	grid-gap: 10px;
 }
 
-#inpursuit-event-members .spinner{
-	float: none;
-}
-#inpursuit-event-members .spinner.active{
-	visibility: visible;
-}
+#inpursuit-event-members .spinner, #inpursuit-member-history .spinner{ float: none; }
+#inpursuit-event-members .spinner.active, #inpursuit-member-history .spinner.active { visibility: visible; }
 
 @media( max-width: 960px ){
 	#inpursuit-event-members .posts-list{

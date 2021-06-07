@@ -159,13 +159,14 @@ new Vue({
   el: '#inpursuit-member-history',
   data() {
 		return {
-			debounce: null,
-			searchQuery: '',
-			posts: [],
-			loading: false,
-			per_page: 20,
-			pages: [],
-			page: 1
+			debounce			: null,
+			searchQuery		: '',
+			posts					: [],
+			loading				: false,
+			per_page			: 10,
+			pages					: [],
+			page					: 1,
+			total_pages		: 0
 		}
   },
 	methods: {
@@ -183,16 +184,11 @@ new Vue({
 				},
 				callbackFn	: function( response ){
 
-					//console.log( response.headers['x-wp-total'] );
-					//console.log( response.headers['x-wp-totalpages'] );
-
-					component.pages = [];
-
-					for( var i=1; i<=response.headers['x-wp-totalpages']; i++ ){
-						component.pages.push( i );
+					for( var index in response.data ){
+						component.posts.push( response.data[ index ] );
 					}
 
-					component.posts = response.data;
+					component.total_pages = response.headers['x-wp-totalpages'];
 					component.loading = false;
 
 				}
@@ -207,4 +203,12 @@ new Vue({
 	created: function(){
 		this.getPosts();
 	},
+
+	watch: {
+		page( current_page ){
+			this.page = current_page;
+			this.getPosts();
+		}
+	}
+
 });

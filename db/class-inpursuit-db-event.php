@@ -28,10 +28,10 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_BASE{
 
 		register_rest_route( 'inpursuit/v1', '/history/(?P<id>\d+)', array(
     	'methods' => 'GET',
-    	'callback' => function( $args ){
+    	'callback' => function( WP_REST_Request $args ){
 
-				$page = 1;
-				$per_page = 10;
+				$page = isset( $args[ 'page' ]  ) ? $args[ 'page' ] : 1;
+				$per_page = isset( $args[ 'per_page' ]  ) ? $args[ 'per_page' ] : 10;
 
 				$member_id = $args['id'];
 				$post_type = $this->getPostType();
