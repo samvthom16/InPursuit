@@ -11,17 +11,11 @@ class INPURSUIT_DB_EVENT_MEMBER_RELATION extends INPURSUIT_DB_BASE{
 		parent::__construct();
 	}
 
-
-
 	function getMembersIDForEvent( $event_id ){
 		$table = $this->getTable();
 		global $wpdb;
 		return $wpdb->get_col( "SELECT member_id FROM $table WHERE event_id = $event_id;" );
 	}
-
-
-
-
 
 	function create(){
 		global $wpdb;

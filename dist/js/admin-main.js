@@ -26,17 +26,6 @@ var API = function(){
 		return url;
 	}
 
-	self.getRequest = function( options ){
-		//console.log( options );
-		axios.get( updateURL( options.url, options.params ) ).then( function( response ){
-
-			if ( typeof options.callbackFn === 'function' ) {
-				options.callbackFn( response.data );
-			}
-		} );
-
-	}
-
 	self.request = function( options ){
 		var url = self.base_url + options.url;
 		if( options.params != undefined ){
@@ -59,56 +48,15 @@ var API = function(){
 		api_obj.then( function( response ){
 			//console.log( response );
 			if ( typeof options.callbackFn === 'function' ) {
-				options.callbackFn( response.data );
+				options.callbackFn( response );
 			}
 		} );
-	};
-
-	self.getPosts = function( options ){
-		var options = getOptions( options );
-		options.url = 'wp/v2/' + options.post_type;
-		return self.request( options );
-	};
-
-	self.getPost = function( options ){
-		var options = getOptions( options );
-
-		var params = {};
-		params.url = 'wp/v2/' + options.post_type + '?slug=' + options.slug;
-		params.callbackFn = function( response ){
-			var post;
-			if( response.length ){
-				post = response[0];
-			}
-			options.callbackFn( post );
-		};
-
-		return self.request( params );
-	};
-
-	/*
-	self.updatePost = function( post, options ){
-		var options = getOptions( options );
-		var params = { method: 'post', data: post };
-		params.url = 'wp/v2/' + options.post_type + '/' + post.id;
-		params.callbackFn = function( response ){
-			options.callbackFn( response );
-		};
-		return self.request( params );
-	}
-	*/
-
-
-	self.getAuthor = function( options ){
-		var options = getOptions( options );
-		options.url = 'wp/v2/users/' + options.id;
-		return self.request( options );
 	};
 
 	return self;
 };
 
-var app = new Vue({
+new Vue({
   el: '#inpursuit-event-members',
   data() {
 		return {
@@ -117,26 +65,24 @@ var app = new Vue({
 			total_selected : 0,
 			total : 0,
 			posts: [],
-			selected_posts: []
+			selected_posts: [],
+			loading: false,
+			show_event_attendants: 0,
+			per_page: 20,
+			pages: [],
+			page: 1
 		}
   },
 	methods: {
 		getEventID	: function(){
 			return document.getElementById( "post_ID" ).value;
 		},
+
 		toggleSelect: function (post) {
 			post.attended = !post.attended;
 			this.savePost( post );
-			this.refreshCount();
 		},
-		totalSelected: function(){
-			return this.posts.filter( post => {
-				return post.attended;
-		 }).length;
-		},
-		refreshCount: function(){
-			this.total_selected = this.totalSelected();
-		},
+
 		getMembersPostType: function(){
 			return 'inpursuit-members';
 		},
@@ -149,14 +95,45 @@ var app = new Vue({
 		},
 		getPosts: function(){
 			var component = this;
-			API().getPosts( {
-				post_type		: this.getMembersPostType(),
-				params	: { event_id : this.getEventID(), search: this.searchQuery },
-				callbackFn	: function( posts ){
-					component.posts = posts;
-					component.total = posts.length;
+			this.loading = true;
+			API().request( {
+				url			: 'wp/v2/' + this.getMembersPostType() + '/',
+				//post_type		: this.getMembersPostType(),
+				params	: {
+					event_id 							: this.getEventID(),
+					search								: this.searchQuery,
+					show_event_attendants : this.show_event_attendants,
+					page									: this.page,
+					per_page							: this.per_page
+				},
+				callbackFn	: function( response ){
+
+					console.log( response.headers['x-wp-total'] );
+					console.log( response.headers['x-wp-totalpages'] );
+
+					component.pages = [];
+
+					for( var i=1; i<=response.headers['x-wp-totalpages']; i++ ){
+						component.pages.push( i );
+					}
+
+					component.posts = response.data;
+					component.loading = false;
+
+					//component.total = posts.length;
+
 				}
 			} );
+		},
+
+		refreshPosts( event ){
+			if( event.target.checked ){
+				this.show_event_attendants = 1;
+			}
+			else{
+				this.show_event_attendants = 0;
+			}
+			this.getPosts();
 		},
 		debounceSearch( event ) {
       clearTimeout( this.debounce )
@@ -165,6 +142,67 @@ var app = new Vue({
 				this.getPosts();
 			}, 600)
     }
+	},
+	created: function(){
+		this.getPosts();
+
+	},
+	watch: {
+		page( current_page ){
+			this.page = current_page;
+			this.getPosts();
+		}
+	}
+});
+
+new Vue({
+  el: '#inpursuit-member-history',
+  data() {
+		return {
+			debounce: null,
+			searchQuery: '',
+			posts: [],
+			loading: false,
+			per_page: 20,
+			pages: [],
+			page: 1
+		}
+  },
+	methods: {
+		getMemberID	: function(){
+			return document.getElementById( "post_ID" ).value;
+		},
+		getPosts: function(){
+			var component = this;
+			this.loading = true;
+			API().request( {
+				url			: 'inpursuit/v1/history/' + this.getMemberID(),
+				params	: {
+					page			: this.page,
+					per_page	: this.per_page
+				},
+				callbackFn	: function( response ){
+
+					//console.log( response.headers['x-wp-total'] );
+					//console.log( response.headers['x-wp-totalpages'] );
+
+					component.pages = [];
+
+					for( var i=1; i<=response.headers['x-wp-totalpages']; i++ ){
+						component.pages.push( i );
+					}
+
+					component.posts = response.data;
+					component.loading = false;
+
+				}
+			} );
+		},
+	},
+	filters: {
+	  moment: function (date) {
+			return moment(date).fromNow();
+	  }
 	},
 	created: function(){
 		this.getPosts();

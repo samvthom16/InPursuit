@@ -31,7 +31,8 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 			wp_enqueue_style( 'inpursuit-admin', plugins_url( 'InPursuit/dist/css/admin-style.css' ), array(), INPURSUIT_VERSION );
 			wp_enqueue_script( 'axios', 'https://unpkg.com/axios/dist/axios.min.js', array(), null, true );
 			wp_enqueue_script( 'vue', 'https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js', array(), null, true );
-  		wp_enqueue_script( 'inpursuit-main', plugins_url( 'InPursuit/dist/js/admin-main.js' ), array( 'axios', 'vue' ), null, true);
+			wp_enqueue_script( 'moment', plugins_url( 'InPursuit/dist/js/moment.js' ), array(), null, true);
+  		wp_enqueue_script( 'inpursuit-main', plugins_url( 'InPursuit/dist/js/admin-main.js' ), array( 'axios', 'vue', 'moment' ), null, true);
 
 			wp_localize_script( 'inpursuit-main', 'inpursuitSettings', array(
     		'root' => esc_url_raw( rest_url() ),

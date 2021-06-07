@@ -66,6 +66,8 @@ class INPURSUIT_DB_MEMBER extends INPURSUIT_DB_BASE{
 
 
 	function addRestData(){
+
+		/* CUSTOM METAFIELD FOR MEMBERS WITH RESPECT TO EVENT ID */
 		register_rest_field(
 			$this->getPostType(),
 			'attended',
@@ -79,7 +81,7 @@ class INPURSUIT_DB_MEMBER extends INPURSUIT_DB_BASE{
     		'update_callback' => function( $value, $post, $field_name, $request ){
 					$event_id = $request->get_param( 'event_id' );
 					if( $event_id > 0 ){
-						
+
 						$event_member_db = INPURSUIT_DB_EVENT_MEMBER_RELATION::getInstance();
 
 						// DELETE IF THERE ARE ANY PREVIOUS ENTRIES

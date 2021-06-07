@@ -6,6 +6,15 @@ class INPURSUIT_MEMBER_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 
 	function __construct(){
 		$this->setPostType( 'inpursuit-members' );
+
+		$this->setMetaBoxes( array(
+			array(
+				'id'				=> 'inpursuit-member-history',
+				'title'			=> 'History',
+				'supports'	=>	array('editor')
+			),
+		) );
+
 		parent::__construct();
 	}
 

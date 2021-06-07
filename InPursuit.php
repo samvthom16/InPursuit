@@ -35,7 +35,6 @@
 			'menu_icon'	=> 'dashicons-groups',
 			'supports'	=> array( 'title', 'thumbnail' )
 		);
-		*/
 
 		$post_types['inpursuit-events'] = array(
 			'slug' 	=> 'inpursuit-events',
@@ -47,6 +46,9 @@
 			'menu_icon'	=> 'dashicons-format-video',
 			'supports'	=> array( 'title', 'editor', 'thumbnail' )
 		);
+		*/
+
+
 
 		return $post_types;
 	} );

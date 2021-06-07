@@ -4,6 +4,7 @@
 	$inc_files = array(
 		'class-inpursuit-db-base.php',
 		'class-inpursuit-db-member.php',
+		'class-inpursuit-db-event.php',
 		'class-inpursuit-db-event-member-relation.php',
 	);
 
