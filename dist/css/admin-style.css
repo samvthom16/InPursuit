@@ -16,10 +16,13 @@
 	margin-top: -3px;
 }
 
-#inpursuit-misc select{
+
+
+#inpursuit-misc select, #inpursuit-misc input[type=date]{
 	line-height: 1.7;
 	min-height: 0;
 	font-size: 12px;
+	width: 100%;
 }
 
 #inpursuit-event-members .posts-list{

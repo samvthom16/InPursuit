@@ -21,37 +21,6 @@
 		require_once( $inc_file );
 	}
 
-	/* PUSH INTO THE GLOBAL VARS OF ORBIT TYPES */
-	add_filter( 'orbit_post_type_vars', function( $post_types ){
-
-		/*
-		$post_types['inpursuit-members'] = array(
-			'slug' 	=> 'inpursuit-members',
-			'labels'	=> array(
-				'name' 			=> 'Members',
-				'singular_name' => 'Member',
-			),
-			'public'	=> false,
-			'menu_icon'	=> 'dashicons-groups',
-			'supports'	=> array( 'title', 'thumbnail' )
-		);
-
-		$post_types['inpursuit-events'] = array(
-			'slug' 	=> 'inpursuit-events',
-			'labels'	=> array(
-				'name' 			=> 'Events',
-				'singular_name' => 'Event',
-			),
-			'public'	=> false,
-			'menu_icon'	=> 'dashicons-format-video',
-			'supports'	=> array( 'title', 'editor', 'thumbnail' )
-		);
-		*/
-
-
-
-		return $post_types;
-	} );
 
 	/* PUSH INTO THE GLOBAL VARS OF ORBIT TAXNOMIES */
 	add_filter( 'orbit_taxonomy_vars', function( $taxonomies ){

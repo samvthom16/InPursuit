@@ -313,41 +313,44 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 
 	function alter_table(){}
 
+	function _labelsArray( $options ){
+		$name = $options['name'];
+		$singular_name = $options['singular_name'];
+		return array(
+			'name'               => $name,
+			'singular_name'      => $singular_name,
+			'add_new'            => _x( 'Add New', $singular_name ),
+			'add_new_item'       => __( "Add New $singular_name" ),
+			'edit_item'          => __( "Edit $singular_name" ),
+			'new_item'           => __( "New $singular_name" ),
+			'all_items'          => __( "All $name" ),
+			'view_item'          => __( "View $singular_name" ),
+			'search_items'       => __( "Search $name" ),
+			'not_found'          => __( "No $name found" ),
+			'not_found_in_trash' => __( "No $name found in the Trash" ),
+			'parent_item_colon'  => '',
+			'menu_name'          => $name
+		);
+	}
+
 	function registerPostType(){
-
 		$options = $this->getPostTypeOptions();
-
 		if( is_array( $options ) && count( $options ) && isset( $options['slug'] ) ){
-			$name = $options['name'];
-			$singular_name = $options['singular_name'];
-
-			$labels = array(
-				'name'               => $name,
-				'singular_name'      => $singular_name,
-				'add_new'            => _x( 'Add New', $singular_name ),
-				'add_new_item'       => __( "Add New $singular_name" ),
-				'edit_item'          => __( "Edit $singular_name" ),
-				'new_item'           => __( "New $singular_name" ),
-				'all_items'          => __( "All $name" ),
-				'view_item'          => __( "View $singular_name" ),
-				'search_items'       => __( "Search $name" ),
-				'not_found'          => __( "No $name found" ),
-				'not_found_in_trash' => __( "No $name found in the Trash" ),
-				'parent_item_colon'  => '',
-				'menu_name'          => $name
-			);
-
 			$args = array(
-				'labels'        => $labels,
+				'labels'        => $this->_labelsArray( $options ),
 				'description'   => $options['description'],
 				'public'        => true,
 				'menu_icon'			=> $options['menu_icon'],
 				'supports'			=> $options['supports'],
 				'show_in_rest'	=> true
 			);
-
 			register_post_type( $options['slug'], $args );
 		}
+	}
+
+	function registerTaxonomy(){
+		//$taxonomies = $this->getTaxonomies();
+
 	}
 
 }
