@@ -135,8 +135,7 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 
 	function getDashIcon( $slug ){
 		$icons = array(
-			'birthday'				 	=> 'dashicons-calendar-alt',
-			'wedding'				 		=> 'dashicons-image-filter',
+			'inpursuit-location'=> 'dashicons-admin-site',
 			'inpursuit-status' 	=> 'dashicons-performance',
 			'inpursuit-gender' 	=> 'dashicons-admin-users',
 			'inpursuit-group'	 	=> 'dashicons-networking'

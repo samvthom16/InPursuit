@@ -4,6 +4,8 @@ class INPURSUIT_MEMBER_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 
 	var $post_type;
 
+	var $metafields;
+
 	function __construct(){
 		$this->setPostType( 'inpursuit-members' );
 
@@ -11,20 +13,34 @@ class INPURSUIT_MEMBER_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 
 		$this->setMetaBoxes( array(
 			array(
+				'id'				=> 'inpursuit-member-info',
+				'title'			=> 'Additional Information',
+				'supports'	=>	array('editor')
+			),
+			array(
 				'id'				=> 'inpursuit-member-history',
 				'title'			=> 'History',
 				'supports'	=>	array('editor')
 			),
 		) );
 
+		$this->setMetaFields( array(
+			'email'	=> 'Email Address',
+			'phone'	=> 'Phone Number'
+		) );
+
 		parent::__construct();
 	}
 
+	function getMetaFields(){ return $this->metafields; }
+	function setMetaFields( $metafields ){ $this->metafields = $metafields; }
+
 	function getTaxonomiesForDropdown(){
 		return array(
-			'inpursuit-status' 	=> 'Status',
-			'inpursuit-gender' 	=> 'Gender',
-			'inpursuit-group' 	=> 'Life Group',
+			'inpursuit-status' 		=> 'Status',
+			'inpursuit-gender' 		=> 'Gender',
+			'inpursuit-group' 		=> 'Life Group',
+			'inpursuit-location' 	=> 'Location',
 		);
 	}
 
@@ -36,6 +52,7 @@ class INPURSUIT_MEMBER_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 
 		$fields = array();
 
+		/*
 		$member_events_db = INPURSUIT_DB_MEMBER_DATES::getInstance();
 		$event_dates = $member_events_db->getForMember( $post->ID );
 		$event_types = $member_events_db->getEventTypes();
@@ -49,8 +66,9 @@ class INPURSUIT_MEMBER_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 			if( isset( $event_dates[ $slug ] ) ){
 				$new_event['value'] = $event_dates[ $slug ]->event_date;
 			}
-			array_push( $fields, $new_event );
+			//array_push( $fields, $new_event );
 		}
+		*/
 
 		$taxonomies = $this->getTaxonomiesForDropdown();
 		foreach( $taxonomies as $slug => $title ){
@@ -70,6 +88,7 @@ class INPURSUIT_MEMBER_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 					if( $field['field'] == 'taxonomy' ){
 						$this->formField( $this->getAttsForTermsDropdown( $field['slug'], $post ) );
 					}
+					/*
 					else{
 						$form_field_atts = array(
 							'type' 	=> 'date',
@@ -78,6 +97,7 @@ class INPURSUIT_MEMBER_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 						);
 						$this->formField( $form_field_atts );
 					}
+					*/
 				?>
 			</div>
 			<?php endforeach; ?>
@@ -124,11 +144,15 @@ class INPURSUIT_MEMBER_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 	function saveEventDates( $post_id, $post, $update ){
 
 		if( $post->post_type == $this->getPostType() && isset( $_POST['event_dates'] ) && count( $_POST['event_dates'] ) ){
-
 			$member_dates_db = INPURSUIT_DB_MEMBER_DATES::getInstance();
-
 			$member_dates_db->updateToMember( $post_id, $_POST['event_dates'] );
+		}
 
+		if( $post->post_type == $this->getPostType() ){
+			$metafields = $this->getMetaFields();
+			foreach( $metafields as $slug => $title ){
+				update_post_meta( $post_id, $slug, $_POST[ $slug ] );
+			}
 		}
 	}
 

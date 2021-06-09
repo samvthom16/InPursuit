@@ -52,6 +52,12 @@
 			'post_types'	=> array( $members_post_type )
 		);
 
+		$taxonomies['inpursuit-location']	= array(
+			'label'				=> 'Location',
+			'slug' 				=> 'inpursuit-location',
+			'post_types'	=> array( $members_post_type, $events_post_type )
+		);
+
 		$taxonomies['inpursuit-event-type']	= array(
 			'label'				=> 'Event Type',
 			'slug' 				=> 'inpursuit-event-type',
@@ -76,7 +82,7 @@
 
 
 
-	
+
 
 
 
