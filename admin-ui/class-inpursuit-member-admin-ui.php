@@ -15,7 +15,7 @@ class INPURSUIT_MEMBER_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 			array(
 				'id'				=> 'inpursuit-member-info',
 				'title'			=> 'Additional Information',
-				'supports'	=>	array('editor')
+				'context'	=> 'side'
 			),
 			array(
 				'id'				=> 'inpursuit-member-history',

@@ -14,7 +14,7 @@
 	}
 
 ?>
-<p>&nbsp;</p>
+
 <?php
 
 	$member_events_db = INPURSUIT_DB_MEMBER_DATES::getInstance();
