@@ -26,15 +26,18 @@ class INPURSUIT_DB_MEMBER_DATES extends INPURSUIT_DB_BASE{
 		$table = $this->getTable();
 		$charset_collate = $this->get_charset_collate();
 
+		$posts_table = $wpdb->prefix . 'posts' . '(ID)';
+
 		$sql = "CREATE TABLE IF NOT EXISTS $table (
 			ID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-			member_id BIGINT(20) NOT NULL,
+			member_id BIGINT(20) UNSIGNED NOT NULL,
 			event_type VARCHAR(20),
 			event_date DATETIME DEFAULT CURRENT_TIMESTAMP,
 			created_on DATETIME DEFAULT CURRENT_TIMESTAMP,
 			PRIMARY KEY(ID),
-			FOREIGN KEY (member_id) REFERENCES $wpdb->posts(ID)
+			FOREIGN KEY (member_id) REFERENCES $posts_table
 		) $charset_collate;";
+
 		$this->query( $sql );
 	}
 

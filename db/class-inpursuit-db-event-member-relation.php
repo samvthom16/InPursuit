@@ -22,13 +22,15 @@ class INPURSUIT_DB_EVENT_MEMBER_RELATION extends INPURSUIT_DB_BASE{
 		$table = $this->getTable();
 		$charset_collate = $this->get_charset_collate();
 
+		$posts_table = $wpdb->prefix . 'posts' . '(ID)';
+
 		$sql = "CREATE TABLE IF NOT EXISTS $table (
 			ID BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-			event_id BIGINT(20) NOT NULL,
-			member_id BIGINT(20) NOT NULL,
+			event_id BIGINT(20) UNSIGNED NOT NULL,
+			member_id BIGINT(20) UNSIGNED NOT NULL,
 			PRIMARY KEY(ID),
-			FOREIGN KEY (event_id) REFERENCES $wpdb->posts(ID),
-			FOREIGN KEY (member_id) REFERENCES $wpdb->posts(ID)
+			FOREIGN KEY (event_id) REFERENCES $posts_table,
+			FOREIGN KEY (member_id) REFERENCES $posts_table
 		) $charset_collate;";
 		$this->query( $sql );
 
