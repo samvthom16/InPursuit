@@ -1,7 +1,9 @@
+//console.log( inpursuitSettings );
+
 var API = function(){
 
 	var self = {
-		base_url 	: 'http://localhost/wordpress/wp-json/',
+		base_url 	: inpursuitSettings.root,
 	};
 
 	function getOptions( options ){
