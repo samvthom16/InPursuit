@@ -34,15 +34,7 @@ class INPURSUIT_DB_MEMBER extends INPURSUIT_DB_BASE{
 		//$event_member_db = INPURSUIT_DB_EVENT_MEMBER_RELATION::getInstance();
 
 		if( $event_id && $show_flag == 1 ){
-			//$members_id_arr = $event_member_db->getMembersIDForEvent( $event_id );
-			//if( is_array( $members_id_arr ) && count( $members_id_arr ) ){
-			//	$args['post__in'] = $members_id_arr;
-			//}
-
 			$args['post__in'] = $this->getIDsForEvent( $event_id );
-
-
-
 		}
 
 		$args['order_by'] = 'post_title';

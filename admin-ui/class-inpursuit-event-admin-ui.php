@@ -15,8 +15,12 @@ class INPURSUIT_EVENT_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 			),
 		) );
 
+
+
 		parent::__construct();
 	}
+
+	
 
 }
 

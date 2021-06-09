@@ -16,6 +16,20 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 
 		add_action( 'add_meta_boxes', array( $this, 'addMetaBoxes' ) );
 
+		// disable wyswyg for custom post type, using the global $post
+		add_filter('user_can_richedit', function( $default ){
+  		global $post;
+  		if( $post->post_type === $this->getPostType() )  return false;
+  		return $default;
+		});
+
+		// disable for post types
+		add_filter( 'use_block_editor_for_' . $this->getPostType(), '__return_false', 10 );
+		add_filter('use_block_editor_for_post_type', function( $is_enabled, $post_type ){
+			if( $post_type === $this->getPostType() ) return false; // change book to your post type
+			return $is_enabled;
+		}, 10, 2);
+
 	}
 
 	function getPostType(){ return $this->post_type; }

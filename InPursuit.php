@@ -73,6 +73,13 @@
     return $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 	}
 
+
+
+
+	
+
+
+
 	/*
 	add_action( 'init', function(){
 		if ( strpos( current_location(), '/inpursuit-members/' ) != false ) {
