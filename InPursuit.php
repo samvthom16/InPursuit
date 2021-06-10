@@ -9,7 +9,7 @@
     */
 
 
-	define( 'INPURSUIT_VERSION', time() ); //1.4.7
+	define( 'INPURSUIT_VERSION', '1.0.0' ); 
 
 	$inc_files = array(
 		'class-inpursuit-base.php',
