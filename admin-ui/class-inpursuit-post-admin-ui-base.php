@@ -35,6 +35,8 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 			return $is_enabled;
 		}, 10, 2);
 
+		add_action( 'save_post', array( $this, 'savePost' ), 10, 3 );
+
 	}
 
 	function getPostType(){ return $this->post_type; }
@@ -55,10 +57,12 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 		}
 	}
 
+	function savePost( $post_id, $post, $update ){}
+
 	function assets( $hook ) {
 		global $post_type;
-		if( $post_type == $this->post_type ){
-			
+		//if( $post_type == $this->post_type ){
+
 			wp_enqueue_style( 'inpursuit-admin', plugins_url( 'InPursuit/dist/css/admin.css' ), array(), INPURSUIT_VERSION );
 			wp_enqueue_script( 'axios', 'https://unpkg.com/axios/dist/axios.min.js', array(), null, true );
 			wp_enqueue_script( 'vue', 'https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js', array(), null, true );
@@ -70,7 +74,7 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
     		'nonce' => wp_create_nonce( 'wp_rest' )
 			) );
 
-		}
+		//}
 	}
 
 

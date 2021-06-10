@@ -58,6 +58,84 @@ var API = function(){
 	return self;
 };
 
+Vue.component( 'timeline', {
+	props	: ['member_id'],
+  template: '<div><div class="inpursuit-timeline" style="margin-top:20px;margin-left: 20px;"><div class="container-right" v-for="post in posts"><timeline-event :post="post"></timeline-event></div></div><p><span class="spinner" :class="{active: loading}"></span></p><p v-if="page < total_pages"><button type="button" class="button" @click="page++">Load More</button></p></div>',
+	data	: function () {
+    return {
+			posts					: [],
+			loading				: false,
+			per_page			: 10,
+			pages					: [],
+			page					: 1,
+			total_pages		: 0
+    }
+  },
+	methods: {
+		getUrl: function(){
+			var url = 'inpursuit/v1/history/'
+			if( this.member_id ){
+				url += this.member_id;
+			}
+			return url;
+		},
+		getPosts: function(){
+			var component = this;
+			this.loading = true;
+
+			API().request( {
+				url			: this.getUrl(),
+				params	: {
+					page			: this.page,
+					per_page	: this.per_page
+				},
+				callbackFn	: function( response ){
+
+					for( var index in response.data ){
+						component.posts.push( response.data[ index ] );
+					}
+
+					component.total_pages = response.headers['x-wp-totalpages'];
+					component.loading = false;
+
+				}
+			} );
+		}
+	},
+	created: function(){
+		this.getPosts();
+	},
+	watch: {
+		page( current_page ){
+			this.page = current_page;
+			this.getPosts();
+		}
+	}
+});
+
+Vue.component( 'timeline-event', {
+	props	: ['post'],
+  template: '<div class="content"><h4>{{post.date | moment }}</h4><p>{{ post.title.rendered }}</p><div class="post-terms"><span class="badge" :class="term.taxonomy" v-for="term in post.terms">{{ term.name }}</span></div></div>',
+	filters: {
+	  moment: function (date) {
+			return moment(date).fromNow();
+	  }
+	},
+});
+
+Vue.component( 'special-event', {
+	props	: ['title', 'value', 'slug'],
+  data	: function () {
+    return {
+      showFlag: false
+    }
+  },
+  template: '<div><label><input type="checkbox" name="flag" v-model="showFlag" />Add {{ title }}</label><p v-if="showFlag"><input :name="slug" :value="value" type="date" /></p></div>',
+	created	: function(){
+		if( this.value != 0 ) this.showFlag = true;
+	}
+});
+
 new Vue({
   el: '#inpursuit-event-members',
   data() {
@@ -110,14 +188,16 @@ new Vue({
 				},
 				callbackFn	: function( response ){
 
-					console.log( response.headers['x-wp-total'] );
-					console.log( response.headers['x-wp-totalpages'] );
+					//console.log( response.headers['x-wp-total'] );
+					//console.log( response.headers['x-wp-totalpages'] );
 
 					component.pages = [];
 
 					for( var i=1; i<=response.headers['x-wp-totalpages']; i++ ){
 						component.pages.push( i );
 					}
+
+					component.total = response.headers['x-wp-total'];
 
 					component.posts = response.data;
 					component.loading = false;
@@ -157,77 +237,6 @@ new Vue({
 	}
 });
 
-new Vue({
-  el: '#inpursuit-member-history',
-  data() {
-		return {
-			debounce			: null,
-			searchQuery		: '',
-			posts					: [],
-			loading				: false,
-			per_page			: 10,
-			pages					: [],
-			page					: 1,
-			total_pages		: 0
-		}
-  },
-	methods: {
-		getMemberID	: function(){
-			return document.getElementById( "post_ID" ).value;
-		},
-		getPosts: function(){
-			var component = this;
-			this.loading = true;
-			API().request( {
-				url			: 'inpursuit/v1/history/' + this.getMemberID(),
-				params	: {
-					page			: this.page,
-					per_page	: this.per_page
-				},
-				callbackFn	: function( response ){
-
-					for( var index in response.data ){
-						component.posts.push( response.data[ index ] );
-					}
-
-					component.total_pages = response.headers['x-wp-totalpages'];
-					component.loading = false;
-
-				}
-			} );
-		},
-	},
-	filters: {
-	  moment: function (date) {
-			return moment(date).fromNow();
-	  }
-	},
-	created: function(){
-		this.getPosts();
-	},
-
-	watch: {
-		page( current_page ){
-			this.page = current_page;
-			this.getPosts();
-		}
-	}
-
-});
-
-Vue.component( 'special-event', {
-	props	: ['title', 'value', 'slug'],
-  data	: function () {
-    return {
-      showFlag: false
-    }
-  },
-  template: '<div><label><input type="checkbox" name="flag" v-model="showFlag" />Add {{ title }}</label><p v-if="showFlag"><input :name="slug" :value="value" type="date" /></p></div>',
-	created	: function(){
-		if( this.value != 0 ) this.showFlag = true;
-	}
-});
-
-
-
+new Vue( { el: '#inpursuit-member-history' } );
 new Vue({ el: '#inpursuit-member-info' });
+new Vue( { el: '#inpursuit-timeline-history' } );

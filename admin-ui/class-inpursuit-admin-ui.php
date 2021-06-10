@@ -14,6 +14,9 @@
 			wp_add_dashboard_widget( 'dashboard_widget', 'Recent Updates', function(){
 				include( 'templates/dashboard.php' );
 			} );
+			wp_add_dashboard_widget( 'dashboard_history', 'History', function(){
+				include( 'templates/dashboard-history.php' );
+			} );
 		}
 
 	}

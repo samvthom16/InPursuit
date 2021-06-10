@@ -9,7 +9,7 @@
 				<span class="slider round"></span>
 			</div>
 			<div class="post-content">
-				<h3>{{ post.title.rendered }}</h3>
+				<h3><a :href="post.edit_url" target="_blank">{{ post.title.rendered }}</a></h3>
 				<p v-if="post.age" class='meta'>{{ post.age }} Years Old</p>
 			</div>
 		</div>
@@ -31,3 +31,4 @@
 		</li>
 	</ul>
 </nav>
+<p>Showing total of {{ total }} items</p>

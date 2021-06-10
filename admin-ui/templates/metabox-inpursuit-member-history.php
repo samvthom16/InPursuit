@@ -10,16 +10,6 @@
 <a href="#TB_inline?width=400&height=350&inlineId=my-content-id" class="thickbox button">Submit</a>
 */ ?>
 
-<div class="timeline" style="margin-top:20px;margin-left: 20px;">
-  <div class="container-right" v-for="post in posts">
-    <div class="content">
-      <h4>{{post.date | moment }}</h4>
-      <p>{{ post.title.rendered }}</p>
-			<div class="post-terms">
-				<span class="badge" :class="term.taxonomy" v-for="term in post.terms">{{ term.name }}</span>
-			</div>
-    </div>
-  </div>
-</div>
-<p><span class="spinner" :class="{active: loading}"></span></p>
-<p v-if="page < total_pages"><button type="button" class="button" @click="page++">Load More</button></p>
+<?php if( isset( $_GET['post'] ) ):?>
+<timeline member_id="<?php echo $_GET['post'];?>"></timeline>
+<?php endif; ?>

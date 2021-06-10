@@ -20,6 +20,8 @@
 		<?php endforeach;?>
 	</ul>
 
+	
+
 	<style>
 		#statistics li{
 			display: grid;

@@ -11,7 +11,7 @@ class INPURSUIT_DB_MEMBER extends INPURSUIT_DB_BASE{
 
 		parent::__construct();
 
-		$this->setPostType( 'inpursuit-members' );
+		$this->setPostType( INPURSUIT_MEMBERS_POST_TYPE );
 
 		$this->setPostTypeOptions( array(
 			'name' 					=> 'Members',
@@ -102,10 +102,20 @@ class INPURSUIT_DB_MEMBER extends INPURSUIT_DB_BASE{
 			'terms',
 			array(
     		'get_callback'    => function( $post, $field_name, $request ){
-					return $this->getAllTermsForPost( $post['id'] );
-					//$taxonomies = get_object_taxonomies( $this->getPostType() );
-					//$terms = wp_get_object_terms( $post['id'], $taxonomies );
-					//return $terms;
+					$wp_util = INPURSUIT_WP_UTIL::getInstance();
+					return $wp_util->getAllTermsForPost( $post['id'] );
+				},
+    		'update_callback' => '__return_false',
+    		'schema'          => null,
+     	)
+		);
+
+		register_rest_field(
+			$this->getPostType(),
+			'edit_url',
+			array(
+    		'get_callback'    => function( $post, $field_name, $request ){
+					return admin_url( 'post.php?action=edit&post=' . $post['id'] );
 				},
     		'update_callback' => '__return_false',
     		'schema'          => null,
@@ -126,13 +136,7 @@ class INPURSUIT_DB_MEMBER extends INPURSUIT_DB_BASE{
     		'schema'          => null,
      	)
 		);
-
-
 	}
-
-
-
-
 }
 
 INPURSUIT_DB_MEMBER::getInstance();

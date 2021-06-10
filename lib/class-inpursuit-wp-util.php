@@ -31,6 +31,11 @@ class INPURSUIT_WP_UTIL extends INPURSUIT_BASE{
 		return $atts;
 	}
 
+	function getAllTermsForPost( $post_id ){
+		$taxonomies = get_object_taxonomies( get_post_type( $post_id ) );
+		return wp_get_object_terms( $post_id, $taxonomies );
+	}
+
 
 }
 

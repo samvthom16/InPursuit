@@ -7,9 +7,7 @@ class INPURSUIT_MEMBER_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 	var $metafields;
 
 	function __construct(){
-		$this->setPostType( 'inpursuit-members' );
-
-		add_action( 'save_post', array( $this, 'saveEventDates' ), 10,3 );
+		$this->setPostType( INPURSUIT_MEMBERS_POST_TYPE );
 
 		$this->setMetaBoxes( array(
 			array(
@@ -42,24 +40,7 @@ class INPURSUIT_MEMBER_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 	function getMetaFields(){ return $this->metafields; }
 	function setMetaFields( $metafields ){ $this->metafields = $metafields; }
 
-	/*
-	function getTaxonomiesForDropdown(){
-		return array(
-			'inpursuit-status' 		=> 'Status',
-			'inpursuit-gender' 		=> 'Gender',
-			'inpursuit-group' 		=> 'Life Group',
-			'inpursuit-location' 	=> 'Location',
-		);
-	}
-	*/
-
-
-
-
-
-	
-
-	function saveEventDates( $post_id, $post, $update ){
+	function savePost( $post_id, $post, $update ){
 
 		if( $post->post_type == $this->getPostType() && isset( $_POST['event_dates'] ) && count( $_POST['event_dates'] ) ){
 			$member_dates_db = INPURSUIT_DB_MEMBER_DATES::getInstance();

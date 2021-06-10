@@ -5,7 +5,7 @@ class INPURSUIT_EVENT_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 	var $post_type;
 
 	function __construct(){
-		$this->setPostType( 'inpursuit-events' );
+		$this->setPostType( INPURSUIT_EVENTS_POST_TYPE );
 
 		$this->setMetaBoxes( array(
 			array(
