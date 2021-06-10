@@ -11,5 +11,5 @@
 */ ?>
 
 <?php if( isset( $_GET['post'] ) ):?>
-<timeline member_id="<?php echo $_GET['post'];?>"></timeline>
+<timeline member_id="<?php echo $_GET['post'];?>" per_page="10"></timeline>
 <?php endif; ?>

@@ -59,13 +59,13 @@ var API = function(){
 };
 
 Vue.component( 'timeline', {
-	props	: ['member_id'],
+	props	: ['member_id', 'per_page'],
   template: '<div><div class="inpursuit-timeline" style="margin-top:20px;margin-left: 20px;"><div class="container-right" v-for="post in posts"><timeline-event :post="post"></timeline-event></div></div><p><span class="spinner" :class="{active: loading}"></span></p><p v-if="page < total_pages"><button type="button" class="button" @click="page++">Load More</button></p></div>',
 	data	: function () {
     return {
 			posts					: [],
 			loading				: false,
-			per_page			: 10,
+			//per_page			: 10,
 			pages					: [],
 			page					: 1,
 			total_pages		: 0

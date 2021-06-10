@@ -4,13 +4,12 @@
     Plugin URI: https://sputznik.com
     Description:
     Author: Samuel Thomas
-    Version: 1.0.0
+    Version: 1.0.1
     Author URI: https://sputznik.com
     */
 
 
 	define( 'INPURSUIT_VERSION', time() );
-
 	define( 'INPURSUIT_MEMBERS_POST_TYPE', 'inpursuit-members' );
 	define( 'INPURSUIT_EVENTS_POST_TYPE', 'inpursuit-events' );
 

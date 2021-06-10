@@ -19,7 +19,6 @@
 		</li>
 		<?php endforeach;?>
 	</ul>
-
 	
 
 	<style>
