@@ -52,7 +52,8 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_BASE{
 					$post = array(
 						'title'			=> array( 'rendered' => $row->post_title ),
 						'date'			=> $row->post_date,
-						'date_gmt'	=> $row->post_date_gmt
+						'date_gmt'	=> $row->post_date_gmt,
+						'terms'			=> $this->getAllTermsForPost( $row->ID )
 					);
 					array_push( $data, $post );
 				}
@@ -67,6 +68,9 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_BASE{
 			},
 			'permission_callback'	=> '__return_true'
   	) );
+
+
+
 	}
 }
 INPURSUIT_DB_EVENT::getInstance();

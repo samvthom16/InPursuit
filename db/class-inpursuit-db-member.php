@@ -102,10 +102,10 @@ class INPURSUIT_DB_MEMBER extends INPURSUIT_DB_BASE{
 			'terms',
 			array(
     		'get_callback'    => function( $post, $field_name, $request ){
-
-					$taxonomies = get_object_taxonomies( $this->getPostType() );
-					$terms = wp_get_object_terms( $post['id'], $taxonomies );
-					return $terms;
+					return $this->getAllTermsForPost( $post['id'] );
+					//$taxonomies = get_object_taxonomies( $this->getPostType() );
+					//$terms = wp_get_object_terms( $post['id'], $taxonomies );
+					//return $terms;
 				},
     		'update_callback' => '__return_false',
     		'schema'          => null,

@@ -9,10 +9,11 @@
     */
 
 
-	define( 'INPURSUIT_VERSION', '1.0.0' ); 
+	define( 'INPURSUIT_VERSION', time() );
 
 	$inc_files = array(
 		'class-inpursuit-base.php',
+		'lib/class-inpursuit-wp-util.php',
 		'db/db.php',
 		'admin-ui/admin-ui.php'
 	);

@@ -353,4 +353,9 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 
 	}
 
+	function getAllTermsForPost( $post_id ){
+		$taxonomies = get_object_taxonomies( $this->getPostType() );
+		return wp_get_object_terms( $post_id, $taxonomies );
+	}
+
 }

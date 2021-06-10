@@ -4,6 +4,7 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 
 	var $post_type;
 	var $meta_boxes;
+	var $taxonomies_dropdown;
 
 	function __construct(){
 
@@ -38,6 +39,18 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 	function getMetaBoxes(){ return $this->meta_boxes; }
 	function setMetaBoxes( $meta_boxes ){ $this->meta_boxes = $meta_boxes; }
 
+	function getTaxonomiesForDropdown(){ return $this->taxonomies_dropdown; }
+	function setTaxonomiesForDropdown( $taxonomies_dropdown ){ $this->taxonomies_dropdown = $taxonomies_dropdown; }
+
+	function removeMetaBoxes(){
+		$taxonomies = $this->getTaxonomiesForDropdown();
+		if( is_array( $taxonomies ) && count( $taxonomies ) ){
+			foreach ( $taxonomies as $slug => $title ) {
+				remove_meta_box( $slug . 'div', $this->getPostType(), 'side' );
+			}
+		}
+	}
+
 	function assets( $hook ) {
 		global $post_type;
 		if( $post_type == $this->post_type ){
@@ -47,7 +60,7 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 			wp_enqueue_script( 'vue', 'https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js', array(), null, true );
 			wp_enqueue_script( 'moment', plugins_url( 'InPursuit/dist/js/moment.js' ), array(), null, true);
   		wp_enqueue_script( 'inpursuit-main', plugins_url( 'InPursuit/dist/js/admin-main.js' ), array( 'axios', 'vue', 'moment' ), null, true);
-
+			
 			wp_localize_script( 'inpursuit-main', 'inpursuitSettings', array(
     		'root' => esc_url_raw( rest_url() ),
     		'nonce' => wp_create_nonce( 'wp_rest' )
@@ -56,12 +69,13 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 		}
 	}
 
-	function miscActionsDiv( $post ){ }
-
-	function removeMetaBoxes(){ }
+	function miscActionsDiv( $post ){
+		$post_type = get_post_type( $post );
+		if( $post_type != $this->getPostType() ) return '';
+		include( 'templates/misc-actions.php' );
+	}
 
 	function addMetaBoxes(){
-
 		$metaboxes = $this->getMetaBoxes();
 
 		// REGISTER META BOXES
@@ -78,7 +92,6 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 				);
 			}
 		}
-
 	}
 
 	function metaboxHTML( $post, $metabox ){

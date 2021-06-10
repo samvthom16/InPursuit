@@ -59,7 +59,8 @@
 
 #inpursuit-event-members .post-item .post-content h3{ margin: 0; }
 #inpursuit-event-members .post-item .post-content .meta{ margin: 0; }
-#inpursuit-event-members .post-item span.badge{
+
+.post-terms span.badge{
 	font-size: 12px;
 	background: #c6c7bf;
 	color: #fff;
@@ -69,21 +70,25 @@
 	display: inline-block;
 }
 
-#inpursuit-event-members .post-item span.badge.inpursuit-gender{
+.post-terms span.badge:first-child{
+	margin-left: 0;
+}
+
+.post-terms span.badge.inpursuit-gender{
 	background: #efc5a5;
 	color: #fff;
 }
 
-#inpursuit-event-members .post-item span.badge.inpursuit-status{
+.post-terms span.badge.inpursuit-status, post-terms span.badge.inpursuit-event-type{
 	background: #c8a379;
 	color: #fff;
 }
 
-#inpursuit-event-members .post-item span.badge.inpursuit-location{
+.post-terms span.badge.inpursuit-location{
 	background: #9fb7b9;
 	color: #fff;
 }
-#inpursuit-event-members .post-item span.badge.inpursuit-location{
+.post-terms span.badge.inpursuit-location{
 	background: #c3b0a1;
 	color: #fff;
 }
@@ -277,4 +282,5 @@
 #inpursuit-member-history .inside{
 	background: #f0f0f1;
 	margin-top: 0;
+	padding: 0;
 }
