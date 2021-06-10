@@ -4,10 +4,18 @@
 </p>
 <ul class='posts-list'>
 	<li class='post-item' :class="{selected: post.attended}" v-for="post in posts">
-		<div class="post-item-toggle" @click="toggleSelect(post)">
-			<span class="slider round"></span>
+		<div class="post-row">
+			<div class="post-item-toggle" @click="toggleSelect(post)">
+				<span class="slider round"></span>
+			</div>
+			<div class="post-content">
+				<h3>{{ post.title.rendered }}</h3>
+				<p v-if="post.age" class='meta'>{{ post.age }} Years Old</p>
+			</div>
 		</div>
-		<div class="post-content"><h3>{{ post.title.rendered }}</h3></div>
+		<div class="post-terms">
+			<span class="badge" :class="term.taxonomy" v-for="term in post.terms">{{ term.name }}</span>
+		</div>
   </li>
 </ul>
 <nav aria-label="Page navigation example" v-if="pages.length > 1">

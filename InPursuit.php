@@ -35,7 +35,7 @@
 		);
 
 		$taxonomies['inpursuit-group']	= array(
-			'label'				=> 'Life Group',
+			'label'				=> 'Group',
 			'slug' 				=> 'inpursuit-group',
 			'post_types'	=> array( $members_post_type )
 		);

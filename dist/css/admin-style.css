@@ -49,11 +49,53 @@
 	border: #eee solid 1px;
 	padding: 10px;
 	background: #f7f7f7;
+
+}
+#inpursuit-event-members .post-item .post-row{
 	display: grid;
 	grid-template-columns: 80px 1fr;
+	margin-bottom: 10px;
 }
 
-#inpursuit-event-members .post-item .post-content h3{ margin: 5px 0; }
+#inpursuit-event-members .post-item .post-content h3{ margin: 0; }
+#inpursuit-event-members .post-item .post-content .meta{ margin: 0; }
+#inpursuit-event-members .post-item span.badge{
+	font-size: 12px;
+	background: #c6c7bf;
+	color: #fff;
+	border-radius: 5px;
+	padding: 5px 10px;
+	margin: 5px;
+	display: inline-block;
+}
+
+#inpursuit-event-members .post-item span.badge.inpursuit-gender{
+	background: #efc5a5;
+	color: #fff;
+}
+
+#inpursuit-event-members .post-item span.badge.inpursuit-status{
+	background: #c8a379;
+	color: #fff;
+}
+
+#inpursuit-event-members .post-item span.badge.inpursuit-location{
+	background: #9fb7b9;
+	color: #fff;
+}
+#inpursuit-event-members .post-item span.badge.inpursuit-location{
+	background: #c3b0a1;
+	color: #fff;
+}
+
+#inpursuit-event-members .post-item span.badge.inpursuit-profession{
+	display: none;
+}
+
+
+
+
+
 
 #inpursuit-event-members .post-item.selected{ border: #2196F3 solid 1px; background: #fff; }
 

@@ -76,7 +76,15 @@ class INPURSUIT_DB_MEMBER_DATES extends INPURSUIT_DB_BASE{
 		}
 	}
 
-
+	function age( $member_id ){
+		global $wpdb;
+		$table = $this->getTable();
+		$query = $wpdb->prepare( "SELECT TIMESTAMPDIFF(YEAR, event_date, CURDATE()) AS age FROM $table WHERE member_id = %d AND event_type = %s", array(
+			$member_id,
+			'birthday'
+		) );
+		return $wpdb->get_var( $query );
+	}
 
 }
 

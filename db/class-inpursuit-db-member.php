@@ -37,7 +37,7 @@ class INPURSUIT_DB_MEMBER extends INPURSUIT_DB_BASE{
 			$args['post__in'] = $this->getIDsForEvent( $event_id );
 		}
 
-		$args['order_by'] = 'post_title';
+		$args['orderby'] = 'title';
 		$args['order'] = 'asc';
 
 		return $args;
@@ -95,6 +95,39 @@ class INPURSUIT_DB_MEMBER extends INPURSUIT_DB_BASE{
     		'schema'          => null,
      	)
 		);
+
+
+		register_rest_field(
+			$this->getPostType(),
+			'terms',
+			array(
+    		'get_callback'    => function( $post, $field_name, $request ){
+
+					$taxonomies = get_object_taxonomies( $this->getPostType() );
+					$terms = wp_get_object_terms( $post['id'], $taxonomies );
+					return $terms;
+				},
+    		'update_callback' => '__return_false',
+    		'schema'          => null,
+     	)
+		);
+
+		register_rest_field(
+			$this->getPostType(),
+			'age',
+			array(
+    		'get_callback'    => function( $post, $field_name, $request ){
+
+					$member_dates_db = INPURSUIT_DB_MEMBER_DATES::getInstance();
+					$age = $member_dates_db->age( $post['id'] );
+					return $age;
+				},
+    		'update_callback' => '__return_false',
+    		'schema'          => null,
+     	)
+		);
+
+
 	}
 
 

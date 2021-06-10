@@ -148,7 +148,7 @@ class INPURSUIT_MEMBER_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 			$member_dates_db->updateToMember( $post_id, $_POST['event_dates'] );
 		}
 
-		if( $post->post_type == $this->getPostType() ){
+		if( $post->post_type == $this->getPostType() && $_POST ){
 			$metafields = $this->getMetaFields();
 			foreach( $metafields as $slug => $title ){
 				update_post_meta( $post_id, $slug, $_POST[ $slug ] );
