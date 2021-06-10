@@ -10,7 +10,11 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 
 		add_action( 'admin_menu', array( $this, 'removeMetaBoxes' ), 100 );
 
-		add_action( 'post_submitbox_misc_actions', array( $this, 'miscActionsDiv' ) );
+		add_action( 'post_submitbox_misc_actions', function( $post ){
+			$post_type = get_post_type( $post );
+			if( $post_type != $this->getPostType() ) return '';
+			include( 'templates/misc-actions.php' );
+		} );
 
 		/* ENQUEUE SCRIPTS ON ADMIN DASHBOARD */
 		add_action( 'admin_enqueue_scripts', array( $this, 'assets') );
@@ -54,13 +58,13 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 	function assets( $hook ) {
 		global $post_type;
 		if( $post_type == $this->post_type ){
-
+			
 			wp_enqueue_style( 'inpursuit-admin', plugins_url( 'InPursuit/dist/css/admin.css' ), array(), INPURSUIT_VERSION );
 			wp_enqueue_script( 'axios', 'https://unpkg.com/axios/dist/axios.min.js', array(), null, true );
 			wp_enqueue_script( 'vue', 'https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js', array(), null, true );
 			wp_enqueue_script( 'moment', plugins_url( 'InPursuit/dist/js/moment.js' ), array(), null, true);
   		wp_enqueue_script( 'inpursuit-main', plugins_url( 'InPursuit/dist/js/admin-main.js' ), array( 'axios', 'vue', 'moment' ), null, true);
-			
+
 			wp_localize_script( 'inpursuit-main', 'inpursuitSettings', array(
     		'root' => esc_url_raw( rest_url() ),
     		'nonce' => wp_create_nonce( 'wp_rest' )
@@ -69,11 +73,7 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 		}
 	}
 
-	function miscActionsDiv( $post ){
-		$post_type = get_post_type( $post );
-		if( $post_type != $this->getPostType() ) return '';
-		include( 'templates/misc-actions.php' );
-	}
+
 
 	function addMetaBoxes(){
 		$metaboxes = $this->getMetaBoxes();
@@ -84,7 +84,7 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 				add_meta_box(
 					$meta_box['id'], 														// Unique ID
 					$meta_box['title'], 												// Box title
-					array( $this, 'metaboxHTML' ),
+					function( $post, $metabox ){ include( 'templates/metabox-'.$metabox['id'].'.php' ); },
 					$this->getPostType(),
 					isset( $meta_box['context'] ) ? $meta_box['context'] : 'normal', 	// Context
 					'default',																	// Priority
@@ -92,10 +92,6 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 				);
 			}
 		}
-	}
-
-	function metaboxHTML( $post, $metabox ){
-		include( 'templates/metabox-'.$metabox['id'].'.php' );
 	}
 
 	function formField( $atts ){
