@@ -5,7 +5,7 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 	function __construct()
 	{
 		add_action( 'admin_menu', [$this, 'registerSetttingMenu'] );
-		add_action( 'admin_init', [$this, 'settingsOptionsRegistartion'] );
+		add_action( 'admin_init', [$this, 'settingsOptionsRegistration'] );
 	}
 
 
@@ -50,7 +50,7 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 	/**
 	* Settings Options Registeration
 	*/
-	public function settingsOptionsRegistartion()
+	public function settingsOptionsRegistration()
 	{
 
 
@@ -99,4 +99,4 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 
 }
 
-new INPURSUIT_ADMIN_SETTINGS();
+INPURSUIT_ADMIN_SETTINGS::getInstance();
