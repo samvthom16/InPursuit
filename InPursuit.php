@@ -27,7 +27,7 @@
 
 
 	/* PUSH INTO THE GLOBAL VARS OF ORBIT TAXNOMIES */
-	add_filter( 'orbit_taxonomy_vars', function( $taxonomies ){
+	add_filter( 'inpursuit_taxonomy_vars', function( $taxonomies ){
 
 		$members_post_type = INPURSUIT_MEMBERS_POST_TYPE;
 		$events_post_type = INPURSUIT_EVENTS_POST_TYPE;
