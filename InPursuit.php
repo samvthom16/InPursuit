@@ -2,6 +2,7 @@
 	/*
     Plugin Name: InPursuit
     Plugin URI: https://sputznik.com
+
     Description:
     Author: Samuel Thomas
     Version: 1.0.1
