@@ -6,6 +6,7 @@
 		'class-inpursuit-post-admin-ui-base.php',
 		'class-inpursuit-member-admin-ui.php',
 		'class-inpursuit-event-admin-ui.php',
+		'class-inpursuit-taxonomies.php'
 	);
 
 	foreach( $inc_files as $inc_file ){
