@@ -7,6 +7,7 @@
 		'class-inpursuit-db-member-dates.php',
 		'class-inpursuit-db-event.php',
 		'class-inpursuit-db-event-member-relation.php',
+		'class-inpursuit-db-user.php',
 	);
 
 	foreach( $inc_files as $inc_file ){

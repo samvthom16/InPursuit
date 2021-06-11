@@ -23,4 +23,10 @@ class INPURSUIT_BASE{
         return self::$instance[ $class ];
 	}
 
+	public function test( $data ){
+		echo "<pre>";
+		print_r( $data );
+		echo "</pre>";
+	}
+
 }

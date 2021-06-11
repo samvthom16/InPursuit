@@ -37,9 +37,6 @@ class INPURSUIT_DB_MEMBER extends INPURSUIT_DB_BASE{
 			$args['post__in'] = $this->getIDsForEvent( $event_id );
 		}
 
-		//$args['orderby'] = 'title';
-		//$args['order'] = 'asc';
-
 		return $args;
 	}
 
@@ -127,7 +124,7 @@ class INPURSUIT_DB_MEMBER extends INPURSUIT_DB_BASE{
 			'author_name',
 			array(
     		'get_callback'    => function( $post, $field_name, $request ){
-					return get_the_author_meta( 'nickname', $post['author'] );
+					return get_the_author_meta( 'display_name', $post['author'] );
 				},
     		'update_callback' => '__return_false',
     		'schema'          => null,
