@@ -43,6 +43,39 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 			return $columns;
 		} );
 
+		if ( is_admin() ){
+			add_action( 'restrict_manage_posts', function( $post_type ){
+
+				if( $post_type == $this->getPostType() ){
+
+					$taxonomies = $this->getTaxonomiesForDropdown();
+
+					foreach( $taxonomies as $slug => $title ){
+
+						$terms = get_terms( array(
+							'taxonomy' 		=> $slug,
+							'hide_empty' 	=> true,
+						) );
+
+						if( count( $terms ) ){
+							_e( "<select name='$slug'>" );
+							_e( "<option value=''>All $title</option>" );
+							foreach( $terms as $term ){
+								$current_v = isset( $_GET[ $slug ] ) ? $_GET[ $slug ] : '';
+								printf(
+									'<option value="%s"%s>%s</option>',
+									$term->slug,
+									$term->slug == $current_v? ' selected="selected"':'',
+									$term->name
+								);
+							}
+							_e( "</select>" );
+						}
+					}
+				}
+			} );
+		}
+
 	}
 
 	function getPostType(){ return $this->post_type; }
