@@ -11,10 +11,10 @@
 			$wp_meta_boxes['dashboard']['normal']['core'] = array();
 	    $wp_meta_boxes['dashboard']['side']['core'] = array();
 			unset( $wp_meta_boxes['dashboard']['normal']['high'] );
-			wp_add_dashboard_widget( 'dashboard_widget', 'Recent Updates', function(){
+			wp_add_dashboard_widget( 'dashboard_widget', 'Recent Members', function(){
 				include( 'templates/dashboard.php' );
 			} );
-			wp_add_dashboard_widget( 'dashboard_history', 'History', function(){
+			wp_add_dashboard_widget( 'dashboard_history', 'Recent Events', function(){
 				include( 'templates/dashboard-history.php' );
 			} );
 		}

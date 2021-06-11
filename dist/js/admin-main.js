@@ -136,6 +136,43 @@ Vue.component( 'special-event', {
 	}
 });
 
+
+
+Vue.component( 'latest-updates', {
+	props		: [ 'per_page', 'post_type' ],
+  template: '<div><div v-for="post in posts" style="margin-bottom:20px;"><h4 style="margin: 0;"><a :href="post.edit_url">{{ post.title.rendered }}</a></h4><p style="margin: 0;">Was added {{ post.date | moment }} by {{ post.author_name }}</p></div></div>',
+	data		: function(){
+		return {
+			posts		: [],
+		}
+	},
+	methods: {
+		getPosts: function(){
+			var component = this;
+
+			API().request( {
+				url			: 'wp/v2/' + this.post_type,
+				params	: {
+					per_page: this.per_page
+				},
+				callbackFn	: function( response ){
+					//component.total = response.headers['x-wp-total'];
+					component.posts = response.data;
+					//console.log( component.posts );
+				}
+			} );
+		},
+	},
+	filters: {
+	  moment: function (date) {
+			return moment(date).fromNow();
+	  }
+	},
+	created: function(){
+		this.getPosts();
+	},
+});
+
 new Vue({
   el: '#inpursuit-event-members',
   data() {
@@ -184,7 +221,9 @@ new Vue({
 					search								: this.searchQuery,
 					show_event_attendants : this.show_event_attendants,
 					page									: this.page,
-					per_page							: this.per_page
+					per_page							: this.per_page,
+					order									: 'asc',
+					orderby								: 'title'
 				},
 				callbackFn	: function( response ){
 
@@ -237,6 +276,10 @@ new Vue({
 	}
 });
 
+// DASHBOARD ELEMENTS
+new Vue( { el: '#inpursuit-latest-members' } );
+new Vue( { el: '#inpursuit-latest-events' } );
+
+
 new Vue( { el: '#inpursuit-member-history' } );
 new Vue({ el: '#inpursuit-member-info' });
-new Vue( { el: '#inpursuit-timeline-history' } );

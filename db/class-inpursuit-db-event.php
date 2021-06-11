@@ -17,8 +17,10 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_BASE{
 			'slug' 					=> $this->getPostType(),
 			'description' 	=> 'Holds our events specific data',
 			'menu_icon'			=> 'dashicons-format-video',
-			'supports'			=> array( 'title', 'editor', 'thumbnail' )
+			'supports'			=> array( 'title', 'editor', 'thumbnail', 'author' )
 		) );
+
+		add_action( 'rest_api_init', array( $this, 'addRestData' ) );
 
 	}
 
@@ -58,10 +60,10 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_BASE{
 		$total_pages = ceil( $total_count/$per_page );
 		foreach( $rows as $row ){
 			$post = array(
-				'title'			=> array( 'rendered' => $row->post_title ),
-				'date'			=> $row->post_date,
-				'date_gmt'	=> $row->post_date_gmt,
-				'terms'			=> $wp_util->getAllTermsForPost( $row->ID )
+				'title'				=> array( 'rendered' => $row->post_title ),
+				'date'				=> $row->post_date,
+				'date_gmt'		=> $row->post_date_gmt,
+				'terms'				=> $wp_util->getAllTermsForPost( $row->ID ),
 			);
 			array_push( $data, $post );
 		}
@@ -74,7 +76,31 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_BASE{
 		);
 	}
 
+	function addRestData(){
+		register_rest_field(
+			$this->getPostType(),
+			'edit_url',
+			array(
+    		'get_callback'    => function( $post, $field_name, $request ){
+					return admin_url( 'post.php?action=edit&post=' . $post['id'] );
+				},
+    		'update_callback' => '__return_false',
+    		'schema'          => null,
+     	)
+		);
 
+		register_rest_field(
+			$this->getPostType(),
+			'author_name',
+			array(
+    		'get_callback'    => function( $post, $field_name, $request ){
+					return get_the_author_meta( 'nickname', $post['author'] );
+				},
+    		'update_callback' => '__return_false',
+    		'schema'          => null,
+     	)
+		);
+	}
 
 }
 INPURSUIT_DB_EVENT::getInstance();

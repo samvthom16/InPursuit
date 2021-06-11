@@ -19,7 +19,7 @@ class INPURSUIT_DB_MEMBER extends INPURSUIT_DB_BASE{
 			'slug' 					=> $this->getPostType(),
 			'description' 	=> 'Holds our members and member specific data',
 			'menu_icon'			=> 'dashicons-groups',
-			'supports'			=> array( 'title', 'thumbnail' )
+			'supports'			=> array( 'title', 'thumbnail', 'author' )
 		) );
 
 		add_filter( 'rest_inpursuit-members_query', array( $this, 'filterRestData' ), 10, 2 );
@@ -37,8 +37,8 @@ class INPURSUIT_DB_MEMBER extends INPURSUIT_DB_BASE{
 			$args['post__in'] = $this->getIDsForEvent( $event_id );
 		}
 
-		$args['orderby'] = 'title';
-		$args['order'] = 'asc';
+		//$args['orderby'] = 'title';
+		//$args['order'] = 'asc';
 
 		return $args;
 	}
@@ -116,6 +116,18 @@ class INPURSUIT_DB_MEMBER extends INPURSUIT_DB_BASE{
 			array(
     		'get_callback'    => function( $post, $field_name, $request ){
 					return admin_url( 'post.php?action=edit&post=' . $post['id'] );
+				},
+    		'update_callback' => '__return_false',
+    		'schema'          => null,
+     	)
+		);
+
+		register_rest_field(
+			$this->getPostType(),
+			'author_name',
+			array(
+    		'get_callback'    => function( $post, $field_name, $request ){
+					return get_the_author_meta( 'nickname', $post['author'] );
 				},
     		'update_callback' => '__return_false',
     		'schema'          => null,
