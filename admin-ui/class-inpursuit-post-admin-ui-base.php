@@ -37,6 +37,12 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 
 		add_action( 'save_post', array( $this, 'savePost' ), 10, 3 );
 
+		// REMOVE AUTHOR COLUMN
+		add_filter('manage_' . $this->getPostType() . '_posts_columns', function ( $columns ) {
+    	unset( $columns['author'] );
+			return $columns;
+		} );
+
 	}
 
 	function getPostType(){ return $this->post_type; }
@@ -55,6 +61,7 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 				remove_meta_box( $slug . 'div', $this->getPostType(), 'side' );
 			}
 		}
+		remove_meta_box( 'authordiv', $this->getPostType(), 'normal' );
 	}
 
 	function savePost( $post_id, $post, $update ){}
