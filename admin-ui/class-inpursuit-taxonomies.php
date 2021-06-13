@@ -3,9 +3,24 @@
 /* BASE CLASS TO CREATE CUSTOM TAXONOMIES */
 class INPURSUIT_TAXONOMIES extends INPURSUIT_BASE{
 
+	private $location_fields;
+
   function __construct(){
     add_action( 'init', array( $this, 'init' ) );
+
+		$this->setLocationFields( array(
+			'lat'	=> 'Latitude',
+			'lng'	=> 'Longitude'
+		) );
+
+		// Add the fields to the "presenters" taxonomy, using our callback function
+		add_action( 'inpursuit-location_edit_form_fields', array( $this, 'locationExtraFields' ), 10, 2 );
+
+		add_action( 'edited_inpursuit-location', array( $this, 'saveLocationExtraFields' ), 10, 2 );
   }
+
+	function getLocationFields(){ return $this->location_fields; }
+	function setLocationFields( $location_fields ){ $this->location_fields = $location_fields; }
 
   /* FIRES ON ACTION HOOK - INIT*/
   function init(){
@@ -16,7 +31,7 @@ class INPURSUIT_TAXONOMIES extends INPURSUIT_BASE{
     if( ! isset( $inpursuit_vars['taxonomies'] ) ){
       $inpursuit_vars['taxonomies'] = array();
     }
-    
+
     /* HOOK TO ADD CUSTOM TAXONOMIES */
     $inpursuit_vars['taxonomies'] = apply_filters( 'inpursuit_taxonomy_vars', $inpursuit_vars['taxonomies'] );
 
@@ -69,6 +84,35 @@ class INPURSUIT_TAXONOMIES extends INPURSUIT_BASE{
       'show_in_rest'		=> isset( $r['show_in_rest'] ) && $r['show_in_rest'] ? $r['show_in_rest'] : false,
     ));
   }
+
+	function locationExtraFields( $term, $taxonomy ){
+
+		$location_fields = $this->getLocationFields();
+
+		?>
+		<table class="form-table">
+			<tbody>
+				<?php foreach( $location_fields as $slug => $title ): $value = get_term_meta( $term->term_id, $slug, true );?>
+				<tr class="form-field">
+					<th><label for="<?php _e( $slug );?>"><?php _e( $title );?></label></th>
+					<td><input type="text" name="<?php _e( $slug );?>" id="<?php _e( $slug );?>" value="<?php _e( $value );?>" /></td>
+				</tr>
+				<?php endforeach;?>
+			</tbody>
+		</table>
+	<?php
+	}
+
+	function saveLocationExtraFields( $term_id ) {
+		$location_fields = $this->getLocationFields();
+		foreach( $location_fields as $slug => $title ){
+			update_term_meta(
+				$term_id,
+				$slug,
+				sanitize_text_field( $_POST[ $slug ] )
+			);
+		}
+	}
 
 }
 

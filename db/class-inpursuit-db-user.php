@@ -7,6 +7,8 @@
 		function __construct(){
 			$this->setTaxonomy( 'inpursuit-group' );
 
+			// LIMIT MEMBERS INFORMATION IF THE USER GROUP HAS BEEN SET IN THE USER PROFILE
+
 			add_action( 'pre_get_posts', function( $query ){
 
 				if( isset( $query->query ) && isset( $query->query['post_type'] ) && $query->query['post_type'] == INPURSUIT_MEMBERS_POST_TYPE ){

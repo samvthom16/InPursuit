@@ -32,17 +32,17 @@ var API = function(){
 			url = updateURL( url, options.params );
 		}
 
+		var headers = {
+			'X-WP-Nonce': inpursuitSettings.nonce
+		};
+
 		var api_obj;
 		if( options.method == 'post' ){
-			console.log( url );
-			api_obj = axios.post( url, options.data, {
-				headers: {
-					'X-WP-Nonce': inpursuitSettings.nonce
-				}
-			} );
+			//console.log( url );
+			api_obj = axios.post( url, options.data, { headers: headers } );
 		}
 		else{
-			api_obj = axios.get( url );
+			api_obj = axios.get( url, { headers: headers } );
 		}
 
 		api_obj.then( function( response ){
