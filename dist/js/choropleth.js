@@ -150,7 +150,21 @@
 
 					var markersLayer = [];
 
-					var markersClusterGroup = L.markerClusterGroup();
+					var markersClusterGroup = L.markerClusterGroup({
+						iconCreateFunction: function(cluster) {
+							var count = 0;
+							var child_markers = cluster.getAllChildMarkers();
+							for( var key in child_markers ){
+								if( child_markers[key].options.icon.options.count != undefined ){
+									count += parseInt( child_markers[key].options.icon.options.count );
+								}
+							}
+							return L.divIcon({
+								className	: 'inpursuit-icon',
+								html			: "<span>" + count + "</span>",
+							});
+						}
+					});
 
 					jQuery.each( data[ 'markers' ], function( i, marker ){
 						if( marker['lat'] != undefined && marker['lng'] != undefined ){
@@ -159,6 +173,7 @@
 								className	: 'inpursuit-icon',
 								html			: "<span>" + marker['html'] + "</span>",
 								iconUrl 	: marker['icon'],
+								count			: marker['html']
 								//iconSize	: [30, 30],
 							});
 
