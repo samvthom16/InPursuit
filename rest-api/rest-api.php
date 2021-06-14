@@ -72,6 +72,3 @@ class INPURSUIT_REST extends INPURSUIT_BASE{
 	}
 }
 INPURSUIT_REST::getInstance();
-
-// ENABLES APPLICATION_PASSWORD SECTION
-add_filter( 'wp_is_application_passwords_available', '__return_true' );
