@@ -19,7 +19,8 @@
 		'lib/class-inpursuit-wp-util.php',
 		'db/db.php',
 		'admin-ui/admin-ui.php',
-		'rest-api/rest-api.php'
+		'rest-api/rest-api.php',
+		'rest-authentication/rest-authentication.php'
 	);
 
 	foreach( $inc_files as $inc_file ){
