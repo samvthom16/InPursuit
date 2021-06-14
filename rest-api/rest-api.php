@@ -1,5 +1,7 @@
 <?php
 
+require_once('class-inpursuit-rest-fields.php');
+
 class INPURSUIT_REST extends INPURSUIT_BASE{
 
 	function __construct(){
@@ -55,7 +57,7 @@ class INPURSUIT_REST extends INPURSUIT_BASE{
 						'fields'			=> 'id=>name'
 					) );
 				}
-				
+
 				$data = array(
 					'name' 				=> get_bloginfo( 'name' ),
 					'taxonomies'	=> $taxonomies
@@ -70,3 +72,6 @@ class INPURSUIT_REST extends INPURSUIT_BASE{
 	}
 }
 INPURSUIT_REST::getInstance();
+
+// ENABLES APPLICATION_PASSWORD SECTION
+add_filter( 'wp_is_application_passwords_available', '__return_true' );
