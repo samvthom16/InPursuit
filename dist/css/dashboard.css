@@ -256,3 +256,55 @@
 	margin-top: 0;
 	padding: 0;
 }
+
+
+/** Circular Percentage **/
+
+.participation-wrapper {
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.participation-wrapper .single-chart {
+  width: 33%;
+  justify-content: space-around ;
+}
+
+.participation-wrapper .circular-chart {
+  display: block;
+  margin: 10px auto;
+  max-width: 80%;
+  max-height: 50px;
+}
+
+.participation-wrapper .circle-bg {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 3.8;
+}
+
+.participation-wrapper .circle {
+  fill: none;
+  stroke-width: 2.8;
+  stroke-linecap: round;
+  animation: progress 1s ease-out forwards;
+}
+
+@keyframes progress {
+  0% {
+    stroke-dasharray: 0 100;
+  }
+}
+
+
+.participation-wrapper .circular-chart.blue .circle {
+  stroke: #3c9ee5;
+}
+
+.participation-wrapper .attending-percentage {
+  fill: #666;
+  font-family: sans-serif;
+  font-size: 0.5em;
+  font-weight: 700;
+  text-anchor: middle;
+}
