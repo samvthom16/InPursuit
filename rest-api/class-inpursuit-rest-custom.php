@@ -3,7 +3,7 @@
 class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 
 	function getHistoryCallback( WP_REST_Request $args ){
-		$event_db = INPURSUIT_DB_EVENT::getInstance();
+		$event_db = INPURSUIT_DB::getInstance();
 		$response_data = $event_db->getHistory( $args );
 
 		$response = new WP_REST_Response( $response_data['data'] );

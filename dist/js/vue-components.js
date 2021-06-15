@@ -1,6 +1,10 @@
+Vue.component( 'add-comment', {
+	template: "<div><button type='button' class='button'>Add Comment</button><div class='thickbox-modal'><div class='thickbox-modal-content'>hello</div></div></div>"
+} );
+
 Vue.component( 'timeline', {
 	props	: ['member_id', 'per_page'],
-  template: '<div><div class="inpursuit-timeline" style="margin-top:20px;margin-left: 20px;"><div class="container-right" v-for="post in posts"><timeline-event :post="post"></timeline-event></div></div><p><span class="spinner" :class="{active: loading}"></span></p><p v-if="page < total_pages"><button type="button" class="button" @click="page++">Load More</button></p></div>',
+  template: '<div><add-comment></add-comment><div class="inpursuit-timeline" style="margin-top:20px;margin-left: 20px;"><div class="container-right" :class="post.type" v-for="post in posts"><timeline-event :post="post"></timeline-event></div></div><p><span class="spinner" :class="{active: loading}"></span></p><p v-if="page < total_pages"><button type="button" class="button" @click="page++">Load More</button></p></div>',
 	data	: function () {
     return {
 			posts					: [],

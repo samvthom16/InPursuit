@@ -171,7 +171,6 @@
 
 /* The circles on the timeline */
 .inpursuit-timeline .container-right::after {
-  content: '';
   position: absolute;
   width: 25px;
   height: 25px;
@@ -181,6 +180,17 @@
   top: 15px;
   border-radius: 50%;
   z-index: 1;
+
+	font-family: dashicons;
+	font-size: 18px;
+	color: #FF9F55;
+	padding: 5px;
+	text-align: center;
+	content: "\f126";
+}
+
+.inpursuit-timeline .container-right.comment::after {
+	content: '\f125';
 }
 
 
@@ -199,7 +209,7 @@
 
 /* Fix the circle for containers on the right side */
 .inpursuit-timeline .container-right::after {
-  left: -16px;
+  left: -21px;
 }
 
 /* The actual content */
@@ -307,4 +317,26 @@
   font-size: 0.5em;
   font-weight: 700;
   text-anchor: middle;
+}
+
+
+.thickbox-modal{
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	z-index: 1000;
+	background: #0009;
+}
+.thickbox-modal-content{
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate( -50%, -50% );
+	width: 400px;
+	height: 400px;
+	background: #fff;
+	border-radius: 5px;
+	padding: 20px;
 }

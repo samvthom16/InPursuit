@@ -24,6 +24,7 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_POST_BASE{
 
 	}
 
+	/*
 	function getHistory( $args ){
 		$page = isset( $args[ 'page' ]  ) ? $args[ 'page' ] : 1;
 		$per_page = isset( $args[ 'per_page' ]  ) ? $args[ 'per_page' ] : 10;
@@ -75,7 +76,7 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_POST_BASE{
 			'total_pages'	=> $total_pages
 		);
 	}
-
+	*/
 
 
 }

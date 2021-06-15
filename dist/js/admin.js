@@ -125,9 +125,7 @@ new Vue({
 			if( gender.length ) meta.push( gender );
 			if( age.length ) meta.push( age + ' Years' );
 
-
 			if( meta.length ) subtitle = meta.join( ', ' );
-
 			return subtitle;
 		},
 	},
