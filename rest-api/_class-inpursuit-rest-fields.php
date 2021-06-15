@@ -6,22 +6,28 @@ class INPURSUIT_REST_FIELDS extends INPURSUIT_BASE{
 		add_action( 'rest_api_init', array( $this, 'addRestData' ) );
 	}
 
-  function addRestData(){
+	function addRestData(){
 
-    $inpursuit_member_type = 'inpursuit-members';
+		$inpursuit_member_type = 'inpursuit-members';
     $inpursuit_event_type = 'inpursuit-events';
 
-    // CPT INPURSUIT MEMBERS
-    register_rest_field( $inpursuit_member_type, 'gender', array(
-        'get_callback'    => function( $object, $field_name, $request ){
-          return wp_get_object_terms( $object['id'], 'inpursuit-gender', array( 'fields' => 'names' ) );
-        },
-        'update_callback'	=> function( $value, $post, $field_name, $request, $object_type ){
-          wp_set_object_terms( $post->ID, $value, 'inpursuit-gender' );
-        }
-      )
-    );
+		/*
+		$member_admin_ui = INPURSUIT_MEMBER_ADMIN_UI::getInstance();
+		$taxonomies = $member_admin_ui->getTaxonomiesForDropdown();
 
+		foreach( $taxonomies as $slug => $label ){
+			register_rest_field( $inpursuit_member_type, $slug, array(
+	        'get_callback'    => array( $this, 'getCallbackForTerm' ),
+	        'update_callback'	=> array( $this, 'updateCallbackForTerm' ),
+	      )
+	    );
+		}
+
+		*/
+
+		// CPT INPURSUIT MEMBERS
+
+		/*
     register_rest_field( $inpursuit_member_type, 'group', array(
         'get_callback'    => function( $object, $field_name, $request ){
           return wp_get_object_terms( $object['id'], 'inpursuit-group', array( 'fields' => 'names' ) );
@@ -51,6 +57,7 @@ class INPURSUIT_REST_FIELDS extends INPURSUIT_BASE{
         }
       )
     );
+		*/
 
     register_rest_field( $inpursuit_member_type, 'location', array(
         'get_callback'    => array( $this, 'get_inpursuit_location' ),

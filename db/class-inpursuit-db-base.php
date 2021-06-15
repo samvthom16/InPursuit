@@ -7,8 +7,7 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 
 	private $table;
 	private $table_slug;
-	private $post_type_options;
-	private $post_type;
+
 
 	function __construct(){
 
@@ -24,17 +23,13 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 		// ALTER TABLE IN PRODUCTION
 		add_action( 'inpursuit_db_alter', array( $this, 'alter_table' ) );
 
-		add_action( 'init', array( $this, 'registerPostType' ) );
+		
 
 	}
 
 
 	/* GETTER AND SETTER FUNCTIONS */
-	function setPostTypeOptions( $post_type_options ){ $this->post_type_options = $post_type_options; }
-	function getPostTypeOptions(){ return $this->post_type_options; }
 
-	function setPostType( $post_type ){ $this->post_type = $post_type; }
-	function getPostType(){ return $this->post_type; }
 
 	function setTable( $table ){ $this->table = $table; }
 	function getTable(){ return $this->table; }
@@ -45,32 +40,6 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 		return $wpdb->prefix.'ip_';
 	}
 
-	/*
-	function getResponseDB(){
-		require_once( 'class-space-db-response.php' );
-		return SPACE_DB_RESPONSE::getInstance();
-	}
-	function getPageQuestionRelationDB(){
-		require_once('class-space-db-page-question-relation.php');
-		return SPACE_DB_PAGE_QUESTION_RELATION::getInstance();
-	}
-	function getPageDB(){
-		require_once('class-space-db-page.php');
-		return SPACE_DB_PAGE::getInstance();
-	}
-	function getQuestionDB(){
-		require_once('class-space-db-question.php');
-		return SPACE_DB_QUESTION::getInstance();
-	}
-	function getChoiceDB(){
-		require_once('class-space-db-choice.php');
-		return SPACE_DB_CHOICE::getInstance();
-	}
-	function getGuestDB(){
-		require_once('class-space-db-guest.php');
-		return SPACE_DB_GUEST::getInstance();
-	}
-	*/
 
 	/* GETTER AND SETTER FUNCTIONS */
 
@@ -333,26 +302,10 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 		);
 	}
 
-	function registerPostType(){
-		$options = $this->getPostTypeOptions();
-		if( is_array( $options ) && count( $options ) && isset( $options['slug'] ) ){
-			$args = array(
-				'labels'        => $this->_labelsArray( $options ),
-				'description'   => $options['description'],
-				'public'        => true,
-				'menu_icon'			=> $options['menu_icon'],
-				'supports'			=> $options['supports'],
-				'show_in_rest'	=> true
-			);
-			register_post_type( $options['slug'], $args );
-		}
-	}
 
-	function registerTaxonomy(){
-		//$taxonomies = $this->getTaxonomies();
 
-	}
 
-	
+
+
 
 }

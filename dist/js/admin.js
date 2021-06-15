@@ -10,7 +10,7 @@ new Vue({
 			selected_posts: [],
 			loading: false,
 			show_event_attendants: 0,
-			per_page: 20,
+			per_page: 21,
 			pages: [],
 			page: 1
 		}

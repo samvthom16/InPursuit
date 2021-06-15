@@ -3,7 +3,7 @@
 * Model: EVENT
 */
 
-class INPURSUIT_DB_EVENT extends INPURSUIT_DB_BASE{
+class INPURSUIT_DB_EVENT extends INPURSUIT_DB_POST_BASE{
 
 	function __construct(){
 
@@ -20,7 +20,7 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_BASE{
 			'supports'			=> array( 'title', 'editor', 'thumbnail', 'author' )
 		) );
 
-		add_action( 'rest_api_init', array( $this, 'addRestData' ) );
+		//add_action( 'rest_api_init', array( $this, 'addRestData' ) );
 
 	}
 
@@ -76,31 +76,7 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_BASE{
 		);
 	}
 
-	function addRestData(){
-		register_rest_field(
-			$this->getPostType(),
-			'edit_url',
-			array(
-    		'get_callback'    => function( $post, $field_name, $request ){
-					return admin_url( 'post.php?action=edit&post=' . $post['id'] );
-				},
-    		'update_callback' => '__return_false',
-    		'schema'          => null,
-     	)
-		);
 
-		register_rest_field(
-			$this->getPostType(),
-			'author_name',
-			array(
-    		'get_callback'    => function( $post, $field_name, $request ){
-					return get_the_author_meta( 'display_name', $post['author'] );
-				},
-    		'update_callback' => '__return_false',
-    		'schema'          => null,
-     	)
-		);
-	}
 
 }
 INPURSUIT_DB_EVENT::getInstance();

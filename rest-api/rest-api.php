@@ -1,6 +1,15 @@
 <?php
 
-require_once('class-inpursuit-rest-fields.php');
+$inc_files = array(
+	'class-inpursuit-rest-post-base.php',
+	'class-inpursuit-rest-member.php',
+	'class-inpursuit-rest-event.php',
+);
+
+foreach( $inc_files as $inc_file ){
+	require_once( $inc_file );
+}
+
 
 class INPURSUIT_REST extends INPURSUIT_BASE{
 

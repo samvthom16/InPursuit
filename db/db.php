@@ -3,6 +3,7 @@
 
 	$inc_files = array(
 		'class-inpursuit-db-base.php',
+		'class-inpursuit-db-post-base.php',
 		'class-inpursuit-db-member.php',
 		'class-inpursuit-db-member-dates.php',
 		'class-inpursuit-db-event.php',

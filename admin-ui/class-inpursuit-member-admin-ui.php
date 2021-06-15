@@ -2,10 +2,6 @@
 
 class INPURSUIT_MEMBER_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 
-	var $post_type;
-
-	var $metafields;
-
 	function __construct(){
 		$this->setPostType( INPURSUIT_MEMBERS_POST_TYPE );
 
@@ -37,8 +33,7 @@ class INPURSUIT_MEMBER_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 		parent::__construct();
 	}
 
-	function getMetaFields(){ return $this->metafields; }
-	function setMetaFields( $metafields ){ $this->metafields = $metafields; }
+
 
 	function savePost( $post_id, $post, $update ){
 

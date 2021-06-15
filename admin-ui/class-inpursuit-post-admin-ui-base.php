@@ -5,6 +5,7 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 	var $post_type;
 	var $meta_boxes;
 	var $taxonomies_dropdown;
+	var $metafields;
 
 	function __construct(){
 
@@ -86,6 +87,9 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 
 	function getTaxonomiesForDropdown(){ return $this->taxonomies_dropdown; }
 	function setTaxonomiesForDropdown( $taxonomies_dropdown ){ $this->taxonomies_dropdown = $taxonomies_dropdown; }
+
+	function getMetaFields(){ return $this->metafields; }
+	function setMetaFields( $metafields ){ $this->metafields = $metafields; }
 
 	function removeMetaBoxes(){
 		$taxonomies = $this->getTaxonomiesForDropdown();
