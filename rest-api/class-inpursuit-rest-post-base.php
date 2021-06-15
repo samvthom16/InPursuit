@@ -43,7 +43,7 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 		$post_type = $this->getPostType();
 
 		// ADD TAXONOMY TERMS TO THE REST API
-		$taxonomies = $admin_ui->getTaxonomiesForDropdown();
+		$taxonomies = apply_filters( "inpursuit-rest-taxonomies-$post_type", $admin_ui->getTaxonomiesForDropdown() );
 		if( is_array( $taxonomies ) && count( $taxonomies ) ){
 			foreach( $taxonomies as $taxonomy_slug => $taxonomy_label ){
 				$this->registerRestField( $taxonomy_slug, array( $this, 'getCallbackForTerm' ), array( $this, 'updateCallbackForTerm' ) );

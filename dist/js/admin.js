@@ -16,6 +16,22 @@ new Vue({
 		}
   },
 	methods: {
+		terms : function( post ){
+
+			var terms = [],
+				taxonomies = [ 'inpursuit-status', 'inpursuit-group', 'inpursuit-location' ]
+
+			for( var index in taxonomies ){
+				if( post[ taxonomies[index] ].length ){
+					terms.push({
+						name		: post[ taxonomies[index] ],
+						taxonomy: taxonomies[index]
+					});
+				}
+			}
+
+			return terms;
+		},
 		getEventID	: function(){
 			return document.getElementById( "post_ID" ).value;
 		},
@@ -98,7 +114,24 @@ new Vue({
 			this.page = current_page;
 			this.getPosts();
 		}
-	}
+	},
+	filters: {
+	  subtitle: function( post ){
+			var gender 	= post['inpursuit-gender'],
+				age 			= post['age'],
+				meta 			= [],
+				subtitle 	= '';
+
+			if( gender.length ) meta.push( gender );
+			if( age.length ) meta.push( age + ' Years' );
+
+
+			if( meta.length ) subtitle = meta.join( ', ' );
+
+			return subtitle;
+		},
+	},
+
 });
 
 // DASHBOARD ELEMENTS

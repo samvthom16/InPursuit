@@ -10,11 +10,11 @@
 			</div>
 			<div class="post-content">
 				<h3><a :href="post.edit_url" target="_blank">{{ post.title.rendered }}</a></h3>
-				<p v-if="post.age" class='meta'>{{ post.age }} Years</p>
+				<p v-if="post.age" class='meta'>{{ post | subtitle }}</p>
 			</div>
 		</div>
 		<div class="post-terms">
-			<span class="badge" :class="term.taxonomy" v-for="term in post.terms">{{ term.name }}</span>
+			<span class="badge" :class="term.taxonomy" v-for="term in terms( post )">{{ term.name }}</span>
 		</div>
   </li>
 </ul>

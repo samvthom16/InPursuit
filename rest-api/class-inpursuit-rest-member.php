@@ -4,11 +4,18 @@ class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 
 	function __construct(){
 
-		$this->setPostType( INPURSUIT_MEMBERS_POST_TYPE );
+		$post_type = INPURSUIT_MEMBERS_POST_TYPE;
+		$this->setPostType( $post_type );
 
 		$this->setAdminUI( INPURSUIT_MEMBER_ADMIN_UI::getInstance() );
 
 		add_filter( 'rest_inpursuit-members_query', array( $this, 'filterRestData' ), 10, 2 );
+
+		// ADD TAXONOMIES THAT ARE NOT DROPDOWN TO BE MADE AVAILABLE ON THE REST DATA
+		add_filter( "inpursuit-rest-taxonomies-$post_type", function( $taxonomies ){
+			$taxonomies['inpursuit-profession'] = 'Profession';
+			return $taxonomies;
+		} );
 
 		parent::__construct();
 	}
