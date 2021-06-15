@@ -66,14 +66,24 @@ class INPURSUIT_REST_FIELDS extends INPURSUIT_BASE{
     );
 
     register_rest_field( $inpursuit_member_type, 'email', array(
-        'get_callback'    => array( $this, 'get_inpursuit_post_meta' ),
-        'update_callback'	=> array( $this, 'set_inpursuit_post_meta' )
+        'get_callback'    => array( $this, 'get_inpursuit_post_meta' )
       )
     );
 
     register_rest_field( $inpursuit_member_type, 'phone', array(
-      'get_callback'    => array( $this, 'get_inpursuit_post_meta' ),
-      'update_callback'	=> array( $this, 'set_inpursuit_post_meta' )
+      'get_callback'    => array( $this, 'get_inpursuit_post_meta' )
+      )
+    );
+
+    register_rest_field( $inpursuit_member_type, 'birthday', array(
+      'get_callback'    => array( $this, 'get_inpursuit_events_meta' ),
+      'update_callback'	=> array( $this, 'set_inpursuit_events_meta' )
+      )
+    );
+
+    register_rest_field( $inpursuit_member_type, 'wedding', array(
+      'get_callback'    => array( $this, 'get_inpursuit_events_meta' ),
+      'update_callback'	=> array( $this, 'set_inpursuit_events_meta' )
       )
     );
 
@@ -113,6 +123,21 @@ class INPURSUIT_REST_FIELDS extends INPURSUIT_BASE{
   function set_inpursuit_post_meta( $value, $post, $field_name, $request, $object_type ){
     update_post_meta( $post->ID, $field_name, $value );
   }
+
+  function get_inpursuit_events_meta( $object,  $field_name, $request ){
+
+    global $wpdb;
+    $event_date = $wpdb->get_var( $wpdb->prepare(
+        "SELECT event_date FROM {$wpdb->prefix}ip_member_dates WHERE member_id = %d AND event_type = %s ", $object['id'], $field_name
+    ) );
+
+    return $event_date;
+  }
+
+  function set_inpursuit_events_meta( $value, $post, $field_name, $request, $object_type ){
+    update_post_meta( $post->ID, "event_dates[$field_name]", $value );
+  }
+
 
 }
 
