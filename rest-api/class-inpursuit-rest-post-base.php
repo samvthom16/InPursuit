@@ -78,6 +78,21 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 			}
 		);
 
+		// FEATURED IMAGE
+		$this->registerRestField(
+		  'featured_image',
+		  function( $post, $field_name, $request ){
+		    $id = $post['id'];
+		    if( has_post_thumbnail( $id ) ){
+		      $img_arr = wp_get_attachment_image_src( get_post_thumbnail_id( $id ), 'full' );
+		      $url = $img_arr[0];
+		      return $url;
+		    } else {
+		      return false;
+		    }
+		  }
+		);
+
 	}
 
 
