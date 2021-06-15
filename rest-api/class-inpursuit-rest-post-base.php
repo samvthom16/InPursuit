@@ -1,13 +1,9 @@
 <?php
 
-class INPURSUIT_REST_POST_BASE extends INPURSUIT_BASE{
+class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 
 	private $admin_ui;
 	private $post_type;
-
-	function __construct(){
-		add_action( 'rest_api_init', array( $this, 'addRestData' ) );
-	}
 
 	/* GETTER AND SETTER FUNCTIONS */
 
@@ -48,14 +44,19 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_BASE{
 
 		// ADD TAXONOMY TERMS TO THE REST API
 		$taxonomies = $admin_ui->getTaxonomiesForDropdown();
-		foreach( $taxonomies as $taxonomy_slug => $taxonomy_label ){
-			$this->registerRestField( $taxonomy_slug, array( $this, 'getCallbackForTerm' ), array( $this, 'updateCallbackForTerm' ) );
+		if( is_array( $taxonomies ) && count( $taxonomies ) ){
+			foreach( $taxonomies as $taxonomy_slug => $taxonomy_label ){
+				$this->registerRestField( $taxonomy_slug, array( $this, 'getCallbackForTerm' ), array( $this, 'updateCallbackForTerm' ) );
+			}
 		}
+
 
 		// ADD META FIELDS TO THE REST API
 		$metafields = $admin_ui->getMetaFields();
-		foreach( $metafields as $meta_slug => $meta_title ){
-			$this->registerRestField( $meta_slug, array( $this, 'getCallbackForMeta' ), array( $this, 'updateCallbackForMeta' ) );
+		if( is_array( $metafields ) && count( $metafields ) ){
+			foreach( $metafields as $meta_slug => $meta_title ){
+				$this->registerRestField( $meta_slug, array( $this, 'getCallbackForMeta' ), array( $this, 'updateCallbackForMeta' ) );
+			}
 		}
 
 		// ADMIN URL TO EDIT THE POST
@@ -76,17 +77,6 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_BASE{
 
 	}
 
-	// WRAPPER FUNCTION TO REGISTER REST FIELD
-	function registerRestField( $field_name, $get_callback, $update_callback = '__return_false', $schema = null ){
-		register_rest_field(
-			$this->getPostType(),
-			$field_name,
-			array(
-    		'get_callback'    => $get_callback,
-    		'update_callback' => $update_callback,
-    		'schema'          => $schema,
-     	)
-		);
-	}
+
 
 }
