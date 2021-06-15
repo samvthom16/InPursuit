@@ -136,7 +136,6 @@ class INPURSUIT_DB_MEMBER extends INPURSUIT_DB_BASE{
 			'age',
 			array(
     		'get_callback'    => function( $post, $field_name, $request ){
-
 					$member_dates_db = INPURSUIT_DB_MEMBER_DATES::getInstance();
 					$age = $member_dates_db->age( $post['id'] );
 					return $age;
@@ -145,6 +144,7 @@ class INPURSUIT_DB_MEMBER extends INPURSUIT_DB_BASE{
     		'schema'          => null,
      	)
 		);
+
 	}
 }
 

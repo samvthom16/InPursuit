@@ -10,7 +10,7 @@
 			</div>
 			<div class="post-content">
 				<h3><a :href="post.edit_url" target="_blank">{{ post.title.rendered }}</a></h3>
-				<p v-if="post.age" class='meta'>{{ post.age }} Years Old</p>
+				<p v-if="post.age" class='meta'>{{ post.age }} Years</p>
 			</div>
 		</div>
 		<div class="post-terms">
