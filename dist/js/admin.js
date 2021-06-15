@@ -19,7 +19,7 @@ new Vue({
 		terms : function( post ){
 
 			var terms = [],
-				taxonomies = [ 'inpursuit-status', 'inpursuit-group', 'inpursuit-location' ]
+				taxonomies = [ 'status', 'group', 'location' ]
 
 			for( var index in taxonomies ){
 				if( post[ taxonomies[index] ].length ){
@@ -117,7 +117,7 @@ new Vue({
 	},
 	filters: {
 	  subtitle: function( post ){
-			var gender 	= post['inpursuit-gender'],
+			var gender 	= post['gender'],
 				age 			= post['age'],
 				meta 			= [],
 				subtitle 	= '';

@@ -16,7 +16,8 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 
 	/* REST CALLBACK FUNCTIONS FOR TERMS */
 	function getCallbackForTerm( $object, $field_name, $request ){
-		$terms = wp_get_object_terms( $object['id'], $field_name, array( 'fields' => 'names' ) );
+		$taxonomy = 'inpursuit-' . $field_name;
+		$terms = wp_get_object_terms( $object['id'], $taxonomy, array( 'fields' => 'names' ) );
 		if( is_array( $terms ) && count( $terms ) == 1 ){
 			return $terms[0];
 		}
@@ -24,6 +25,7 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 	}
 
 	function updateCallbackForTerm( $value, $post, $field_name, $request, $object_type ){
+		$taxonomy = 'inpursuit-' . $field_name;
 		wp_set_object_terms( $post->ID, $value, $field_name );
 	}
 	/* REST CALLBACK FUNCTIONS FOR TERMS */
@@ -46,7 +48,8 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 		$taxonomies = apply_filters( "inpursuit-rest-taxonomies-$post_type", $admin_ui->getTaxonomiesForDropdown() );
 		if( is_array( $taxonomies ) && count( $taxonomies ) ){
 			foreach( $taxonomies as $taxonomy_slug => $taxonomy_label ){
-				$this->registerRestField( $taxonomy_slug, array( $this, 'getCallbackForTerm' ), array( $this, 'updateCallbackForTerm' ) );
+				$field_name = str_replace( 'inpursuit-', '', $taxonomy_slug ) ;
+				$this->registerRestField( $field_name, array( $this, 'getCallbackForTerm' ), array( $this, 'updateCallbackForTerm' ) );
 			}
 		}
 
