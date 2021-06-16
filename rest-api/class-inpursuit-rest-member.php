@@ -82,6 +82,40 @@ class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 			}
 		);
 
+		// SPECIAL EVENTS
+		$this->registerRestField(
+			'special_events',
+			function( $post, $field_name, $request ){
+
+				global $wpdb;
+
+				$special_events = array(
+					'wedding'  		=> '',
+					'birthday'    => ''
+				);
+
+				foreach ( $special_events as $event => $value	) {
+
+					$event_date = $wpdb->get_var( $wpdb->prepare(
+							"SELECT event_date FROM {$wpdb->prefix}ip_member_dates WHERE member_id = %d AND event_type = %s ", $post['id'], $event
+					) );
+
+					$special_events[$event]	=	$event_date;
+
+				}
+
+				return $special_events;
+
+			},
+			function( $value, $post, $field_name, $request ){
+				$params = $request->get_params();
+				if(	array_key_exists("special_events", $params)	) {
+					$member_dates_db = INPURSUIT_DB_MEMBER_DATES::getInstance();
+					$member_dates_db->updateToMember( $post->ID, $params["special_events"] );
+				}
+			}
+		);
+		
 	}
 
 }
