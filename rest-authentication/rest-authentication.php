@@ -72,6 +72,7 @@ class INPURSUIT_REST_AUTHENTICATION extends INPURSUIT_BASE{
     register_rest_route('inpursuit/v1', 'register', array(
       'methods' => 'POST',
       'callback' => array( $this, 'user_registration_callback' ),
+      'permission_callback' => '__return_true'
     )	);
   }
 
