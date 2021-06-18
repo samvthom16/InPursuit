@@ -4,8 +4,30 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 
 	private $admin_ui;
 	private $post_type;
+	private $field_names;
+
+	function __construct(){
+		add_filter( 'inpursuit_rest_field', function( $field_name ){
+			$fields = $this->getFieldNames();
+			if( isset( $fields[ $field_name] ) ) return $fields[ $field_name ];
+			return $field_name;
+		} );
+
+		add_filter( 'inpursuit_rest_callback_field', function( $field_name ){
+			$fields = $this->getFieldNames();
+			if( is_array( $fields ) && count( $fields ) ){
+				$fields = array_flip( $this->getFieldNames() );
+				if( isset( $fields[ $field_name] ) ) return $fields[ $field_name ];
+			}
+			return $field_name;
+		} );
+
+		parent::__construct();
+	}
 
 	/* GETTER AND SETTER FUNCTIONS */
+	function getFieldNames(){ return $this->field_names; }
+	function setFieldNames( $field_names ){ $this->field_names = $field_names; }
 
 	function getAdminUI(){ return $this->admin_ui; }
 	function setAdminUI( $admin_ui ){ $this->admin_ui = $admin_ui; }
@@ -17,6 +39,7 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 	/* REST CALLBACK FUNCTIONS FOR TERMS */
 	function getCallbackForTerm( $object, $field_name, $request ){
 		//$taxonomy = 'inpursuit-' . $field_name;
+		$field_name = apply_filters( 'inpursuit_rest_callback_field', $field_name );
 		$terms = wp_get_object_terms( $object['id'], $field_name, array( 'fields' => 'names' ) );
 		if( is_array( $terms ) && count( $terms ) == 1 ){
 			return $terms[0];

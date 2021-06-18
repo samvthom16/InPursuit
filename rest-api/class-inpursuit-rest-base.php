@@ -16,6 +16,7 @@ class INPURSUIT_REST_BASE extends INPURSUIT_BASE{
 
 	// WRAPPER FUNCTION TO REGISTER REST FIELD
 	function registerRestField( $field_name, $get_callback, $update_callback = '__return_false', $schema = null ){
+		$field_name = apply_filters( 'inpursuit_rest_field', $field_name );
 		register_rest_field(
 			$this->getPostType(),
 			$field_name,

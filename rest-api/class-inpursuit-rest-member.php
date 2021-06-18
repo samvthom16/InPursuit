@@ -2,10 +2,20 @@
 
 class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 
+
+
 	function __construct(){
 
 		$post_type = INPURSUIT_MEMBERS_POST_TYPE;
 		$this->setPostType( $post_type );
+
+		$this->setFieldNames( array(
+			'inpursuit-status'			=> 'member_status',
+			'inpursuit-gender'			=> 'gender',
+			'inpursuit-group'				=> 'group',
+			'inpursuit-location'		=> 'location',
+			'inpursuit-profession'	=> 'profession'
+		) );
 
 		$this->setAdminUI( INPURSUIT_MEMBER_ADMIN_UI::getInstance() );
 
@@ -19,6 +29,8 @@ class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 
 		parent::__construct();
 	}
+
+
 
 	// SHOW EVENT RELATED DATA
 	// OPTION TO SHOW ONLY ATTENDANTS
@@ -115,7 +127,7 @@ class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 				}
 			}
 		);
-		
+
 	}
 
 }
