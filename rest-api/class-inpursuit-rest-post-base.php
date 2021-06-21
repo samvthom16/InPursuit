@@ -49,6 +49,7 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 
 	function updateCallbackForTerm( $value, $post, $field_name, $request, $object_type ){
 		//$taxonomy = 'inpursuit-' . $field_name;
+		$field_name = apply_filters( 'inpursuit_rest_callback_field', $field_name );
 		wp_set_object_terms( $post->ID, $value, $field_name );
 	}
 	/* REST CALLBACK FUNCTIONS FOR TERMS */
