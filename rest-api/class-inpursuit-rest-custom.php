@@ -3,10 +3,21 @@
 class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 
 	function getHistoryCallback( WP_REST_Request $args ){
-		$event_db = INPURSUIT_DB::getInstance();
-		$response_data = $event_db->getHistory( $args );
+		$event_db 			= INPURSUIT_DB::getInstance();
+		$response_data 	= $event_db->getHistory( $args );
 
-		$response = new WP_REST_Response( $response_data['data'] );
+		$data = array();
+
+		foreach( $response_data['data'] as $row ){
+			$item = array(
+				'title'		=> array( 'rendered' => $row->text ),
+				'date'		=> $row->post_date,
+				'type'		=> $row->type,
+			);
+			array_push( $data, $item );
+		}
+
+		$response = new WP_REST_Response( $data );
 		$response->header( 'X-WP-TotalPages', $response_data['total_pages'] );
 		$response->header( 'X-WP-Total', $response_data['total'] );
 

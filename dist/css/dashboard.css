@@ -321,7 +321,6 @@
 
 
 .thickbox-modal{
-	display: none;
 	position: fixed;
 	top: 0;
 	left: 0;
@@ -329,15 +328,49 @@
 	height: 100%;
 	z-index: 1000;
 	background: #0009;
+	display: none;
 }
+
+.thickbox-modal.open{
+	display: block;
+}
+
 .thickbox-modal-content{
 	position: absolute;
 	top: 50%;
 	left: 50%;
 	transform: translate( -50%, -50% );
 	width: 400px;
-	height: 400px;
+	height: 340px;
 	background: #fff;
 	border-radius: 5px;
 	padding: 20px;
+}
+
+
+
+.thickbox-modal-content header{
+	margin-left: -20px;
+	margin-right: -20px;
+	margin-top: -20px;
+	margin-bottom: 20px;
+	padding: 20px;
+	border-bottom: #eee solid 1px;
+	font-size: 24px;
+}
+
+.thickbox-modal-content header .close-btn{
+	position: absolute;
+	right: 10px;
+	background: none;
+	border: none;
+	font-size: 24px;
+	top: 10px;
+	cursor: pointer;
+}
+
+.thickbox-modal-content textarea{
+	width: 100%;
+	height: 200px;
+	border: #999 solid 1px;
 }

@@ -11,20 +11,9 @@ class INPURSUIT_DB extends INPURSUIT_DB_BASE{
 		$event_member_db = INPURSUIT_DB_EVENT_MEMBER_RELATION::getInstance();
 		$event_member_table = $event_member_db->getTable();
 
-		$query = "SELECT post_title as text, post_date, 'event' as type FROM $posts_table WHERE post_status='publish' AND post_type='$post_type'";
+		$query = "SELECT ID, post_title as text, '0' as post_id, post_author, post_date, 'event' as type FROM $posts_table WHERE post_status='publish' AND post_type='$post_type'";
 		if( $member_id ){
 			$query .= " AND ID IN (SELECT event_id FROM $event_member_table WHERE member_id=$member_id)";
-		}
-		return $query;
-	}
-
-	function commentsQuery( $member_id = 0 ){
-		require_once('class-inpursuit-db-comment.php');
-		$comment_table = INPURSUIT_DB_COMMENT::getInstance()->getTable();
-
-		$query = "SELECT comment as text, modified_on as post_date, 'comment' as type FROM $comment_table";
-		if( $member_id ){
-			$query .= " WHERE post_id=$member_id";
 		}
 		return $query;
 	}
@@ -39,7 +28,11 @@ class INPURSUIT_DB extends INPURSUIT_DB_BASE{
 		$member_id = isset( $args['id'] ) ? $args['id'] : 0;
 
 		$events_query = $this->eventsQuery( $member_id );
-		$comments_query = $this->commentsQuery( $member_id );
+
+		// COMMENTS QUERY
+		require_once('class-inpursuit-db-comment.php');
+		$comment_db = INPURSUIT_DB_COMMENT::getInstance();
+		$comments_query = $comment_db->getResultsQuery( $member_id );
 
 		$query = "$comments_query UNION ALL $events_query";
 
@@ -52,17 +45,9 @@ class INPURSUIT_DB extends INPURSUIT_DB_BASE{
 		$rows = $wpdb->get_results( $mainquery );
 		$total_count = $wpdb->get_var( $countquery );
 		$total_pages = ceil( $total_count/$per_page );
-		foreach( $rows as $row ){
-			$post = array(
-				'title'				=> array( 'rendered' => $row->text ),
-				'date'				=> $row->post_date,
-				'type'				=> $row->type,
-			);
-			array_push( $data, $post );
-		}
 
 		return array(
-			'data'				=> $data,
+			'data'				=> $rows,
 			'total'				=> $total_count,
 			'total_pages'	=> $total_pages
 		);

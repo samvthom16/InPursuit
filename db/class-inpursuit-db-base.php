@@ -23,7 +23,7 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 		// ALTER TABLE IN PRODUCTION
 		add_action( 'inpursuit_db_alter', array( $this, 'alter_table' ) );
 
-		
+
 
 	}
 
@@ -302,9 +302,34 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 		);
 	}
 
+	function getResultsQuery( $args ){
+		return '';
+	}
 
+	function _orderby_query(){
+		return " ORDER BY post_date DESC ";
+	}
 
+	function getResults( $args ){
+		global $wpdb;
 
+		$page = isset( $args[ 'page' ]  ) ? $args[ 'page' ] : 1;
+		$per_page = isset( $args[ 'per_page' ]  ) ? $args[ 'per_page' ] : 10;
+
+		$query = $this->getResultsQuery( $args );
+		$countquery = "SELECT count(*) FROM ( $query ) history";
+		$mainquery = $query . $this->_orderby_query() . $this->_limit_query( $page, $per_page );
+
+		$rows = $wpdb->get_results( $mainquery );
+		$total_count = $wpdb->get_var( $countquery );
+		$total_pages = ceil( $total_count/$per_page );
+
+		return array(
+			'data'				=> $rows,
+			'total'				=> $total_count,
+			'total_pages'	=> $total_pages
+		);
+	}
 
 
 

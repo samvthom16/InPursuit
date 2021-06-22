@@ -33,5 +33,16 @@ class INPURSUIT_DB_COMMENT extends INPURSUIT_DB_BASE{
 
 	}
 
+	function getResultsQuery( $args ){
+		$comment_table = $this->getTable();
+		$query = "SELECT ID, comment as text, post_id, user_id, modified_on as post_date, 'comment' as type FROM $comment_table";
+		if( isset( $args['member_id'] ) && $args['member_id'] ){
+			$query .= " WHERE post_id=$member_id";
+		}
+		return $query;
+	}
+
+
+
 }
 INPURSUIT_DB_COMMENT::getInstance();
