@@ -41,19 +41,23 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 	function getSettingsCallback( WP_REST_Request $args ){
 		global $inpursuit_vars;
 
+		$data = array(
+			'name' 				=> get_bloginfo( 'name' ),
+			//'taxonomies'	=> $taxonomies
+		);
+
 		$taxonomies = $inpursuit_vars['taxonomies'];
 		foreach( $taxonomies as $key => $taxonomy ){
-			$taxonomies[$key]['terms'] = get_terms( array(
+
+			//$fieldname = str_replace( "inpursuit-", "", $key );
+			$fieldname = apply_filters( 'inpursuit_rest_field', $key );
+
+			$data[ $fieldname ] = get_terms( array(
 				'taxonomy' 		=> $taxonomy['slug'],
 				'hide_empty' 	=> false,
 				'fields'			=> 'id=>name'
 			) );
 		}
-
-		$data = array(
-			'name' 				=> get_bloginfo( 'name' ),
-			'taxonomies'	=> $taxonomies
-		);
 
 		$response = new WP_REST_Response( $data );
 		return $response;

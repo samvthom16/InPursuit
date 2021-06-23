@@ -72,7 +72,8 @@ foreach( $terms as $term ){
 	array_push( $map_data['markers'], array(
 		'lat'		=> get_term_meta( $term->term_id, 'lat', true ),
 		'lng'		=> get_term_meta( $term->term_id, 'lng', true ),
-		'html'	=> $term->post_count
+		'html'	=> $term->post_count,
+		'link'	=> admin_url( 'edit.php?post_type=inpursuit-members&inpursuit-location=' . $term->slug )
 	) );
 }
 

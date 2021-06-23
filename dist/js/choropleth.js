@@ -131,6 +131,8 @@
 
 
 					if( selected_data[ feature.properties.NAME ] ['popup'] ){
+						//var link = "<a href=\""+"http://localhost/Webseite_Daten/diagramm_erstellen.php?diagramm=" +nr+"\""+">Grafik erstellen</a>";
+						//layer.bindPopup(link);
 						layer.bindPopup( selected_data[ feature.properties.NAME ] ['popup'], { maxWidth: 500, keepInView: true } );
 					}
 				}
@@ -180,8 +182,17 @@
 							// ADD MARKER BASED ON LAT AND LNG
 							var markerLayer = L.marker( [ marker['lat'], marker['lng'] ], { icon: icon } );
 
+							// ADD LINK FOR THE MARKER IF IT EXISTS
+							if( marker['link'] != undefined ){
+								markerLayer.on( 'click', function(e){
+									window.open( marker['link'] );
+								} );
+							}
+
 							// ADD POPUP FOR THE MARKER IF IT EXISTS
-							if( marker['popup'] != undefined ){ markerLayer.bindPopup( marker['popup'] ); }
+							if( marker['popup'] != undefined ){
+								markerLayer.bindPopup( marker['popup'] );
+							}
 
 							// ADD MARKER TO THE LIST OF MARKERS
 							//markersLayer.push( markerLayer );
