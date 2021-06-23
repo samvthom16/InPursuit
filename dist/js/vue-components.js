@@ -106,13 +106,17 @@ Vue.component( 'timeline', {
 
 Vue.component( 'timeline-event', {
 	props	: ['post'],
-  template: '<div class="content"><h4>{{post.date | moment }}<span class="spinner" :class="{active: loading}"></span></h4><p>{{ post.title.rendered }}</p><div class="post-terms"><span class="badge" :class="term.taxonomy" v-for="term in post.terms">{{ term.name }}</span></div><button v-if="post.type == \'comment\'" type="button" @click="deleteItem()" class="button delete-button">Delete</button></div>',
+  template: '<div class="content"><h4>{{post.date | moment }}<span class="spinner" :class="{active: loading}"></span></h4><p>{{ getTitle() }}</p><div class="post-terms"><span class="badge" :class="term.taxonomy" v-for="term in post.terms">{{ term.name }}</span></div><button v-if="post.type == \'comment\'" type="button" @click="deleteItem()" class="button delete-button">Delete</button></div>',
 	data	: function () {
     return {
 			loading	: false,
 		}
   },
 	methods: {
+		getTitle: function(){
+			if( this.post.type == 'comment' ) return this.post.text;
+			return this.post.title.rendered;
+		},
 		deleteItem: function(){
 			var component = this;
 			if( confirm( "Are you sure you want to delete this?" ) ){
@@ -163,8 +167,13 @@ Vue.component( 'latest-updates', {
 		getPosts: function(){
 			var component = this;
 
+			var url  = 'wp/v2/' + this.post_type;
+			if( this.post_type == 'inpursuit-events' ){
+				url  = 'inpursuit/v1/history';
+			}
+
 			API().request( {
-				url			: 'wp/v2/' + this.post_type,
+				url			: url,
 				params	: {
 					per_page: this.per_page
 				},
