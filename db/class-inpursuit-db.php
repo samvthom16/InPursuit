@@ -32,7 +32,7 @@ class INPURSUIT_DB extends INPURSUIT_DB_BASE{
 		// COMMENTS QUERY
 		require_once('class-inpursuit-db-comment.php');
 		$comment_db = INPURSUIT_DB_COMMENT::getInstance();
-		$comments_query = $comment_db->getResultsQuery( $member_id );
+		$comments_query = $comment_db->getResultsQuery( array( 'member_id' => $member_id ) );
 
 		$query = "$comments_query UNION ALL $events_query";
 
