@@ -213,6 +213,11 @@
 }
 
 /* The actual content */
+.inpursuit-timeline .container-right .content .delete-button{
+	position: absolute;
+	top: 20px;
+	right: 20px;
+}
 .inpursuit-timeline .container-right .content {
   padding: 20px;
   background-color: white;

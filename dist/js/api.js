@@ -41,6 +41,10 @@ var API = function(){
 			//console.log( url );
 			api_obj = axios.post( url, options.data, { headers: headers } );
 		}
+		else if( options.method == 'delete' ){
+			//console.log( headers );
+			api_obj = axios.delete( url, { data: options.data, headers: headers } );
+		}
 		else{
 			api_obj = axios.get( url, { headers: headers } );
 		}

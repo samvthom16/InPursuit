@@ -10,6 +10,7 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 
 		foreach( $response_data['data'] as $row ){
 			$item = array(
+				'id'			=> $row->ID,
 				'title'		=> array( 'rendered' => $row->text ),
 				'date'		=> $row->post_date,
 				'type'		=> $row->type,

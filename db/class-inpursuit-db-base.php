@@ -239,7 +239,7 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 	function delete_row( $ID ){
 		$table = $this->getTable();
 		$sql = "DELETE FROM $table WHERE ID = %d;";
-		$this->query( $this->prepare( $sql, $ID ) );
+		return $this->query( $this->prepare( $sql, $ID ) );
 	}
 
 	// DELETE MULTIPLE ROWS WITH MATCHING ID

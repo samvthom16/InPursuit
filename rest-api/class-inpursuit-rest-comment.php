@@ -108,7 +108,7 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
     $item = $this->prepare_item_for_database( $request );
 		$comment_db = INPURSUIT_DB_COMMENT::getInstance();
 		$insert_id = $comment_db->insert( $item );
-		
+
 		if( $insert_id ){
 			return new WP_REST_Response( $item, 200 );
 		}
@@ -156,15 +156,13 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
    * @return WP_Error|WP_REST_Response
    */
   public function delete_item( $request ) {
-    $item = $this->prepare_item_for_database( $request );
 
-    if ( function_exists( 'slug_some_function_to_delete_item' ) ) {
-      $deleted = slug_some_function_to_delete_item( $item );
-      if ( $deleted ) {
-        return new WP_REST_Response( true, 200 );
-      }
-    }
+		$comment_db = INPURSUIT_DB_COMMENT::getInstance();
 
+		if( $comment_db->delete_row( $request['id'] ) ){
+			return new WP_REST_Response( true, 200 );
+		}
+		
     return new WP_Error( 'cant-delete', __( 'message', 'text-domain' ), array( 'status' => 500 ) );
   }
 
@@ -215,7 +213,7 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
    * @return WP_Error|bool
    */
   public function delete_item_permissions_check( $request ) {
-    return $this->create_item_permissions_check( $request );
+		return $this->create_item_permissions_check( $request );
   }
 
   /**
