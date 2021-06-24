@@ -1,18 +1,12 @@
 new Vue({
   el: '#inpursuit-event-members',
+	mixins	: [ defaultComponent, memberComponent, paginationComponent ],
   data() {
 		return {
-			debounce: null,
-			searchQuery: '',
 			total_selected : 0,
-			total : 0,
-			posts: [],
 			selected_posts: [],
-			loading: false,
+			per_page : 6,
 			show_event_attendants: 0,
-			per_page: 21,
-			pages: [],
-			page: 1
 		}
   },
 	methods: {
@@ -54,35 +48,20 @@ new Vue({
 		getPosts: function(){
 			var component = this;
 			this.loading = true;
+
+			var params = component.getDefaultParams();
+			params.event_id = this.getEventID();
+			params.show_event_attendants = this.show_event_attendants;
+
 			API().request( {
 				url			: 'wp/v2/' + this.getMembersPostType() + '/',
-				//post_type		: this.getMembersPostType(),
-				params	: {
-					event_id 							: this.getEventID(),
-					search								: this.searchQuery,
-					show_event_attendants : this.show_event_attendants,
-					page									: this.page,
-					per_page							: this.per_page,
-					order									: 'asc',
-					orderby								: 'title'
-				},
+				params	: params,
 				callbackFn	: function( response ){
 
-					//console.log( response.headers['x-wp-total'] );
-					//console.log( response.headers['x-wp-totalpages'] );
-
-					component.pages = [];
-
-					for( var i=1; i<=response.headers['x-wp-totalpages']; i++ ){
-						component.pages.push( i );
-					}
-
-					component.total = response.headers['x-wp-total'];
+					component.resetPagination( response );
 
 					component.posts = response.data;
 					component.loading = false;
-
-					//component.total = posts.length;
 
 				}
 			} );
@@ -97,40 +76,8 @@ new Vue({
 			}
 			this.getPosts();
 		},
-		debounceSearch( event ) {
-      clearTimeout( this.debounce )
-      this.debounce = setTimeout(() => {
-        this.searchQuery = event.target.value;
-				this.getPosts();
-			}, 600)
-    }
 	},
-	created: function(){
-		this.getPosts();
-
-	},
-	watch: {
-		page( current_page ){
-			this.page = current_page;
-			this.getPosts();
-		}
-	},
-	filters: {
-	  subtitle: function( post ){
-			var gender 	= post['gender'],
-				age 			= post['age'],
-				meta 			= [],
-				subtitle 	= '';
-
-			if( gender.length ) meta.push( gender );
-			if( age.length ) meta.push( age + ' Years' );
-
-			if( meta.length ) subtitle = meta.join( ', ' );
-			return subtitle;
-		},
-	},
-
-});
+} );
 
 // DASHBOARD ELEMENTS
 new Vue( { el: '#inpursuit-latest-members' } );

@@ -1,5 +1,5 @@
 <p>
-	<input type="text" name="search" @input="debounceSearch" placeholder="Search" /><span class="spinner" :class="{active: loading}"></span>
+	<inpursuit-search-text :searchQuery="searchQuery"></inpursuit-search-text><span class="spinner" :class="{active: loading}"></span>
 	<label><input type="checkbox" v-model='show_event_attendants' @click="refreshPosts" />Attendants Only</label>
 </p>
 <ul class='posts-list'>
@@ -10,25 +10,13 @@
 			</div>
 			<div class="post-content">
 				<h3><a :href="post.edit_url" target="_blank">{{ post.title.rendered }}</a></h3>
-				<p v-if="post.age" class='meta'>{{ post | subtitle }}</p>
+				<p v-if="post.age" class='meta'>{{ genderAgeText(post) }}</p>
 			</div>
 		</div>
 		<div class="post-terms">
-			<span class="badge" :class="term.taxonomy" v-for="term in terms( post )">{{ term.name }}</span>
+			<!--span class="badge" :class="term.taxonomy" v-for="term in terms( post )">{{ term.name }}</span-->
+			<span class='badge inpursuit-location' v-if='post.location.length > 0'><span class='dashicons dashicons-location'></span>{{ locationText(post) }}</span>
 		</div>
   </li>
 </ul>
-<nav aria-label="Page navigation example" v-if="pages.length > 1">
-	<ul class="pagination">
-		<li class="page-item">
-			<button type="button" class="page-link" v-if="page != 1" @click="page--"> Previous </button>
-		</li>
-		<li class="page-item">
-			<button type="button" class="page-link" :class="{active: page === pageNumber}" v-for="pageNumber in pages" @click="page = pageNumber"> {{pageNumber}} </button>
-		</li>
-		<li class="page-item">
-			<button type="button" @click="page++" v-if="page < pages.length" class="page-link"> Next </button>
-		</li>
-	</ul>
-</nav>
-<p>Showing total of {{ total }} items</p>
+<inpursuit-page-pagination :total_pages="total_pages"></inpursuit-page-pagination>

@@ -193,4 +193,156 @@ Vue.component( 'latest-updates', {
 	created: function(){
 		this.getPosts();
 	},
-});
+} );
+
+var defaultComponent = {
+	filters: {
+	  moment: function (date) {
+			return moment(date).fromNow();
+	  }
+	}
+};
+
+var paginationComponent = {
+	data	: function(){
+		return {
+			posts				: [],
+			total 			: 0,
+			total_pages	: 0,
+			page				: 1,
+			loading			: false,
+			searchQuery	: "",
+			per_page		: 6
+		}
+	},
+	methods	: {
+		resetPagination: function( response ){
+			this.total_pages = response.headers['x-wp-totalpages'];
+			this.total = response.headers['x-wp-total'];
+		},
+		getPosts: function(){},
+		getDefaultParams: function(){
+			return {
+				search 		: this.searchQuery,
+				page			: this.page,
+				per_page	: this.per_page,
+				order			: 'asc',
+				orderby		: 'title'
+			}
+		}
+	},
+	watch: {
+		page( current_page ){
+			this.getPosts();
+		}
+	},
+	created: function(){
+		this.getPosts();
+	},
+};
+
+var memberComponent = {
+	methods: {
+		genderAgeText: function( post ){
+			var gender 	= post['gender'] != null ? post['gender'] : "",
+				age 			= post['age'] != null ? post['age'] : "",
+				meta 			= [],
+				subtitle 	= '';
+
+			if( gender.length ) meta.push( gender );
+			if( age.length ) meta.push( age + ' Years' );
+
+			if( meta.length ) subtitle = meta.join( ', ' );
+			return subtitle;
+		},
+		locationText: function( post ){
+			return post.location.join( ', ' );
+		}
+	}
+};
+
+Vue.component( 'inpursuit-search-text', {
+	props: ['searchQuery'],
+	template: '<input type="text" name="search" @input="debounceSearch" placeholder="Search" />',
+	data() {
+		return {
+			debounce: null,
+		}
+  },
+	methods: {
+		debounceSearch( event ) {
+			clearTimeout( this.debounce );
+      this.debounce = setTimeout(() => {
+				this.$parent.searchQuery = event.target.value;
+				this.$parent.getPosts();
+			}, 600);
+    }
+	}
+} );
+
+Vue.component( 'inpursuit-page-pagination', {
+	props: ['total_pages'],
+	template: '<nav aria-label="Page navigation example" v-if="getPages().length > 1">' +
+		'<ul class="inpursuit-pagination"><li class="page-item"><button type="button" class="page-link" v-if="$parent.page != 1" @click="$parent.page--"> Previous </button></li>' +
+		'<li class="page-item">' +
+		'<button type="button" class="page-link" :class="{active: $parent.page === pageNumber}" v-for="pageNumber in getPages()" @click="$parent.page = pageNumber"> {{pageNumber}} </button>' +
+		'</li>' +
+		'<li class="page-item">' +
+		'<button type="button" @click="$parent.page++" v-if="$parent.page < getPages().length" class="page-link"> Next </button>' +
+		'</li></ul><p class="inpursuit-text-muted" style="margin-top:0">Showing total of {{ $parent.total }} items</p></nav>',
+	methods: {
+		getPages: function(){
+			var pages = [];
+			for( var i=1; i<=this.total_pages; i++ ){
+				pages.push( i );
+			}
+			return pages;
+		}
+	}
+} );
+
+Vue.component( 'inpursuit-featured-image', {
+	props		: ['image_url'],
+	template: "<div class='inpursuit-featured-image'><img :src='image()' /></div>",
+	methods: {
+		image : function(){
+			var image_url = this.image_url;
+			return image_url;
+		}
+	}
+} );
+
+Vue.component( 'inpursuit-member-card', {
+	props		: ['post'],
+	mixins	: [ defaultComponent, memberComponent ],
+	template: "<div class='inpursuit-member-card'><inpursuit-featured-image :image_url='post.featured_image'></inpursuit-featured-image>" +
+	 	"<div><h3>{{ post.title.rendered }}</h3><p class='inpursuit-text-muted'>{{ genderAgeText(post) }}</p>" +
+		"<p class='text-left location-text' v-if='post.location.length > 0'><span class='dashicons dashicons-location'></span>{{ locationText(post) }}</p>" +
+		"<p class=''>Was added {{ post.date | moment }}</p></div></div>",
+	methods: {
+
+	}
+} );
+
+Vue.component( 'inpursuit-members-card', {
+	mixins	: [ defaultComponent, memberComponent, paginationComponent ],
+  template: '<div><p class="inpursuit-search-filters"><inpursuit-search-text :searchQuery="searchQuery"></inpursuit-search-text><span class="spinner" :class="{active: loading}"></span></p><div class="inpursuit-grid"><inpursuit-member-card :key="post.id" :post="post" v-for="post in posts"></inpursuit-member-card></div>' +
+		'<inpursuit-page-pagination :total_pages="total_pages"></inpursuit-page-pagination></div>',
+	methods: {
+		getPosts: function(){
+			var component = this;
+			component.loading = true;
+			var url  = 'wp/v2/inpursuit-members';
+
+			API().request( {
+				url			: url,
+				params	: component.getDefaultParams(),
+				callbackFn	: function( response ){
+					component.resetPagination( response );
+					component.posts = response.data;
+					component.loading = false;
+				}
+			} );
+		},
+	},
+} );

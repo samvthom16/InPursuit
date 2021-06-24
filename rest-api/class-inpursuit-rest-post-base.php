@@ -116,7 +116,7 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 		      $url = $img_arr[0];
 		      return $url;
 		    } else {
-		      return false;
+		      return plugins_url( "InPursuit/dist/images/default-profile.png" );
 		    }
 		  }
 		);

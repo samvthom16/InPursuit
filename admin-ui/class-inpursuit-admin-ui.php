@@ -11,6 +11,16 @@
 			add_action( 'wp_ajax_sp_combine_map_jsons', array( $this, 'combineMapJsons' ) );
     	add_action( 'wp_ajax_nopriv_sp_combine_map_jsons', array( $this, 'combineMapJsons' ) );
 
+			add_action( 'admin_menu', array( $this, 'adminMenu' ) );
+
+		}
+
+		function adminMenu(){
+			add_menu_page( "InPursuit", "InPursuit", "manage_options", "inpursuit", array( $this, 'displayMenuPage' ), 'dashicons-universal-access-alt', 1 );
+		}
+
+		function displayMenuPage( $r ){
+			include( 'templates/inpursuit.php' );
 		}
 
 		function setupDashboard(){
@@ -54,7 +64,7 @@
 		function getMapJsons(){
 	    $jsons = array(
 				'countries' => plugins_url( 'InPursuit/dist/js/map/countries.json' ) ,
-				'india' 		=> plugins_url( 'InPursuit/dist/js/map/india.json' ) 
+				'india' 		=> plugins_url( 'InPursuit/dist/js/map/india.json' )
 			);
 	    return apply_filters( 'inpursuit-map-jsons', $jsons );;
 	  }

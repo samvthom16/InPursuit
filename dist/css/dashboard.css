@@ -12,8 +12,8 @@
 }
 
 #inpursuit-event-members .posts-list{ display: grid; grid-template-columns: 1fr 1fr 1fr; grid-gap: 10px; }
-#inpursuit-event-members .spinner, #inpursuit-member-history .spinner{ float: none; }
-#inpursuit-event-members .spinner.active, #inpursuit-member-history .spinner.active { visibility: visible; }
+#inpursuit-event-members .spinner, #inpursuit-member-history .spinner, .inpursuit-search-filters .spinner{ float: none; }
+.spinner.active { visibility: visible; }
 
 @media( max-width: 960px ){
 	#inpursuit-event-members .posts-list{ grid-template-columns: 1fr 1fr; }
@@ -130,8 +130,10 @@
 	border-radius: 20px;
 }
 #inpursuit-event-members .selected-post-item .close-btn{ background: transparent; border: none; cursor: pointer; font-size: 24px; padding: 0 5px; }
-#inpursuit-event-members button.page-link { display: inline-block; }
-#inpursuit-event-members button.page-link {
+
+.inpursuit-pagination{ margin-bottom: 0; }
+.inpursuit-pagination button.page-link { display: inline-block; }
+.inpursuit-pagination button.page-link {
    color: #29b3ed;
    font-weight: 500;
 	 cursor: pointer;
@@ -140,8 +142,8 @@
 	 margin: 0 2px;
 	 font-size: 14px;
 }
-#inpursuit-event-members button.page-link.active{ background: #fff; color: #555; }
-#inpursuit-event-members .pagination .page-item{ display: inline-block; }
+.inpursuit-pagination button.page-link.active{ background: #fff; color: #555; }
+.inpursuit-pagination .page-item{ display: inline-block; }
 
 
 /* The actual timeline (the vertical ruler) */
@@ -379,3 +381,37 @@
 	height: 200px;
 	border: #999 solid 1px;
 }
+
+.inpursuit-grid{
+	display: grid;
+	grid-template-columns: 1fr 1fr 1fr;
+	grid-gap: 20px;
+}
+
+.inpursuit-member-card{
+	padding: 15px;
+	background: #fff;
+	display: grid;
+	grid-template-columns: 120px 1fr;
+	grid-gap: 15px;
+}
+
+.inpursuit-member-card h3{ margin-top: 0; margin-bottom: 5px; font-size: 1.5em; }
+
+
+.inpursuit-text-muted{ margin-top: 0; color: #999; }
+
+.inpursuit-member-card .location-text{ margin-left: -5px; }
+
+.inpursuit-featured-image{
+	width: 100%;
+	max-height: 120px;
+	margin: 0 auto;
+	overflow: hidden;
+}
+.inpursuit-featured-image img{
+	width: 100%;
+	height: auto;
+}
+
+.text-left{ text-align: left; }
