@@ -110,10 +110,12 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 			wp_enqueue_style( 'inpursuit-dashboard', plugins_url( 'InPursuit/dist/css/dashboard.css' ), array(), INPURSUIT_VERSION );
 			wp_enqueue_script( 'axios', 'https://unpkg.com/axios/dist/axios.min.js', array(), null, true );
 			wp_enqueue_script( 'vue', 'https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js', array(), null, true );
+			wp_enqueue_script( 'vue-router', 'https://unpkg.com/vue-router@2.0.0/dist/vue-router.js', array('vue'), null, true );
 			wp_enqueue_script( 'vue-dropdown', plugins_url( 'InPursuit/dist/js/vue-simple-search-dropdown.min.js' ), array( 'vue' ), null, true );
 			wp_enqueue_script( 'moment', plugins_url( 'InPursuit/dist/js/moment.js' ), array(), null, true);
 			wp_enqueue_script( 'inpursuit-api', plugins_url( 'InPursuit/dist/js/api.js' ), array( 'axios', 'vue' ), null, true);
-			wp_enqueue_script( 'inpursuit-vue', plugins_url( 'InPursuit/dist/js/vue-components.js' ), array( 'vue', 'moment', 'vue-dropdown' ), null, true);
+			wp_enqueue_script( 'vue-mixins', plugins_url( 'InPursuit/dist/js/mixins.js' ), array( 'vue' ), null, true );
+			wp_enqueue_script( 'inpursuit-vue', plugins_url( 'InPursuit/dist/js/vue-components.js' ), array( 'vue', 'moment', 'vue-dropdown', 'vue-router', 'vue-mixins' ), null, true);
 			wp_enqueue_script( 'inpursuit-main', plugins_url( 'InPursuit/dist/js/admin.js' ), array( 'axios', 'vue', 'moment', 'inpursuit-api', 'inpursuit-vue' ), null, true);
 
 			wp_localize_script( 'inpursuit-main', 'inpursuitSettings', array(

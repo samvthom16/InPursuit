@@ -53,6 +53,8 @@ new Vue({
 			params.event_id = this.getEventID();
 			params.show_event_attendants = this.show_event_attendants;
 
+			params = this.addFilterParams( params );
+
 			API().request( {
 				url			: component.getURL(),
 				params	: params,
@@ -80,7 +82,7 @@ new Vue({
 } );
 
 // DASHBOARD ELEMENTS
-new Vue( { el: '#inpursuit-latest-members' } );
+new Vue( { el: '#inpursuit-latest-members', router: router } );
 new Vue( { el: '#inpursuit-latest-events' } );
 // DASHBOARD ELEMENTS
 

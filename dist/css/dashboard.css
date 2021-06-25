@@ -168,7 +168,8 @@
   padding: 10px 40px;
   position: relative;
   background-color: inherit;
-  width: 80%;
+  width: calc(100% - 40px);
+
 }
 
 /* The circles on the timeline */
@@ -184,7 +185,8 @@
   z-index: 1;
 
 	font-family: dashicons;
-	font-size: 18px;
+	font-size: 24px;
+	line-height: 1.1;
 	color: #FF9F55;
 	padding: 5px;
 	text-align: center;
@@ -283,15 +285,15 @@
 }
 
 .participation-wrapper .single-chart {
-  width: 33%;
+  width: 100%;
   justify-content: space-around ;
 }
 
 .participation-wrapper .circular-chart {
   display: block;
   margin: 10px auto;
-  max-width: 80%;
-  max-height: 50px;
+  max-width: 100%;
+  max-height: 60px;
 }
 
 .participation-wrapper .circle-bg {
@@ -391,17 +393,24 @@
 .inpursuit-member-card{
 	padding: 15px;
 	background: #fff;
-	display: grid;
+
+
+}
+
+.inpursuit-member-title, .inpursuit-event-title{
 	grid-template-columns: 120px 1fr;
 	grid-gap: 15px;
+	display: grid;
 }
+
+.inpursuit-event-title{ grid-template-columns: 80px 1fr; }
 
 .inpursuit-member-card h3{ margin-top: 0; margin-bottom: 5px; font-size: 1.5em; }
 
 
 .inpursuit-text-muted{ margin-top: 0; color: #999; }
 
-.inpursuit-member-card .location-text{ margin-left: -5px; }
+.inpursuit-location-text{ margin-left: -5px; }
 
 .inpursuit-featured-image{
 	width: 100%;
@@ -424,4 +433,18 @@
 }
 .inpursuit-search-filters .dropdown .dropdown-input, .inpursuit-search-filters .dropdown .dropdown-content{
 	min-width: 150px !important;
+}
+
+.inpursuit-document{
+	background: #fff;
+	max-width: 800px;
+	margin: 0 auto;
+	padding: 20px;
+	border-radius: 5px;
+}
+
+.nav-tab-wrapper .nav-tab.router-link-active{
+	border-bottom: 1px solid #f0f0f1;
+	background: #f0f0f1;
+	color: #000;	
 }

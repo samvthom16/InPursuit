@@ -1,5 +1,7 @@
-<p>
-	<inpursuit-search-text :searchQuery="searchQuery"></inpursuit-search-text><span class="spinner" :class="{active: loading}"></span>
+<p class="inpursuit-search-filters">
+	<inpursuit-search-text :searchQuery="searchQuery"></inpursuit-search-text>
+	<inpursuit-dropdown v-for="term in filterTerms" :settings="settings" :slug="term.slug" :placeholder="term.label"></inpursuit-dropdown>
+	<span class="spinner" :class="{active: loading}"></span>
 	<label><input type="checkbox" v-model='show_event_attendants' @click="refreshPosts" />Attendants Only</label>
 </p>
 <ul class='posts-list'>
@@ -10,7 +12,7 @@
 			</div>
 			<div class="post-content">
 				<h3><a :href="post.edit_url" target="_blank">{{ post.title.rendered }}</a></h3>
-				<p v-if="post.age" class='meta'>{{ genderAgeText(post) }}</p>
+				<p class='inpursuit-text-muted'>{{ genderAgeText(post) }}</p>
 			</div>
 		</div>
 		<div class="post-terms">
