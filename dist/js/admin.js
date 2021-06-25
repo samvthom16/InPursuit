@@ -87,4 +87,4 @@ new Vue( { el: '#inpursuit-latest-events' } );
 // DASHBOARD ELEMENTS
 
 new Vue( { el: '#inpursuit-member-history' } );
-new Vue({ el: '#inpursuit-member-info' });
+new Vue( { el: '#inpursuit-member-info' } );

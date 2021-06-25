@@ -1,13 +1,6 @@
 Vue.use( Dropdown );
 Vue.use( VueRouter );
 
-var endpoints = {
-	'members' 	: 'wp/v2/inpursuit-members',
-	'events' 		:	'wp/v2/inpursuit-events',
-	'settings'	: 'inpursuit/v1/settings'
-};
-
-
 
 Vue.component( 'add-comment', {
 	template	: "<div><button type='button' class='button' @click='openForm()'>Add Comment</button><div class='thickbox-modal' :class='status'><div class='thickbox-modal-content'><header>Add Comment<button type='button' class='close-btn' @click='closeForm()'>&times;</button></header><p><textarea v-model='comment.comment'></textarea></p><p><button type='button' class='button' @click='saveForm()'>Submit</button><span class='spinner' :class='{active: loading}'></span></p></div></div></div>",
@@ -21,13 +14,13 @@ Vue.component( 'add-comment', {
 	},
 	methods	: {
 		getUrl: function(){
-			var url = 'inpursuit/v1/comments/';
+			var url = endpoints.comments;
 			if( this.comment_id ){
 				url += this.comment_id;
 			}
 			return url;
 		},
-		openForm	: function(){ console.log( this.post_id ); this.status = 'open'; },
+		openForm	: function(){ this.status = 'open'; },
 		closeForm	: function(){ this.status = 'closed'; },
 		saveForm	: function(){
 			var comment = this.comment;
@@ -51,7 +44,6 @@ Vue.component( 'add-comment', {
 						component.comment.comment = '';
 					}
 				} );
-
 			}
 		}
 	}
@@ -71,7 +63,7 @@ Vue.component( 'timeline', {
   },
 	methods: {
 		getUrl: function(){
-			var url = 'inpursuit/v1/history/'
+			var url = endpoints.history;
 			if( this.member_id ){
 				url += this.member_id;
 			}
@@ -117,6 +109,7 @@ Vue.component( 'timeline', {
 
 Vue.component( 'timeline-event', {
 	props	: ['post'],
+	mixins: [defaultComponent],
   template: '<div class="content"><h4>{{post.date | moment }}<span class="spinner" :class="{active: loading}"></span></h4><p>{{ getTitle() }}</p><div class="post-terms"><span class="badge" :class="term.taxonomy" v-for="term in post.terms">{{ term.name }}</span></div><button v-if="post.type == \'comment\'" type="button" @click="deleteItem()" class="button delete-button">Delete</button></div>',
 	data	: function () {
     return {
@@ -144,12 +137,7 @@ Vue.component( 'timeline-event', {
 			}
 		}
 	},
-	filters: {
-	  moment: function (date) {
-			return moment(date).fromNow();
-	  }
-	},
-});
+} );
 
 Vue.component( 'special-event', {
 	props	: ['title', 'value', 'slug'],
@@ -178,9 +166,9 @@ Vue.component( 'latest-updates', {
 		getPosts: function(){
 			var component = this;
 
-			var url  = 'wp/v2/' + this.post_type;
+			var url  = endpoints.members;
 			if( this.post_type == 'inpursuit-events' ){
-				url  = 'inpursuit/v1/history';
+				url  = endpoints.history;
 			}
 
 			API().request( {
@@ -282,6 +270,9 @@ Vue.component( 'inpursuit-dropdown', {
 		debounceCallback: function( option ){
 			if( option.id != undefined ){
 				this.$parent.filterTerms[ this.slug ]['value'] = option.id;
+
+				if( this.$parent.page != undefined ){ this.$parent.page = 1;}
+
 				this.$parent.getPosts();
 			}
 		},
@@ -308,7 +299,7 @@ var membersCard = Vue.component( 'inpursuit-members-card', {
 	mixins	: [ defaultComponent, paginationComponent, memberComponent ],
   template: '<div><p class="inpursuit-search-filters">' +
 		'<inpursuit-search-text :searchQuery="searchQuery"></inpursuit-search-text>' +
-		'<inpursuit-dropdown v-for="term in filterTerms" :settings="settings" :slug="term.slug" :placeholder="term.label"></inpursuit-dropdown>' +
+		'<inpursuit-dropdown v-for="term in filterTerms" :key="term.slug" :settings="settings" :slug="term.slug" :placeholder="term.label"></inpursuit-dropdown>' +
 		'<span class="spinner" :class="{active: loading}"></span></p><div class="inpursuit-grid"><inpursuit-member-card :key="post.id" :post="post" v-for="post in posts"></inpursuit-member-card></div>' +
 		'<p v-if="posts.length < 1">No information was found.</p>' +
 		'<inpursuit-page-pagination :total_pages="total_pages"></inpursuit-page-pagination></div>',
@@ -441,7 +432,20 @@ var memberEditLayout = Vue.component( 'inpursuit-member-edit', {
 	}
 } );
 
+
+var home = Vue.component( 'home', {
+	template: "<div>Home</div>",
+	created: function(){
+		this.$router.push( '/members' );
+	}
+} );
+
+
 var routes = [
+	{
+		path			: '/',
+		component	: home
+	},
 	{
 		path			: '/members',
 		component	: membersCard
@@ -464,5 +468,7 @@ var routes = [
 	},
 
 ];
+
+//this.$router.push({ path });
 
 var router = new VueRouter( { routes } );

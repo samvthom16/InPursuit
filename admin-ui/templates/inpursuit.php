@@ -5,6 +5,5 @@
 			<router-link class="nav-tab" to="/events">Events</router-link>
 		</h2>
 		<router-view></router-view>
-		<!--inpursuit-members-card></inpursuit-members-->
 	</div>
 </div>

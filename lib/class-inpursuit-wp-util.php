@@ -36,8 +36,23 @@ class INPURSUIT_WP_UTIL extends INPURSUIT_BASE{
 		return wp_get_object_terms( $post_id, $taxonomies );
 	}
 
-
+	function getTerms( $taxonomies, $args = array() ){
+		$args = wp_parse_args( $args ); // Parse $args in case its a query string.
+		if( !empty( $args[ 'post_types' ] ) ){
+			$args['post_types'] = (array) $args['post_types'];
+			add_filter( 'terms_clauses', 'wpse_filter_terms_by_cpt', 10, 3 );
+			function wpse_filter_terms_by_cpt( $pieces, $tax, $args ){
+				global $wpdb;
+				$pieces['fields'] .=", COUNT(*) as post_count " ;
+				$pieces['join'] .=" INNER JOIN $wpdb->term_relationships AS r ON r.term_taxonomy_id = tt.term_taxonomy_id
+																INNER JOIN $wpdb->posts AS p ON p.ID = r.object_id ";
+				$post_types_str = implode( ',', $args['post_types'] );
+				$pieces[ 'where' ].= $wpdb->prepare( " AND p.post_type IN(%s) GROUP BY t.term_id", $post_types_str );
+				remove_filter( current_filter(), __FUNCTION__ );
+				return $pieces;
+			}
+		}
+		return get_terms($taxonomies, $args);
+	}
 }
-
-
 INPURSUIT_WP_UTIL::getInstance();

@@ -53,6 +53,7 @@ class INPURSUIT_DB extends INPURSUIT_DB_BASE{
 		);
 	}
 
+	
 
 }
 

@@ -63,10 +63,66 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 		return $response;
 	}
 
+	function getMapCallback( WP_REST_Request $args ){
+
+		$map_data = array(
+			'markers' => array(),
+			"region-lines" => array(
+				'color'				=> "#08438c",
+				'opacity'			=> 0.5,
+				"hover_color"	=> '#FFFF00'
+			),
+			"map"	=> array(
+				"base_url" 		=> "https:\/\/server.arcgisonline.com\/ArcGIS\/rest\/services\/Canvas\/World_Light_Gray_Base\/MapServer\/tile\/{z}\/{y}\/{x}",
+				"attribution" => "InPursuit Dashboard Map",
+				"desktop" 		=> array( "zoom" => 4, "lat" => "23.2599", "lng" => "82.4126" ),
+				"tablet" 			=> array( "zoom" => 4, "lat" => "23.2599", "lng" => "82.4126" ),
+				"mobile" 			=> array( "zoom" => 4, "lat" => "23.2599", "lng" => "82.4126" ),
+			),
+			"json_url" => admin_url( 'admin-ajax.php?action=sp_combine_map_jsons' )
+		);
+
+		$wp_util = INPURSUIT_WP_UTIL::getInstance();
+		$terms = $wp_util->getTerms( 'inpursuit-location', array( 'hide_empty' => 0, 'post_types' => array( 'inpursuit-members' ), ) );
+
+		foreach( $terms as $term ){
+			$slug = $term->slug;
+			array_push( $map_data['markers'], array(
+				'lat'		=> get_term_meta( $term->term_id, 'lat', true ),
+				'lng'		=> get_term_meta( $term->term_id, 'lng', true ),
+				'html'	=> $term->post_count,
+				'link'	=> admin_url( "edit.php?post_type=inpursuit-members&inpursuit-location=$slug"  )
+			) );
+		}
+
+		$response = new WP_REST_Response( $map_data );
+		return $response;
+	}
+
+	function getRegionsCallback( WP_REST_Request $args ){
+
+		$admin_ui = INPURSUIT_ADMIN_UI::getInstance();
+
+		$data = array();
+
+		$jsons = $admin_ui->getMapJsons();
+		foreach( $jsons as $key => $json_file ){
+			$strJsonFileContents = file_get_contents( $json_file );
+
+			// Convert to array
+			$data[ $key ] = json_decode( $strJsonFileContents, true );
+		}
+
+		$response = new WP_REST_Response( $data );
+		return $response;
+	}
+
 	function addRestData(){
 		$this->registerRoute( 'history', array( $this, 'getHistoryCallback' ) );
 		$this->registerRoute( 'history/(?P<id>\d+)', array( $this, 'getHistoryCallback' ) );
 		$this->registerRoute( 'settings', array( $this, 'getSettingsCallback' ) );
+		$this->registerRoute( 'map', array( $this, 'getMapCallback' ) );
+		$this->registerRoute( 'regions', array( $this, 'getRegionsCallback' ) );
 	}
 
 

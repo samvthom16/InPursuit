@@ -57,7 +57,7 @@
 				wp_enqueue_script( 'leaflet', 'https://unpkg.com/leaflet@1.4.0/dist/leaflet.js', array( 'jquery' ), INPURSUIT_VERSION , true );
 		 	 	wp_enqueue_script( 'leaflet-marker', 'https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js', array( 'jquery', 'leaflet' ), INPURSUIT_VERSION , true );
 		 	 	wp_enqueue_script( 'leaflet-csv', plugins_url( 'InPursuit/dist/js/leaflet.geocsv.js' ), array( 'leaflet' ), INPURSUIT_VERSION , true );
-		 	 	wp_enqueue_script( 'sow-choropleth', plugins_url( 'InPursuit/dist/js/choropleth.js' ), array( 'jquery', 'leaflet-csv', 'leaflet-marker' ), INPURSUIT_VERSION , true );
+		 	 	wp_enqueue_script( 'sow-choropleth', plugins_url( 'InPursuit/dist/js/choropleth.js' ), array( 'jquery', 'leaflet-csv', 'leaflet-marker', 'inpursuit-main' ), INPURSUIT_VERSION , true );
 			}
 		}
 
