@@ -330,7 +330,7 @@ var eventsList = Vue.component( 'inpursuit-events-list', {
 		'<inpursuit-page-pagination :total_pages="total_pages"></inpursuit-page-pagination></div>',
 	data(){
 		return {
-			per_page	: 2,
+			per_page	: 9,
 			orderby		: 'date',
 			order			: 'desc'
 		}
