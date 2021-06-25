@@ -415,3 +415,13 @@
 }
 
 .text-left{ text-align: left; }
+
+.inpursuit-search-filters{ margin-bottom: 20px; }
+
+.inpursuit-search-filters .dropdown{
+	display: inline-block !important;
+	margin-left: 10px !important;
+}
+.inpursuit-search-filters .dropdown .dropdown-input, .inpursuit-search-filters .dropdown .dropdown-content{
+	min-width: 150px !important;
+}

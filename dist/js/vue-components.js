@@ -1,3 +1,5 @@
+Vue.use( Dropdown );
+
 Vue.component( 'add-comment', {
 	template	: "<div><button type='button' class='button' @click='openForm()'>Add Comment</button><div class='thickbox-modal' :class='status'><div class='thickbox-modal-content'><header>Add Comment<button type='button' class='close-btn' @click='closeForm()'>&times;</button></header><p><textarea v-model='comment.comment'></textarea></p><p><button type='button' class='button' @click='saveForm()'>Submit</button><span class='spinner' :class='{active: loading}'></span></p></div></div></div>",
 	props			: [ 'comment_id', 'post_id' ],
@@ -178,9 +180,7 @@ Vue.component( 'latest-updates', {
 					per_page: this.per_page
 				},
 				callbackFn	: function( response ){
-					//component.total = response.headers['x-wp-total'];
 					component.posts = response.data;
-					//console.log( component.posts );
 				}
 			} );
 		},
@@ -200,7 +200,7 @@ var defaultComponent = {
 	  moment: function (date) {
 			return moment(date).fromNow();
 	  }
-	}
+	},
 };
 
 var paginationComponent = {
@@ -212,7 +212,8 @@ var paginationComponent = {
 			page				: 1,
 			loading			: false,
 			searchQuery	: "",
-			per_page		: 6
+			per_page		: 6,
+			settings		: {}
 		}
 	},
 	methods	: {
@@ -229,6 +230,15 @@ var paginationComponent = {
 				order			: 'asc',
 				orderby		: 'title'
 			}
+		},
+		getSettings: function(){
+			var component = this;
+			API().request( {
+				url			: 'inpursuit/v1/settings',
+				callbackFn	: function( response ){
+					component.settings = response.data;
+				}
+			} );
 		}
 	},
 	watch: {
@@ -238,10 +248,32 @@ var paginationComponent = {
 	},
 	created: function(){
 		this.getPosts();
+		this.getSettings();
 	},
 };
 
 var memberComponent = {
+	data(){
+		return {
+			filterTerms: {
+				gender : {
+					slug	: 'gender',
+					label	: 'All Gender',
+					value	: ''
+				},
+				member_status : {
+					slug	: 'member_status',
+					label	: 'All Status',
+					value	: ''
+				},
+				location : {
+					slug	: 'location',
+					label	: 'All Location',
+					value	: ''
+				}
+			},
+		}
+	},
 	methods: {
 		genderAgeText: function( post ){
 			var gender 	= post['gender'] != null ? post['gender'] : "",
@@ -257,26 +289,49 @@ var memberComponent = {
 		},
 		locationText: function( post ){
 			return post.location.join( ', ' );
+		},
+		getURL: function(){
+			return 'wp/v2/inpursuit-members/';
+		},
+		// ADD TAXONOMY FILTERS TO PARAMS
+		addFilterParams: function( params ){
+			for( var slug in this.filterTerms ){
+				var term_id = this.filterTerms[slug].value;
+				if( term_id != undefined ){
+					params[ slug ] = term_id;
+				}
+			}
+			return params;
 		}
 	}
 };
 
-Vue.component( 'inpursuit-search-text', {
-	props: ['searchQuery'],
-	template: '<input type="text" name="search" @input="debounceSearch" placeholder="Search" />',
-	data() {
+var debounceComponent = {
+	data(){
 		return {
 			debounce: null,
 		}
-  },
+	},
 	methods: {
-		debounceSearch( event ) {
+		debounceCallback: function( event ){},
+		debounceEvent		: function( event ) {
 			clearTimeout( this.debounce );
       this.debounce = setTimeout(() => {
-				this.$parent.searchQuery = event.target.value;
-				this.$parent.getPosts();
+				this.debounceCallback( event );
 			}, 600);
     }
+	}
+};
+
+Vue.component( 'inpursuit-search-text', {
+	props		: ['searchQuery'],
+	mixins	: [debounceComponent],
+	template: '<input type="text" name="search" @input="debounceEvent" placeholder="Search" />',
+	methods	: {
+		debounceCallback: function( event ){
+			this.$parent.searchQuery = event.target.value;
+			this.$parent.getPosts();
+		},
 	}
 } );
 
@@ -303,13 +358,7 @@ Vue.component( 'inpursuit-page-pagination', {
 
 Vue.component( 'inpursuit-featured-image', {
 	props		: ['image_url'],
-	template: "<div class='inpursuit-featured-image'><img :src='image()' /></div>",
-	methods: {
-		image : function(){
-			var image_url = this.image_url;
-			return image_url;
-		}
-	}
+	template: "<div class='inpursuit-featured-image'><img :src='image_url' /></div>",
 } );
 
 Vue.component( 'inpursuit-member-card', {
@@ -324,19 +373,54 @@ Vue.component( 'inpursuit-member-card', {
 	}
 } );
 
+Vue.component( 'inpursuit-dropdown', {
+	props		: ['settings', 'placeholder', 'slug'],
+	mixins	: [debounceComponent],
+	template: '<Dropdown :options="getOptions()" :disabled="false" v-on:selected="debounceEvent" :maxItem="10" :placeholder="placeholder"></Dropdown>',
+	methods	: {
+		debounceCallback: function( option ){
+			if( option.id != undefined ){
+				this.$parent.filterTerms[ this.slug ]['value'] = option.id;
+				this.$parent.getPosts();
+			}
+		},
+		getOptions: function(){
+			var options = [{
+				id 	: '0',
+				name: this.placeholder
+			}];
+			var slug = this.slug;
+			if( this.settings[slug] != undefined ){
+				for( var key in this.settings[slug] ){
+					options.push( {
+						'id'		: key,
+						'name'	: this.settings[slug][key]
+					} );
+				}
+			}
+			return options;
+		}
+	}
+} );
+
 Vue.component( 'inpursuit-members-card', {
 	mixins	: [ defaultComponent, memberComponent, paginationComponent ],
-  template: '<div><p class="inpursuit-search-filters"><inpursuit-search-text :searchQuery="searchQuery"></inpursuit-search-text><span class="spinner" :class="{active: loading}"></span></p><div class="inpursuit-grid"><inpursuit-member-card :key="post.id" :post="post" v-for="post in posts"></inpursuit-member-card></div>' +
+  template: '<div><p class="inpursuit-search-filters">' +
+		'<inpursuit-search-text :searchQuery="searchQuery"></inpursuit-search-text><inpursuit-dropdown v-for="term in filterTerms" :settings="settings" :slug="term.slug" :placeholder="term.label"></inpursuit-dropdown>' +
+		'<span class="spinner" :class="{active: loading}"></span></p><div class="inpursuit-grid"><inpursuit-member-card :key="post.id" :post="post" v-for="post in posts"></inpursuit-member-card></div>' +
 		'<inpursuit-page-pagination :total_pages="total_pages"></inpursuit-page-pagination></div>',
 	methods: {
 		getPosts: function(){
-			var component = this;
+			var component = this,
+				params			= component.getDefaultParams();
+
 			component.loading = true;
-			var url  = 'wp/v2/inpursuit-members';
+
+			params = this.addFilterParams( params );
 
 			API().request( {
-				url			: url,
-				params	: component.getDefaultParams(),
+				url					: component.getURL(),
+				params			: params,
 				callbackFn	: function( response ){
 					component.resetPagination( response );
 					component.posts = response.data;
@@ -344,5 +428,6 @@ Vue.component( 'inpursuit-members-card', {
 				}
 			} );
 		},
+
 	},
 } );

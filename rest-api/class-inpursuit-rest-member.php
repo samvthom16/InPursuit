@@ -43,6 +43,19 @@ class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 			$member_db = INPURSUIT_DB_MEMBER::getInstance();
 			$args['post__in'] = $member_db->getIDsForEvent( $event_id );
 		}
+
+		$args['tax_query'] = array();
+		$field_names = $this->getFieldNames();
+		foreach( $field_names as $taxonomy => $new_field ){
+			$term_id = $request->get_param( $new_field );
+			if( $term_id ){
+				array_push( $args['tax_query'], array(
+					'taxonomy' => $taxonomy,
+					'terms'    => $term_id,
+				) );
+			}
+		}
+
 		return $args;
 	}
 

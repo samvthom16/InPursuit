@@ -54,7 +54,7 @@ new Vue({
 			params.show_event_attendants = this.show_event_attendants;
 
 			API().request( {
-				url			: 'wp/v2/' + this.getMembersPostType() + '/',
+				url			: component.getURL(),
 				params	: params,
 				callbackFn	: function( response ){
 
