@@ -15,7 +15,9 @@
 		'class-inpursuit-base.php',
 		'lib/class-inpursuit-wp-util.php',
 		'db/db.php',
-		'admin-ui/admin-ui.php'
+		'admin-ui/admin-ui.php',
+		'lib/class-inpursuit-greetings.php',
+		'lib/class-inpursuit-email.php',
 	);
 
 	foreach( $inc_files as $inc_file ){
