@@ -65,7 +65,7 @@ Vue.component( 'timeline', {
 		getUrl: function(){
 			var url = endpoints.history;
 			if( this.member_id ){
-				url += this.member_id;
+				url += '/' + this.member_id;
 			}
 			return url;
 		},
@@ -270,9 +270,7 @@ Vue.component( 'inpursuit-dropdown', {
 		debounceCallback: function( option ){
 			if( option.id != undefined ){
 				this.$parent.filterTerms[ this.slug ]['value'] = option.id;
-
 				if( this.$parent.page != undefined ){ this.$parent.page = 1;}
-
 				this.$parent.getPosts();
 			}
 		},
@@ -295,38 +293,9 @@ Vue.component( 'inpursuit-dropdown', {
 	}
 } );
 
-var membersCard = Vue.component( 'inpursuit-members-card', {
-	mixins	: [ defaultComponent, paginationComponent, memberComponent ],
-  template: '<div><p class="inpursuit-search-filters">' +
-		'<inpursuit-search-text :searchQuery="searchQuery"></inpursuit-search-text>' +
-		'<inpursuit-dropdown v-for="term in filterTerms" :key="term.slug" :settings="settings" :slug="term.slug" :placeholder="term.label"></inpursuit-dropdown>' +
-		'<span class="spinner" :class="{active: loading}"></span></p><div class="inpursuit-grid"><inpursuit-member-card :key="post.id" :post="post" v-for="post in posts"></inpursuit-member-card></div>' +
-		'<p v-if="posts.length < 1">No information was found.</p>' +
-		'<inpursuit-page-pagination :total_pages="total_pages"></inpursuit-page-pagination></div>',
-	data(){
-		return {
-			per_page: 9
-		}
-	},
-} );
 
-var eventsList = Vue.component( 'inpursuit-events-list', {
-	mixins	: [ defaultComponent, paginationComponent, eventComponent ],
-  template: '<div><p class="inpursuit-search-filters">' +
-		'<inpursuit-search-text :searchQuery="searchQuery"></inpursuit-search-text>' +
-		'<inpursuit-dropdown v-for="term in filterTerms" :settings="settings" :slug="term.slug" :placeholder="term.label"></inpursuit-dropdown>' +
-		'<span class="spinner" :class="{active: loading}"></span></p>' +
-		'<div class="inpursuit-grid"><inpursuit-event-card :key="post.id" :post="post" v-for="post in posts"></inpursuit-event-card></div>' +
-		'<p v-if="posts.length < 1">No information was found.</p>' +
-		'<inpursuit-page-pagination :total_pages="total_pages"></inpursuit-page-pagination></div>',
-	data(){
-		return {
-			per_page	: 9,
-			orderby		: 'date',
-			order			: 'desc'
-		}
-	}
-} );
+
+
 
 Vue.component( 'inpursuit-event-card', {
 	props		: ['post'],
@@ -433,26 +402,81 @@ var memberEditLayout = Vue.component( 'inpursuit-member-edit', {
 } );
 
 
-var home = Vue.component( 'home', {
-	template: "<div>Home</div>",
-	created: function(){
-		this.$router.push( '/members' );
-	}
-} );
+
+var TEMPLATES = function(){
+	var self = this;
+
+	self.home = Vue.component( 'home', {
+		template: "<div>Hello World</div>",
+		created: function(){
+			this.$router.push( '/dashboard' );
+		}
+	} );
+
+	self.dashboard = Vue.component( 'template-dashboard', {
+		template: "<div class='inpursuit-grid3' style='margin-top: 30px;'>" +
+		"<div class='inpursuit-dashboard'><h4 class='inpursuit-dashboard-title'>Recent Members</h4><latest-updates per_page='5' post_type='inpursuit-members'></latest-updates></div>" +
+		"<div class='inpursuit-dashboard'><h4 class='inpursuit-dashboard-title'>Recent Events</h4><latest-updates per_page='5' post_type='inpursuit-events'></latest-updates></div>" +
+		"<div class='inpursuit-dashboard'><h4 class='inpursuit-dashboard-title'>Demographic</h4><inpursuit-choropleth-map></inpursuit-choropleth-map></div>"	+
+		"</div>",
+
+	} );
+
+	self.members = Vue.component( 'template-members', {
+		mixins	: [ defaultComponent, paginationComponent, memberComponent ],
+	  template: '<div><p class="inpursuit-search-filters">' +
+			'<inpursuit-search-text :searchQuery="searchQuery"></inpursuit-search-text>' +
+			'<inpursuit-dropdown v-for="term in filterTerms" :key="term.slug" :settings="settings" :slug="term.slug" :placeholder="term.label"></inpursuit-dropdown>' +
+			'<span class="spinner" :class="{active: loading}"></span></p><div class="inpursuit-grid"><inpursuit-member-card :key="post.id" :post="post" v-for="post in posts"></inpursuit-member-card></div>' +
+			'<p v-if="posts.length < 1">No information was found.</p>' +
+			'<inpursuit-page-pagination :total_pages="total_pages"></inpursuit-page-pagination></div>',
+		data(){
+			return {
+				per_page: 9
+			}
+		},
+	} );
+
+	self.events = Vue.component( 'template-events', {
+		mixins	: [ defaultComponent, paginationComponent, eventComponent ],
+	  template: '<div><p class="inpursuit-search-filters">' +
+			'<inpursuit-search-text :searchQuery="searchQuery"></inpursuit-search-text>' +
+			'<inpursuit-dropdown v-for="term in filterTerms" :settings="settings" :slug="term.slug" :placeholder="term.label"></inpursuit-dropdown>' +
+			'<span class="spinner" :class="{active: loading}"></span></p>' +
+			'<div class="inpursuit-grid"><inpursuit-event-card :key="post.id" :post="post" v-for="post in posts"></inpursuit-event-card></div>' +
+			'<p v-if="posts.length < 1">No information was found.</p>' +
+			'<inpursuit-page-pagination :total_pages="total_pages"></inpursuit-page-pagination></div>',
+		data(){
+			return {
+				per_page	: 9,
+				orderby		: 'date',
+				order			: 'desc'
+			}
+		}
+	} );
+
+	return self;
+};
+
+var templates = TEMPLATES();
 
 
 var routes = [
 	{
 		path			: '/',
-		component	: home
+		component	: templates.home
+	},
+	{
+		path			: '/dashboard',
+		component	: templates.dashboard
 	},
 	{
 		path			: '/members',
-		component	: membersCard
+		component	: templates.members
 	},
 	{
 		path			: '/events',
-		component	: eventsList
+		component	: templates.events
 	},
 	{
 		path			: '/members-:id',
@@ -462,13 +486,12 @@ var routes = [
 		path			: '/members-:id/edit',
 		component	: memberEditLayout
 	},
+	/*
 	{
 		path: '/blog/:slug+',
 		//component: templates.single_post
 	},
-
+	*/
 ];
-
-//this.$router.push({ path });
 
 var router = new VueRouter( { routes } );

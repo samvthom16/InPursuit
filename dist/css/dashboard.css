@@ -6,15 +6,19 @@
 #inpursuit-misc .orbit-form-group{ padding-top: 0; margin-top: -3px; }
 #inpursuit-misc select, #inpursuit-misc input[type=date]{ line-height: 1.7; min-height: 0; font-size: 12px; width: 100%; }
 
+.inpursuit-grid3{ display: grid; grid-template-columns: 1fr 1fr 1fr; grid-gap: 10px; }
+
 #inpursuit-event-members .posts-list{ display: grid; grid-template-columns: 1fr 1fr 1fr; grid-gap: 10px; }
 #inpursuit-event-members .spinner,#inpursuit-member-history .spinner,.inpursuit-search-filters .spinner{ float: none; }
 .spinner.active { visibility: visible; }
 
 @media( max-width: 960px ){
 	#inpursuit-event-members .posts-list{ grid-template-columns: 1fr 1fr; }
+	.inpursuit-grid3{ grid-template-columns: 1fr 1fr;  }
 }
 @media( max-width: 500px ){
 	#inpursuit-event-members .posts-list{ grid-template-columns: 1fr; }
+	.inpursuit-grid3{ grid-template-columns: 1fr;  }
 }
 
 #inpursuit-event-members .post-item{ border: #eee solid 1px; padding: 10px; background: #EEEEEE; }
@@ -173,3 +177,17 @@
 .inpursuit-document{ background: #fff; max-width: 800px; margin: 0 auto; padding: 20px; border-radius: 5px; }
 
 .nav-tab-wrapper .nav-tab.router-link-active{ border-bottom: 1px solid #f0f0f1; background: #f0f0f1; color: #000; }
+
+.inpursuit-dashboard{
+	background: #fff;
+	padding: 15px;
+	border: #999 solid 1px;
+}
+
+.inpursuit-dashboard-title{
+	border-bottom: #999 solid 1px;
+	margin: -15px -15px 15px;
+	padding: 10px 15px;
+	font-size: 14px;
+	color: #1d2327;
+}

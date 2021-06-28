@@ -6,10 +6,10 @@
 			add_action( 'wp_dashboard_setup', array( $this, 'setupDashboard' ), 9999 );
 
 			/* ENQUEUE SCRIPTS ON ADMIN DASHBOARD */
-			add_action( 'admin_enqueue_scripts', array( $this, 'assets') );
+			//add_action( 'admin_enqueue_scripts', array( $this, 'assets') );
 
-			add_action( 'wp_ajax_sp_combine_map_jsons', array( $this, 'combineMapJsons' ) );
-    	add_action( 'wp_ajax_nopriv_sp_combine_map_jsons', array( $this, 'combineMapJsons' ) );
+			//add_action( 'wp_ajax_sp_combine_map_jsons', array( $this, 'combineMapJsons' ) );
+    	//add_action( 'wp_ajax_nopriv_sp_combine_map_jsons', array( $this, 'combineMapJsons' ) );
 
 			add_action( 'admin_menu', array( $this, 'adminMenu' ) );
 
@@ -45,21 +45,22 @@
 
 		}
 
+		/*
 		function assets( $hook ) {
 			if( $hook == 'index.php' ){
-				wp_enqueue_style( 'inpursuit-dashboard', plugins_url( 'InPursuit/dist/css/dashboard.css' ), array(), INPURSUIT_VERSION );
+				//wp_enqueue_style( 'inpursuit-dashboard', plugins_url( 'InPursuit/dist/css/dashboard.css' ), array(), INPURSUIT_VERSION );
 
-				wp_enqueue_style( 'choropleth', plugins_url( 'InPursuit/dist/css/choropleth.css' ), array(), INPURSUIT_VERSION );
-				wp_enqueue_style( 'leaflet', 'https://unpkg.com/leaflet@1.4.0/dist/leaflet.css', array(), INPURSUIT_VERSION );
-		 	 	wp_enqueue_style( 'leaflet-marker', 'https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css', array(), INPURSUIT_VERSION );
-		 	 	wp_enqueue_style( 'leaflet-marker-default', 'https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css', array(), INPURSUIT_VERSION );
 
-				wp_enqueue_script( 'leaflet', 'https://unpkg.com/leaflet@1.4.0/dist/leaflet.js', array( 'jquery' ), INPURSUIT_VERSION , true );
-		 	 	wp_enqueue_script( 'leaflet-marker', 'https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js', array( 'jquery', 'leaflet' ), INPURSUIT_VERSION , true );
-		 	 	wp_enqueue_script( 'leaflet-csv', plugins_url( 'InPursuit/dist/js/leaflet.geocsv.js' ), array( 'leaflet' ), INPURSUIT_VERSION , true );
-		 	 	wp_enqueue_script( 'sow-choropleth', plugins_url( 'InPursuit/dist/js/choropleth.js' ), array( 'jquery', 'leaflet-csv', 'leaflet-marker', 'inpursuit-main' ), INPURSUIT_VERSION , true );
+				//wp_enqueue_style( 'leaflet', 'https://unpkg.com/leaflet@1.4.0/dist/leaflet.css', array(), INPURSUIT_VERSION );
+		 	 	//wp_enqueue_style( 'leaflet-marker', 'https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css', array(), INPURSUIT_VERSION );
+		 	 	//wp_enqueue_style( 'leaflet-marker-default', 'https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css', array(), INPURSUIT_VERSION );
+
+				//wp_enqueue_script( 'leaflet', 'https://unpkg.com/leaflet@1.4.0/dist/leaflet.js', array( 'jquery' ), INPURSUIT_VERSION , true );
+		 	 	//wp_enqueue_script( 'leaflet-marker', 'https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js', array( 'jquery', 'leaflet' ), INPURSUIT_VERSION , true );
+
 			}
 		}
+		*/
 
 		function getMapJsons(){
 	    $jsons = array(
