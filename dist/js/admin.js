@@ -56,26 +56,19 @@ new Vue({
 			params = this.addFilterParams( params );
 
 			API().request( {
-				url			: component.getURL(),
-				params	: params,
+				url					: endpoints.members,
+				params			: params,
 				callbackFn	: function( response ){
-
 					component.resetPagination( response );
-
 					component.posts = response.data;
 					component.loading = false;
-
 				}
 			} );
 		},
 
 		refreshPosts( event ){
-			if( event.target.checked ){
-				this.show_event_attendants = 1;
-			}
-			else{
-				this.show_event_attendants = 0;
-			}
+			if( event.target.checked ){ this.show_event_attendants = 1; }
+			else{ this.show_event_attendants = 0; }
 			this.getPosts();
 		},
 	},
