@@ -123,20 +123,21 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 
 			// JS FOR CHOROPLETH
 			wp_enqueue_script( 'leaflet-csv', plugins_url( 'InPursuit/dist/js/leaflet.geocsv.js' ), array( 'jquery' ), INPURSUIT_VERSION , true );
-			wp_enqueue_script( 'choropleth', plugins_url( 'InPursuit/dist/js/choropleth.js' ), array( 'leaflet-csv' ), INPURSUIT_VERSION , true );
+			//wp_enqueue_script( 'choropleth', plugins_url( 'InPursuit/dist/js/choropleth.js' ), array( 'leaflet-csv' ), INPURSUIT_VERSION , true );
 
 			//wp_enqueue_script( 'vue-dropdown', plugins_url( 'InPursuit/dist/js/vue-simple-search-dropdown.min.js' ), array( 'vue-related' ), null, true );
 			//wp_enqueue_script( 'moment', plugins_url( 'InPursuit/dist/js/moment.js' ), array(), null, true);
-			wp_enqueue_script( 'inpursuit-api', plugins_url( 'InPursuit/dist/js/api.js' ), array(  'vue-related' ), null, true);
-			wp_enqueue_script( 'vue-mixins', plugins_url( 'InPursuit/dist/js/mixins.js' ), array( 'vue-related' ), null, true );
-			wp_enqueue_script( 'inpursuit-vue', plugins_url( 'InPursuit/dist/js/vue-components.js' ), array( 'vue-related', 'vue-mixins' ), null, true);
+
+			//wp_enqueue_script( 'inpursuit-api', plugins_url( 'InPursuit/dist/js/api.js' ), array(  'vue-related' ), null, true);
+			//wp_enqueue_script( 'vue-mixins', plugins_url( 'InPursuit/dist/js/mixins.js' ), array( 'vue-related' ), null, true );
+			//wp_enqueue_script( 'inpursuit-vue', plugins_url( 'InPursuit/dist/js/vue-components.js' ), array( 'vue-related', 'vue-mixins' ), null, true);
 
 
-			wp_enqueue_script( 'inpursuit-main', plugins_url( 'InPursuit/dist/js/admin.js' ), array( 'vue-related', 'inpursuit-api', 'inpursuit-vue', 'choropleth' ), null, true);
+			//wp_enqueue_script( 'inpursuit-main', plugins_url( 'InPursuit/dist/js/admin.js' ), array( 'vue-related', 'inpursuit-api', 'inpursuit-vue', 'choropleth' ), null, true);
 
+			wp_enqueue_script( 'inpursuit-app', plugins_url( 'InPursuit/dist/js/app-final.js' ), array( 'vue-related', 'leaflet-csv' ), null, true);
 
-
-			wp_localize_script( 'inpursuit-main', 'inpursuitSettings', array(
+			wp_localize_script( 'inpursuit-app', 'inpursuitSettings', array(
     		'root' => esc_url_raw( rest_url() ),
     		'nonce' => wp_create_nonce( 'wp_rest' )
 			) );

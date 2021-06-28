@@ -59,3 +59,5 @@ var API = function(){
 
 	return self;
 };
+
+module.exports = API();
