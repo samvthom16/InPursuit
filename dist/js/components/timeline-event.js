@@ -1,4 +1,5 @@
 var defaultMixin = require( '../mixins/default.js' );
+var API = require( '../lib/api.js' );
 
 module.exports = Vue.component( 'timeline-event', {
 	props	: ['post'],
@@ -19,7 +20,7 @@ module.exports = Vue.component( 'timeline-event', {
 			if( confirm( "Are you sure you want to delete this?" ) ){
 				var url = "inpursuit/v1/comments/" + this.post.id;
 				component.loading = true;
-				API().request( {
+				API.request( {
 					method	: 'delete',
 					url			: url,
 					callbackFn	: function( response ){

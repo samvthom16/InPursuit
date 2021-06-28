@@ -33,8 +33,29 @@ module.exports = {
 			if( meta.length ) subtitle = meta.join( ', ' );
 			return subtitle;
 		},
-		locationText: function( post ){
-			return post.location.join( ', ' );
-		},
+		listTermsHTML: function(){
+
+			var html = "<ul class='post-terms'>";
+
+			if( this.post.location != undefined && this.post.location.length > 0 ){
+				html += "<li class='badge inpursuit-location'>" + this.post.location.join( ', ' ) + "</li>";
+			}
+
+			if( this.post.group != undefined && this.post.group.length > 0 ){
+				html += "<li class='badge inpursuit-group'>" + this.post.group.join( ', ' ) + "</li>";
+			}
+
+			if( this.post.profession != undefined && this.post.profession.length > 0 ){
+				html += "<li class='badge inpursuit-profession'>" + this.post.profession.join( ', ' ) + "</li>";
+			}
+
+			var genderAge = this.genderAgeText( this.post );
+			if( genderAge.length > 0 ){
+				html += "<li class='badge inpursuit-gender'>" + genderAge + "</li>";
+			}
+
+			html += "</ul>";
+			return html;
+		}
 	}
 };

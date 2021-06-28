@@ -1,5 +1,5 @@
 var endpoints = require( '../lib/endpoints.js' );
-var API = require( '../api.js' );
+var API = require( '../lib/api.js' );
 
 module.exports = {
 	data	: function(){

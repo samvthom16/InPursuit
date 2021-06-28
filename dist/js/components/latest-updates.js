@@ -2,7 +2,7 @@ var endpoints = require( '../lib/endpoints.js' );
 
 var defaultMixin = require( '../mixins/default.js' );
 
-var API = require( '../api.js' );
+var API = require( '../lib/api.js' );
 
 module.exports = Vue.component( 'latest-updates', {
 	props		: [ 'per_page', 'post_type' ],

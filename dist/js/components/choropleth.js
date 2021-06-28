@@ -1,4 +1,4 @@
-var API = require( '../api.js' );
+var API = require( '../lib/api.js' );
 
 var endpoints = require( '../lib/endpoints.js' );
 

@@ -1,3 +1,6 @@
+var API = require( '../lib/api.js' );
+var endpoints = require( '../lib/endpoints.js' );
+
 module.exports = Vue.component( 'timeline', {
 	props	: ['member_id', 'per_page'],
   template: '<div><add-comment :comment_id="0" :post_id="member_id"></add-comment><div class="inpursuit-timeline" style="margin-top:20px;margin-left: 20px;"><div class="container-right" :class="post.type" v-for="post in posts"><timeline-event :post="post"></timeline-event></div></div><p><span class="spinner" :class="{active: loading}"></span></p><p v-if="page < total_pages"><button type="button" class="button" @click="page++">Load More</button></p></div>',
@@ -22,7 +25,7 @@ module.exports = Vue.component( 'timeline', {
 			var component = this;
 			this.loading = true;
 
-			API().request( {
+			API.request( {
 				url			: this.getUrl(),
 				params	: {
 					page			: this.page,

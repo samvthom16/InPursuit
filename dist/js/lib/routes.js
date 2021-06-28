@@ -1,31 +1,33 @@
-var routes = [
+module.exports = [
 	{
 		path			: '/',
-		component	: require( './pages/home.js' )
+		component	: require( '../pages/home.js' )
 	},
 
 	{
 		path			: '/dashboard',
-		component	: require( './pages/dashboard.js' )
+		component	: require( '../pages/dashboard.js' )
 	},
 	{
 		path			: '/members',
-		component	: require( './pages/members.js' )
+		component	: require( '../pages/members.js' )
+	},
+	{
+		path			: '/members/:id',
+		component	: require( '../pages/member-single.js' )
 	},
 	{
 		path			: '/events',
-		component	: require( './pages/events.js' )
+		component	: require( '../pages/events.js' )
+	},
+	{
+		path			: '/events/:id',
+		component	: require( '../pages/event-single.js' )
 	},
 	/*
-	{
-		path			: '/members/:id',
-		component	: memberLayout
-	},
 	{
 		path			: '/members-:id/edit',
 		component	: memberEditLayout
 	},
 	*/
 ];
-
-module.exports = routes;
