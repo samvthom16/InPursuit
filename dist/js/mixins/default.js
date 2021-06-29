@@ -15,13 +15,22 @@ module.exports = {
 	},
 	methods: {
 		getSettings: function(){
-			var component = this;
-			API.request( {
-				url					: endpoints.settings,
-				callbackFn	: function( response ){
-					component.settings = response.data;
-				}
-			} );
-		}
+			return window['inpursuit_settings'];
+		},
+		getTermName: function( field, term_id ){
+			var settings = this.getSettings();
+			if( settings != undefined && settings[ field ] && settings[ field ][ term_id ] ){
+				return settings[ field ][ term_id ];
+			}
+			return '';
+		},
+		listTermNames: function( field, term_id_arr ){
+			var names = [];
+			for( var index in term_id_arr ){
+				var term_name = this.getTermName( field, term_id_arr[index] );
+				names.push( term_name );
+			}
+			return names;
+		},
 	}
 };

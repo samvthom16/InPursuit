@@ -1,3 +1,4 @@
+<!--
 <p class="inpursuit-search-filters">
 	<inpursuit-search-text :searchQuery="searchQuery"></inpursuit-search-text>
 	<inpursuit-dropdown v-for="term in filterTerms" :settings="settings" :slug="term.slug" :placeholder="term.label"></inpursuit-dropdown>
@@ -16,9 +17,10 @@
 			</div>
 		</div>
 		<div class="post-terms">
-			<!--span class="badge" :class="term.taxonomy" v-for="term in terms( post )">{{ term.name }}</span-->
 			<span class='badge inpursuit-location' v-if='post.location.length > 0'><span class='dashicons dashicons-location'></span>{{ locationText(post) }}</span>
 		</div>
   </li>
 </ul>
 <inpursuit-page-pagination :total_pages="total_pages"></inpursuit-page-pagination>
+
+-->

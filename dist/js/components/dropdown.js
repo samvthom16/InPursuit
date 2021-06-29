@@ -1,8 +1,9 @@
 var debounceMixin = require( '../mixins/debounce.js' );
+var defaultMixin = require( '../mixins/default.js' );
 
 module.exports = Vue.component( 'inpursuit-dropdown', {
 	props		: ['settings', 'placeholder', 'slug'],
-	mixins	: [debounceMixin],
+	mixins	: [ defaultMixin, debounceMixin ],
 	template: '<Dropdown :options="getOptions()" :disabled="false" v-on:selected="debounceEvent" :maxItem="10" :placeholder="placeholder"></Dropdown>',
 	methods	: {
 		debounceCallback: function( option ){
@@ -17,12 +18,14 @@ module.exports = Vue.component( 'inpursuit-dropdown', {
 				id 	: '0',
 				name: this.placeholder
 			}];
-			var slug = this.slug;
-			if( this.settings[slug] != undefined ){
-				for( var key in this.settings[slug] ){
+			var slug 		= this.slug,
+				settings 	= this.getSettings();
+
+			if( settings[slug] != undefined ){
+				for( var key in settings[slug] ){
 					options.push( {
 						'id'		: key,
-						'name'	: this.settings[slug][key]
+						'name'	: settings[slug][key]
 					} );
 				}
 			}

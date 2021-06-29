@@ -17,6 +17,10 @@ module.exports = [
 		component	: require( '../pages/member-single.js' )
 	},
 	{
+		path			: '/members/:id/edit',
+		component	: require( '../pages/member-single-edit.js' )
+	},
+	{
 		path			: '/events',
 		component	: require( '../pages/events.js' )
 	},
@@ -24,10 +28,8 @@ module.exports = [
 		path			: '/events/:id',
 		component	: require( '../pages/event-single.js' )
 	},
-	/*
 	{
-		path			: '/members-:id/edit',
-		component	: memberEditLayout
+		path			: '/events/:id/edit',
+		component	: require( '../pages/event-single-edit.js' )
 	},
-	*/
 ];

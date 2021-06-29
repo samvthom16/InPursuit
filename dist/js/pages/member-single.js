@@ -7,11 +7,12 @@ module.exports = Vue.component( 'inpursuit-member', {
 	mixins	: [ defaultMixin, memberMixin ],
 	template: "<div style='max-width:800px;margin-top:30px;'>" +
 		"<p><router-link to='/members'>&#8592;List Of Members</router-link></p>" +
-		"<div class='inpursuit-document' style='margin-bottom:30px;'>" +
+		"<div v-if='post.title' class='inpursuit-document' style='margin-bottom:30px;'>" +
 		"<div class='inpursuit-member-title'><inpursuit-featured-image :image_url='post.featured_image'></inpursuit-featured-image>" +
-		"<div><h1 v-if='post.title'>{{ post.title.rendered }}</h1><p class='inpursuit-text-muted'>{{ post.member_status }}</p>" +
+		"<div><h1 v-if='post.title'>{{ post.title.rendered }}</h1>" +
+		"<div v-html='subtitleHTML()'></div>" +
 		"<div v-html='listTermsHTML()'></div>" +
-		"<a :href='post.edit_url'>Edit</a>" + 
+		"<router-link :to='editLink()'>Edit</router-link>" +
 		//"<inpursuit-actions :edit_link='editLink()' delete='1'></inpursuit-actions>" +
 		"</div></div>" +
 		"</div><timeline :member_id='post_id' per_page='10'></timeline></div>",
@@ -33,7 +34,7 @@ module.exports = Vue.component( 'inpursuit-member', {
 			} );
 		},
 		editLink: function(){
-			return 'members-' + this.post_id + '/edit';
+			return '/members/' + this.post_id + '/edit';
 		}
 	},
 	created: function(){
