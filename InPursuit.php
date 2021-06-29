@@ -17,7 +17,7 @@
 		'db/db.php',
 		'admin-ui/admin-ui.php',
 		'lib/class-inpursuit-greetings.php',
-		'lib/class-inpursuit-email.php',
+		'lib/class-inpursuit-mailer.php',
 	);
 
 	foreach( $inc_files as $inc_file ){

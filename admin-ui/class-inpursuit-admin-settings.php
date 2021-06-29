@@ -157,7 +157,7 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 		$setting_args = [
 			[
 				'page-slug' 	=> 'inpursuit-email-templates',
-				'setting-name' 	=> 'inpursuit_settings_bday_template',
+				'setting-name' 	=> 'inpursuit_settings_template_birthday',
 			    'type-args' =>  [
 					             'type' => 'string',
 					             'sanitize_callback' => 'sanitize_textarea_field',
@@ -167,7 +167,7 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 
 			[
 				'page-slug' 	=> 'inpursuit-email-templates',
-				'setting-name' 	=> 'inpursuit_settings_marriage_template',
+				'setting-name' 	=> 'inpursuit_settings_template_wedding',
 			    'type-args' =>  [
 					             'type' => 'string',
 					             'sanitize_callback' => 'sanitize_textarea_field',
@@ -215,24 +215,24 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 
 		$settings_fields_args = [
 			[
-				'setting-name' => 'inpursuit_settings_bday_template', 
+				'setting-name' => 'inpursuit_settings_template_birthday', 
 				'field-title'  => 'Birthday Email Template', 
 				'field-callback' =>	[$this, 'textareaFieldCb'], 
 				'page-slug'	   => 'inpursuit-email-templates', 
 				'section-id'   => 'inpursuit_email_template_section',
 				'field-args' => [
-							 	 'label_for' => 'inpursuit_settings_bday_template',
+							 	 'label_for' => 'inpursuit_settings_template_birthday',
 							    ],	
 			],
 
 			[
-				'setting-name' => 'inpursuit_settings_marriage_template', 
+				'setting-name' => 'inpursuit_settings_template_wedding', 
 				'field-title'  => 'Marriage Anniversary Email Template', 
 				'field-callback' =>	[$this, 'textareaFieldCb'], 
 				'page-slug'	   => 'inpursuit-email-templates', 
 				'section-id'   => 'inpursuit_email_template_section',
 				'field-args' => [
-							 	 'label_for' => 'inpursuit_settings_marriage_template',
+							 	 'label_for' => 'inpursuit_settings_template_wedding',
 							    ],	
 			],
 

@@ -151,7 +151,7 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 			'inpursuit-location'=> 'dashicons-admin-site',
 			'inpursuit-status' 	=> 'dashicons-performance',
 			'inpursuit-gender' 	=> 'dashicons-admin-users',
-			'inpursuit-group'	 	=> 'dashicons-networking'
+			'inpursuit-group'	=> 'dashicons-networking'
 		);
 		if( isset( $icons[ $slug ] ) ) return $icons[ $slug ];
 		return 'dashicons-admin-tools';
