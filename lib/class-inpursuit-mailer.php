@@ -19,17 +19,17 @@ class INPURSUIT_MAILER extends INPURSUIT_BASE {
         //schedule daily cron job for greetings notification
         if(!wp_next_scheduled( 'inpursuit_daily_greeting' )){
         
-            $time = get_option('inpursuit_settings_cron_time');
+            $settings_time = get_option('inpursuit_settings_cron_time');
 
-            if($time == '') {
+            if($settings_time == '') {
                 $timestamp = current_time( 'timestamp' );
             } else {
-                $date_time = date('d-m-Y') . ' ' .$time;  
-                $dt = DateTime::createFromFormat('d-m-Y H:i:s', $date_time);
-                $timestamp =  $dt->getTimestamp();  
+                $date_time = date('Y-m-d') . ' ' .$settings_time . ' +05:30';
+                $dt = new DateTime($date_time);
+                $timestamp = $dt->getTimestamp();
             }
             
-            wp_schedule_event( current_time( 'timestamp' ), 'daily', 'inpursuit_daily_greeting' );
+            wp_schedule_event( $timestamp, 'daily', 'inpursuit_daily_greeting' );
         }
 
     }
