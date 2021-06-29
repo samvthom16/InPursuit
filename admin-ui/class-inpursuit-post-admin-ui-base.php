@@ -5,6 +5,7 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 	var $post_type;
 	var $meta_boxes;
 	var $taxonomies_dropdown;
+	var $metafields;
 
 	function __construct(){
 
@@ -39,6 +40,47 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 			return $is_enabled;
 		}, 10, 2);
 
+		add_action( 'save_post', array( $this, 'savePost' ), 10, 3 );
+
+		// REMOVE AUTHOR COLUMN
+		add_filter('manage_' . $this->getPostType() . '_posts_columns', function ( $columns ) {
+    	unset( $columns['author'] );
+			return $columns;
+		} );
+
+		if ( is_admin() ){
+			add_action( 'restrict_manage_posts', function( $post_type ){
+
+				if( $post_type == $this->getPostType() ){
+
+					$taxonomies = $this->getTaxonomiesForDropdown();
+
+					foreach( $taxonomies as $slug => $title ){
+
+						$terms = get_terms( array(
+							'taxonomy' 		=> $slug,
+							'hide_empty' 	=> true,
+						) );
+
+						if( count( $terms ) ){
+							_e( "<select name='$slug'>" );
+							_e( "<option value=''>All $title</option>" );
+							foreach( $terms as $term ){
+								$current_v = isset( $_GET[ $slug ] ) ? $_GET[ $slug ] : '';
+								printf(
+									'<option value="%s"%s>%s</option>',
+									$term->slug,
+									$term->slug == $current_v? ' selected="selected"':'',
+									$term->name
+								);
+							}
+							_e( "</select>" );
+						}
+					}
+				}
+			} );
+		}
+
 	}
 
 	function getPostType(){ return $this->post_type; }
@@ -50,6 +92,9 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 	function getTaxonomiesForDropdown(){ return $this->taxonomies_dropdown; }
 	function setTaxonomiesForDropdown( $taxonomies_dropdown ){ $this->taxonomies_dropdown = $taxonomies_dropdown; }
 
+	function getMetaFields(){ return $this->metafields; }
+	function setMetaFields( $metafields ){ $this->metafields = $metafields; }
+
 	function removeMetaBoxes(){
 		$taxonomies = $this->getTaxonomiesForDropdown();
 		if( is_array( $taxonomies ) && count( $taxonomies ) ){
@@ -57,24 +102,51 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 				remove_meta_box( $slug . 'div', $this->getPostType(), 'side' );
 			}
 		}
+		remove_meta_box( 'authordiv', $this->getPostType(), 'normal' );
 	}
 
-	function assets( $hook ) {
-		global $post_type;
-		if( $post_type == $this->post_type ){
-			
-			wp_enqueue_style( 'inpursuit-admin', plugins_url( 'InPursuit/dist/css/admin.css' ), array(), INPURSUIT_VERSION );
-			wp_enqueue_script( 'axios', 'https://unpkg.com/axios/dist/axios.min.js', array(), null, true );
-			wp_enqueue_script( 'vue', 'https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js', array(), null, true );
-			wp_enqueue_script( 'moment', plugins_url( 'InPursuit/dist/js/moment.js' ), array(), null, true);
-  		wp_enqueue_script( 'inpursuit-main', plugins_url( 'InPursuit/dist/js/admin-main.js' ), array( 'axios', 'vue', 'moment' ), null, true);
+	function savePost( $post_id, $post, $update ){}
 
-			wp_localize_script( 'inpursuit-main', 'inpursuitSettings', array(
+	function assets( $hook ) {
+
+		//print_r( $hook );
+
+		global $post_type;
+		//if( $post_type == $this->post_type ){
+
+			// CSS FOR CHOROPLETH MAP
+			wp_enqueue_style( 'choropleth', plugins_url( 'InPursuit/dist/css/choropleth.css' ), array(), INPURSUIT_VERSION );
+
+			wp_enqueue_style( 'inpursuit-dashboard', plugins_url( 'InPursuit/dist/css/dashboard.css' ), array(), INPURSUIT_VERSION );
+
+			//wp_enqueue_script( 'axios', 'https://unpkg.com/axios/dist/axios.min.js', array(), null, true );
+			//wp_enqueue_script( 'vue', 'https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js', array(), null, true );
+			//wp_enqueue_script( 'vue-router', 'https://unpkg.com/vue-router@2.0.0/dist/vue-router.js', array('vue'), null, true );
+
+			wp_enqueue_script( 'vue-related', plugins_url( 'InPursuit/dist/js/vue-related.js' ), array(), null, true );
+
+			// JS FOR CHOROPLETH
+			wp_enqueue_script( 'leaflet-csv', plugins_url( 'InPursuit/dist/js/leaflet.geocsv.js' ), array( 'jquery' ), INPURSUIT_VERSION , true );
+			//wp_enqueue_script( 'choropleth', plugins_url( 'InPursuit/dist/js/choropleth.js' ), array( 'leaflet-csv' ), INPURSUIT_VERSION , true );
+
+			//wp_enqueue_script( 'vue-dropdown', plugins_url( 'InPursuit/dist/js/vue-simple-search-dropdown.min.js' ), array( 'vue-related' ), null, true );
+			//wp_enqueue_script( 'moment', plugins_url( 'InPursuit/dist/js/moment.js' ), array(), null, true);
+
+			//wp_enqueue_script( 'inpursuit-api', plugins_url( 'InPursuit/dist/js/api.js' ), array(  'vue-related' ), null, true);
+			//wp_enqueue_script( 'vue-mixins', plugins_url( 'InPursuit/dist/js/mixins.js' ), array( 'vue-related' ), null, true );
+			//wp_enqueue_script( 'inpursuit-vue', plugins_url( 'InPursuit/dist/js/vue-components.js' ), array( 'vue-related', 'vue-mixins' ), null, true);
+
+
+			//wp_enqueue_script( 'inpursuit-main', plugins_url( 'InPursuit/dist/js/admin.js' ), array( 'vue-related', 'inpursuit-api', 'inpursuit-vue', 'choropleth' ), null, true);
+
+			wp_enqueue_script( 'inpursuit-app', plugins_url( 'InPursuit/dist/js/app-final.js' ), array( 'vue-related', 'leaflet-csv' ), null, true);
+
+			wp_localize_script( 'inpursuit-app', 'inpursuitSettings', array(
     		'root' => esc_url_raw( rest_url() ),
     		'nonce' => wp_create_nonce( 'wp_rest' )
 			) );
 
-		}
+		//}
 	}
 
 

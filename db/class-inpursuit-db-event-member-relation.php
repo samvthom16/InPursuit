@@ -36,14 +36,6 @@ class INPURSUIT_DB_EVENT_MEMBER_RELATION extends INPURSUIT_DB_BASE{
 
 	}
 
-	function sanitize( $data ){
-		$relationData = array(
-			'menu_rank' 	=> isset( $data['menu_rank'] ) ? absint( $data['menu_rank'] ) : 0,
-			'page_id'			=> absint( $data['page_id'] ),
-			'question_id'	=> absint( $data['question_id'] ),
-		);
-		return $relationData;
-	}
 }
 
 INPURSUIT_DB_EVENT_MEMBER_RELATION::getInstance();

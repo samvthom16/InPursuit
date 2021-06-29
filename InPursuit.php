@@ -2,20 +2,25 @@
 	/*
     Plugin Name: InPursuit
     Plugin URI: https://sputznik.com
+
     Description:
     Author: Samuel Thomas
-    Version: 1.0.0
+    Version: 1.0.1
     Author URI: https://sputznik.com
     */
 
 
 	define( 'INPURSUIT_VERSION', time() );
+	define( 'INPURSUIT_MEMBERS_POST_TYPE', 'inpursuit-members' );
+	define( 'INPURSUIT_EVENTS_POST_TYPE', 'inpursuit-events' );
 
 	$inc_files = array(
 		'class-inpursuit-base.php',
 		'lib/class-inpursuit-wp-util.php',
 		'db/db.php',
 		'admin-ui/admin-ui.php',
+		'rest-api/rest-api.php',
+		'rest-authentication/rest-authentication.php',
 		'lib/class-inpursuit-greetings.php',
 		'lib/class-inpursuit-mailer.php',
 	);
@@ -26,10 +31,10 @@
 
 
 	/* PUSH INTO THE GLOBAL VARS OF ORBIT TAXNOMIES */
-	add_filter( 'orbit_taxonomy_vars', function( $taxonomies ){
+	add_filter( 'inpursuit_taxonomy_vars', function( $taxonomies ){
 
-		$members_post_type = 'inpursuit-members';
-		$events_post_type = 'inpursuit-events';
+		$members_post_type = INPURSUIT_MEMBERS_POST_TYPE;
+		$events_post_type = INPURSUIT_EVENTS_POST_TYPE;
 
 		$taxonomies['inpursuit-gender']	= array(
 			'label'				=> 'Gender',
@@ -83,19 +88,11 @@
 	}
 
 
-
-
-
-
-
-
-	/*
 	add_action( 'init', function(){
-		if ( strpos( current_location(), '/inpursuit-members/' ) != false ) {
-			status_header( 404 );
-    	nocache_headers();
-			wp_redirect( home_url('/') );
+		/*
+		if( !is_user_logged_in() || !is_admin() ){
+			wp_redirect( admin_url() );
 			exit;
 		}
+		*/
 	} );
-	*/

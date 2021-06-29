@@ -7,8 +7,7 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 
 	private $table;
 	private $table_slug;
-	private $post_type_options;
-	private $post_type;
+
 
 	function __construct(){
 
@@ -24,17 +23,13 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 		// ALTER TABLE IN PRODUCTION
 		add_action( 'inpursuit_db_alter', array( $this, 'alter_table' ) );
 
-		add_action( 'init', array( $this, 'registerPostType' ) );
+
 
 	}
 
 
 	/* GETTER AND SETTER FUNCTIONS */
-	function setPostTypeOptions( $post_type_options ){ $this->post_type_options = $post_type_options; }
-	function getPostTypeOptions(){ return $this->post_type_options; }
 
-	function setPostType( $post_type ){ $this->post_type = $post_type; }
-	function getPostType(){ return $this->post_type; }
 
 	function setTable( $table ){ $this->table = $table; }
 	function getTable(){ return $this->table; }
@@ -45,32 +40,6 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 		return $wpdb->prefix.'ip_';
 	}
 
-	/*
-	function getResponseDB(){
-		require_once( 'class-space-db-response.php' );
-		return SPACE_DB_RESPONSE::getInstance();
-	}
-	function getPageQuestionRelationDB(){
-		require_once('class-space-db-page-question-relation.php');
-		return SPACE_DB_PAGE_QUESTION_RELATION::getInstance();
-	}
-	function getPageDB(){
-		require_once('class-space-db-page.php');
-		return SPACE_DB_PAGE::getInstance();
-	}
-	function getQuestionDB(){
-		require_once('class-space-db-question.php');
-		return SPACE_DB_QUESTION::getInstance();
-	}
-	function getChoiceDB(){
-		require_once('class-space-db-choice.php');
-		return SPACE_DB_CHOICE::getInstance();
-	}
-	function getGuestDB(){
-		require_once('class-space-db-guest.php');
-		return SPACE_DB_GUEST::getInstance();
-	}
-	*/
 
 	/* GETTER AND SETTER FUNCTIONS */
 
@@ -270,7 +239,7 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 	function delete_row( $ID ){
 		$table = $this->getTable();
 		$sql = "DELETE FROM $table WHERE ID = %d;";
-		$this->query( $this->prepare( $sql, $ID ) );
+		return $this->query( $this->prepare( $sql, $ID ) );
 	}
 
 	// DELETE MULTIPLE ROWS WITH MATCHING ID
@@ -333,29 +302,35 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 		);
 	}
 
-	function registerPostType(){
-		$options = $this->getPostTypeOptions();
-		if( is_array( $options ) && count( $options ) && isset( $options['slug'] ) ){
-			$args = array(
-				'labels'        => $this->_labelsArray( $options ),
-				'description'   => $options['description'],
-				'public'        => true,
-				'menu_icon'			=> $options['menu_icon'],
-				'supports'			=> $options['supports'],
-				'show_in_rest'	=> true
-			);
-			register_post_type( $options['slug'], $args );
-		}
+	function getResultsQuery( $args ){
+		return '';
 	}
 
-	function registerTaxonomy(){
-		//$taxonomies = $this->getTaxonomies();
-
+	function _orderby_query(){
+		return " ORDER BY post_date DESC ";
 	}
 
-	function getAllTermsForPost( $post_id ){
-		$taxonomies = get_object_taxonomies( $this->getPostType() );
-		return wp_get_object_terms( $post_id, $taxonomies );
+	function getResults( $args ){
+		global $wpdb;
+
+		$page = isset( $args[ 'page' ]  ) ? $args[ 'page' ] : 1;
+		$per_page = isset( $args[ 'per_page' ]  ) ? $args[ 'per_page' ] : 10;
+
+		$query = $this->getResultsQuery( $args );
+		$countquery = "SELECT count(*) FROM ( $query ) history";
+		$mainquery = $query . $this->_orderby_query() . $this->_limit_query( $page, $per_page );
+
+		$rows = $wpdb->get_results( $mainquery );
+		$total_count = $wpdb->get_var( $countquery );
+		$total_pages = ceil( $total_count/$per_page );
+
+		return array(
+			'data'				=> $rows,
+			'total'				=> $total_count,
+			'total_pages'	=> $total_pages
+		);
 	}
+
+
 
 }
