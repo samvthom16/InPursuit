@@ -20,7 +20,7 @@ module.exports = Vue.component( 'inpursuit-member-edit', {
 			],
 			metafields		: [
 				{ field: 'email', label: 'Email Address' },
-				{ field: 'phone', label: 'Phone Number' }, 
+				{ field: 'phone', label: 'Phone Number' },
 			],
 			labels : {
 				title: "Full Name",
@@ -28,4 +28,13 @@ module.exports = Vue.component( 'inpursuit-member-edit', {
 			}
 		}
 	},
+	methods: {
+		init: function(){
+			this.post.gender = '';
+			this.post.member_status = '';
+			this.post.location = '';
+			this.post.profession = [];
+			this.post.group = [];
+		}
+	}
 } );

@@ -13,6 +13,10 @@ module.exports = [
 		component	: require( '../pages/members.js' )
 	},
 	{
+		path			: '/members/new',
+		component	: require( '../pages/member-new.js' )
+	},
+	{
 		path			: '/members/:id',
 		component	: require( '../pages/member-single.js' )
 	},

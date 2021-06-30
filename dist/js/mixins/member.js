@@ -38,8 +38,8 @@ module.exports = {
 
 			var html = "<ul class='post-terms'>";
 
-			if( this.post.location != undefined && this.post.location.length > 0 ){
-				html += "<li class='badge inpursuit-location'>" + this.listTermNames( 'location', this.post.location ).join( ', ' ) + "</li>";
+			if( this.post.location ){
+				html += "<li class='badge inpursuit-location'>" + this.getTermName( 'location', this.post.location ) + "</li>";
 			}
 
 			if( this.post.group != undefined && this.post.group.length > 0 ){
@@ -60,6 +60,17 @@ module.exports = {
 		},
 		subtitleHTML: function(){
 			return "<p class='inpursuit-text-muted'>" + this.getTermName( 'member_status', this.post.member_status ) + "</p>";
+		},
+		specialEventsHTML: function(){
+			var html = '';
+			for( var key in this.post.special_events ){
+				var datevalue = this.post.special_events[key];
+				if( datevalue ){
+					var classes = 'inpursuit-event ' + key;
+					html += "<p class='" + classes + "'>" + "<span>" + key + "</span>" + moment(datevalue).format('LL') + "</p>";
+				}
+			}
+			return html;
 		}
 	},
 

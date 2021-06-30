@@ -11,6 +11,7 @@ module.exports = Vue.component( 'inpursuit-member', {
 		"<div class='inpursuit-member-title'><inpursuit-featured-image :image_url='post.featured_image'></inpursuit-featured-image>" +
 		"<div><h1 v-if='post.title'>{{ post.title.rendered }}</h1>" +
 		"<div v-html='subtitleHTML()'></div>" +
+		"<div v-html='specialEventsHTML()'></div>" +
 		"<div v-html='listTermsHTML()'></div>" +
 		"<router-link :to='editLink()'>Edit</router-link>" +
 		//"<inpursuit-actions :edit_link='editLink()' delete='1'></inpursuit-actions>" +

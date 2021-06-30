@@ -122,7 +122,7 @@ class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 				foreach ( $special_events as $event => $value	) {
 
 					$event_date = $wpdb->get_var( $wpdb->prepare(
-							"SELECT event_date FROM {$wpdb->prefix}ip_member_dates WHERE member_id = %d AND event_type = %s ", $post['id'], $event
+							"SELECT DATE(event_date) FROM {$wpdb->prefix}ip_member_dates WHERE member_id = %d AND event_type = %s ", $post['id'], $event
 					) );
 
 					$special_events[$event]	=	$event_date;

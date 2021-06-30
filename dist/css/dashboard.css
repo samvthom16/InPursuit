@@ -11,10 +11,11 @@
 
 
 #inpursuit-event-members .spinner,#inpursuit-member-history .spinner,.inpursuit-search-filters .spinner,
-.inpursuit-form .spinner{
+.inpursuit-form .spinner, .inpursuit-spinner.spinner{
 	float: none;
+	display: none;
 }
-.spinner.active { visibility: visible; }
+.spinner.active { visibility: visible; display: inline-block; }
 
 @media( max-width: 960px ){
 	.inpursuit-grid3{ grid-template-columns: 1fr 1fr;  }
@@ -218,3 +219,24 @@
 
 .inpursuit-form label{ color: #555; }
 .inpursuit-form .inpursuit-form-field{ margin-bottom: 20px; }
+
+.m-chckbox--container{ margin: 5px 0 !important;}
+.m-chckbox--label{ padding-left: 10px !important; }
+
+.inpursuit-event{
+	margin: 0;
+	line-height: 1.3;
+	display: grid;
+	grid-template-columns: 60px 1fr;
+	color: #999;
+
+	position: relative;
+	padding-left: 20px;
+}
+.inpursuit-event span{
+	text-transform: capitalize;
+	font-weight: bold;
+}
+.inpursuit-event::after{
+	font-family: dashicons; position: absolute; left: 3px;content: "\f145";
+}

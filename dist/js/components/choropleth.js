@@ -3,9 +3,12 @@ var API = require( '../lib/api.js' );
 var endpoints = require( '../lib/endpoints.js' );
 
 module.exports = Vue.component( 'inpursuit-choropleth-map', {
-	template: "<div data-behaviour='choropleth-map'><div id='map'></div></div>",
+	template: "<div data-behaviour='choropleth-map'>" +
+		"<span class='inpursuit-spinner spinner' :class='{active: loading}'></span>" +
+		"<div id='map'></div></div>",
 	data(){
 		return {
+			loading		: true,
 			data 			: {},
 			map_jsons : {},
 		}
@@ -122,6 +125,7 @@ module.exports = Vue.component( 'inpursuit-choropleth-map', {
 				callbackFn	: function( response ){
 					component.map_jsons = response.data;
 					component.drawMap();
+					component.loading = false;
 				}
 			} );
 		},
