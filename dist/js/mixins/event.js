@@ -34,11 +34,11 @@ module.exports = {
 			var html = "<ul class='post-terms'>";
 
 			if( this.post.location != undefined && this.post.location.length > 0 ){
-				html += "<li class='badge inpursuit-location'>" + this.post.location.join( ', ' ) + "</li>";
+				html += "<li class='badge inpursuit-location'>" + this.listTermNames( 'location', this.post.location ).join( ', ' ) + "</li>";
 			}
 
 			if( this.post.event_type != undefined && this.post.event_type.length > 0 ){
-				html += "<li class='badge inpursuit-event-type'>" + this.post.event_type.join( ', ' ) + "</li>";
+				html += "<li class='badge inpursuit-event-type'>" + this.listTermNames( 'event_type', this.post.event_type ).join( ', ' ) + "</li>";
 			}
 
 			html += "</ul>";

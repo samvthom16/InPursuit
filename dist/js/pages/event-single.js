@@ -5,16 +5,16 @@ var endpoints = require( '../lib/endpoints.js' );
 
 module.exports = Vue.component( 'inpursuit-member', {
 	mixins	: [ defaultMixin, eventMixin ],
-	template: "<div style='max-width:800px;margin-top:30px;'>" +
+	template: "<div style='max-width:1000px;margin-top:30px;'>" +
 		"<p><router-link to='/events'>&#8592;List Of Events</router-link></p>" +
-		"<div class='inpursuit-document' style='margin-bottom:30px;'>" +
-		"<div class='inpursuit-member-title'><inpursuit-event-progress :percentage='post.attendants_percentage'></inpursuit-event-progress>" +
-		"<div><h1 v-if='post.title'>{{ post.title.rendered }}</h1><p class='inpursuit-text-muted'>{{ post.member_status }}</p>" +
+		"<div v-if='post.title' class='inpursuit-document' style='margin-bottom:30px;'>" +
+		"<div class='inpursuit-event-title'><inpursuit-event-progress v-if='post.attendants_percentage' :percentage='post.attendants_percentage'></inpursuit-event-progress>" +
+		"<div><h1 v-if='post.title'>{{ post.title.rendered }}</h1><div v-if='post.content' class='inpursuit-text-muted' v-html='post.content.rendered'></div>" +
 		"<div v-html='listTermsHTML()'></div>" +
-		"<a :href='post.edit_url'>Edit</a>" +
+		"<router-link :to='editLink()'>Edit</router-link>" +
 		//"<inpursuit-actions :edit_link='editLink()' delete='1'></inpursuit-actions>" +
 		"</div></div>" +
-		"</div><timeline :member_id='post_id' per_page='10'></timeline></div>",
+		"</div><select-members :event_id='post_id'></select-members></div>",
 	data(){
 		return {
 			post		: {},
@@ -33,7 +33,7 @@ module.exports = Vue.component( 'inpursuit-member', {
 			} );
 		},
 		editLink: function(){
-			return 'members-' + this.post_id + '/edit';
+			return '/events/' + this.post_id + '/edit';
 		}
 	},
 	created: function(){

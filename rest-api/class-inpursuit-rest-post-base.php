@@ -40,7 +40,7 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 	function getCallbackForTerm( $object, $field_name, $request ){
 		//$taxonomy = 'inpursuit-' . $field_name;
 		$field_name = apply_filters( 'inpursuit_rest_callback_field', $field_name );
-		$terms = wp_get_object_terms( $object['id'], $field_name, array( 'fields' => 'names' ) );
+		$terms = wp_get_object_terms( $object['id'], $field_name, array( 'fields' => 'ids' ) );
 
 		$single_taxonomy_list = array( 'inpursuit-gender', 'inpursuit-status' );
 

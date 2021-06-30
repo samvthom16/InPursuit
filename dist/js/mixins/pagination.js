@@ -75,6 +75,5 @@ module.exports = {
 	},
 	created: function(){
 		this.getPosts();
-		this.getSettings();
 	},
 };
