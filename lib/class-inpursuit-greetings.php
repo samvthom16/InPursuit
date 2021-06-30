@@ -2,6 +2,46 @@
 
 class INPURSUIT_GREETINGS extends INPURSUIT_BASE {
     
+    public function __construct() {
+        add_action( 'inpursuit_daily_greeting', [ $this, 'dailyGreetingCb'], 10);
+
+        $this->scheduleJob();
+    }
+
+
+    /**
+     * Schedule daily cron job for greetings email
+     */
+    public function scheduleJob()
+    {
+        
+        if(!wp_next_scheduled( 'inpursuit_daily_greeting' )){
+        
+            $settings_time = get_option('inpursuit_settings_cron_time');
+
+            if($settings_time == '') {
+                $timestamp = current_time( 'timestamp' );
+            } else {
+                $date_time = date('Y-m-d') . ' ' .$settings_time . ' +05:30';
+                $dt = new DateTime($date_time);
+                $timestamp = $dt->getTimestamp();
+            }
+            
+            wp_schedule_event( $timestamp, 'daily', 'inpursuit_daily_greeting' );
+        }
+
+    }
+
+
+    /**
+     * action hook cb to be used in scheduling greetings
+    */
+    public function dailyGreetingCb()
+    {
+        $this->scheduleGreetings();
+    }
+
+    
     public function scheduleGreetings()
     {
         $member_model = INPURSUIT_DB_MEMBER_DATES::getInstance();
