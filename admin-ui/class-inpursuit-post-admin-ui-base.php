@@ -121,7 +121,8 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 
 			wp_enqueue_script( 'vue-related', plugins_url( 'InPursuit/dist/js/vue-related.js' ), array(), null, true );
 
-			wp_enqueue_script( 'vue-datepicker', 'https://unpkg.com/vue-englishdatepicker@0.1.1/dist/vue-englishdatepicker.min.js', array('vue-related'), null, true );
+			//wp_enqueue_script( 'vue-datepicker', 'https://unpkg.com/vue-englishdatepicker@0.1.1/dist/vue-englishdatepicker.min.js', array('vue-related'), null, true );
+			wp_enqueue_script( 'vue-datepicker', 'https://unpkg.com/vuejs-datepicker@1.6.2/dist/vuejs-datepicker.min.js', array('vue-related'), null, true );
 
 			// JS FOR CHOROPLETH
 			wp_enqueue_script( 'leaflet-csv', plugins_url( 'InPursuit/dist/js/leaflet.geocsv.js' ), array(), INPURSUIT_VERSION , true );

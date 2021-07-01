@@ -6,10 +6,15 @@ var API = require( '../lib/api.js' );
 
 module.exports = {
 	mixins	: [ defaultMixin ],
+	components: { vuejsDatepicker },
 	template: "<div class='inpursuit-form' style='margin-top:30px;'>" +
 
 		"<div class='inpursuit-form-field'>" +
 		"<label>{{ labels.title }}</label><input v-model='post.title.raw' type='text' />" +
+		"</div>" +
+
+		"<div v-if='!hide_post.date' class='inpursuit-form-field'>" +
+		"<label>{{ labels.date }}</label><vuejs-datepicker v-model='post.date' />" +
 		"</div>" +
 
 		"<div class='inpursuit-grid2'><div class='inpursuit-form-field' v-for='metafield in metafields'>" +
@@ -17,10 +22,10 @@ module.exports = {
 		"</div></div>" +
 
 		"<div class='inpursuit-grid2'><div class='inpursuit-form-field' v-for='event in getSpecialEvents()'>" +
-		"<label>{{ event.label }}</label><VueEnglishdatepicker format='YYYY-MM-DD' placeholder='YYYY-MM-DD' v-model='post.special_events[event.field]' />" +
+		"<label>{{ event.label }}</label><vuejs-datepicker v-model='post.special_events[event.field]' />" +
 		"</div></div>" +
 
-		"<div v-if='!hide_post_content' class='inpursuit-form-field'>" +
+		"<div v-if='!hide_post.content' class='inpursuit-form-field'>" +
 		"<label>{{ labels.content }}</label><textarea rows='5' v-model='post.content.raw'></textarea>" +
 		"</div>" +
 
@@ -41,12 +46,15 @@ module.exports = {
 		"</div>",
 	data(){
 		return {
-			hide_post_content : false,
+			hide_post:{},
+			//hide_post_content : false,
 			post_type					: 'members',
 			post				: {
-				title 	: { rendered : '', raw: '' },
-				content : { rendered : '', raw : '' },
-				status 	: 'publish'
+				date_gmt 	: '',
+				title 		: { rendered : '', raw: '' },
+				content 	: { rendered : '', raw : '' },
+				status 		: 'publish',
+				special_events: {}
 			},
 			dropdowns			: [],
 			multiselects 	: [],
@@ -55,6 +63,7 @@ module.exports = {
 			loading				: true,
 			labels				: {
 				title 		: "Post Title",
+				date			: "Post Date",
 				content 	: "Post Content",
 				wedding		: "Date of Wedding",
 				birthday	: "Date of Birth"
@@ -75,8 +84,9 @@ module.exports = {
 				params			: { context: 'edit' },
 				callbackFn	: function( response ){
 					component.post = response.data;
+
+					// STOP THE LOADER
 					component.loading = false;
-					//console.log( response.data );
 				}
 			} );
 		},
@@ -85,16 +95,18 @@ module.exports = {
 
 			var component	= this;
 
-			console.log( this.post );
+			var newPost = Object.assign( {}, component.post );
 
 			component.loading = true;
-			
+
 			API.request( {
 				method	: 'post',
-				data 		: this.post,
+				data 		: newPost,
 				url			: this.getURL(),
 				callbackFn: function( response ){
 					component.loading = false;
+
+					//console.log( response.data );
 
 					component.post_id = response.data.id;
 
@@ -105,7 +117,11 @@ module.exports = {
 
 		},
 		getPermalink	: function(){
-			return '/' + this.post_type + '/' + this.post_id;
+			var url = '/' + this.post_type;
+			if( this.post_id ){
+				url += '/' + this.post_id;
+			}
+			return url;
 		},
 		getSpecialEvents: function(){
 			var events = [];

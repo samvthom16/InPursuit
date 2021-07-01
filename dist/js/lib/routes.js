@@ -29,6 +29,10 @@ module.exports = [
 		component	: require( '../pages/events.js' )
 	},
 	{
+		path			: '/events/new',
+		component	: require( '../pages/event-new.js' )
+	},
+	{
 		path			: '/events/:id',
 		component	: require( '../pages/event-single.js' )
 	},
