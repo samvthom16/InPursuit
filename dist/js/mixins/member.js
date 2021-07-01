@@ -61,17 +61,40 @@ module.exports = {
 		subtitleHTML: function(){
 			return "<p class='inpursuit-text-muted'>" + this.getTermName( 'member_status', this.post.member_status ) + "</p>";
 		},
-		specialEventsHTML: function(){
+		metaHTML: function(){
 			var html = '';
-			for( var key in this.post.special_events ){
-				var datevalue = this.post.special_events[key];
-				if( datevalue ){
-					var classes = 'inpursuit-event ' + key;
-					html += "<p class='" + classes + "'>" + "<span>" + key + "</span>" + moment(datevalue).format('LL') + "</p>";
+			var fields = [
+				{ field : 'email', text : '', type: 'meta' },
+				{ field : 'phone', text : '', type: 'meta' },
+				{ field : 'birthday', text : 'Born on ', type: 'special-events' },
+				{ field : 'wedding', text : 'Got married on ', type: 'special-events' }
+			];
+
+			for( var i=0; i<fields.length; i++ ){
+				var field = fields[i]['field'];
+				var type = fields[i]['type'];
+
+				var value;
+				if( type == 'special-events' && this.post.special_events && this.post.special_events[field] ){
+					var value = moment( this.post.special_events[field] ).format('LL');
+				}
+				else{
+					value = this.post[field];
+				}
+
+				if( value ){
+					var text = fields[i]['text'] + "<span>" + value + "</span>";
+					var classes = 'inpursuit-meta ' + field;
+					html += "<p class='" + classes + "'>" + text + "</p>";
 				}
 			}
+
+			if( html ){
+				html = "<h4 class='inpursuit-meta-headline'>Additional Information</h4>" + html;
+			}
+
 			return html;
-		}
+		},
 	},
 
 };

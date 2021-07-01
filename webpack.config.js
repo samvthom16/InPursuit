@@ -9,9 +9,11 @@ const config = {
 		filename: "app-final.js"
 	},
 	plugins: [
+		
 	],
   module: {
-
+		rules: [
+		]
 	}
 };
 
