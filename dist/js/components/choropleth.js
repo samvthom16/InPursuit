@@ -102,6 +102,8 @@ module.exports = Vue.component( 'inpursuit-choropleth-map', {
 			if( window_width < 500 ){ zoomLevel = data['map']['mobile']['zoom']; }
 			else if( window_width < 768 ){ zoomLevel = data['map']['tablet']['zoom']; }
 
+			//var L = require( '../leaflet.geocsv.js' );
+
 			//SETUP BASEMAP
 			var map = L.map('map').setView( [center_lat, center_lng], zoomLevel );
 
@@ -140,7 +142,14 @@ module.exports = Vue.component( 'inpursuit-choropleth-map', {
 		}
 	},
 	created: function(){
-		this.getMapData();
-		this.getRegionsData();
+		var component = this;
+		require.ensure(['../leaflet.geocsv.js'], function( ){
+
+			// LOAD THE REQUIRED CODE
+			require( '../leaflet.geocsv.js' );
+
+			component.getMapData();
+			component.getRegionsData();
+		} );
 	}
 } );
