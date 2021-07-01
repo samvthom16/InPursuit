@@ -45,13 +45,13 @@
 .post-terms .badge.inpursuit-profession::after{ content: "\f12b"; }
 
 
-.post-terms .badge.inpursuit-event-type{ background: #c8a379; color: #fff; }
-.post-terms .badge.inpursuit-event-type::after{ content: "\f508"; }
+.post-terms .badge.inpursuit-event-type, .post-terms .badge.event_type{ background: #c8a379; color: #fff; }
+.post-terms .badge.inpursuit-event-type::after, .post-terms .badge.event_type::after{ content: "\f508"; }
 
 .post-terms .badge.inpursuit-status{ background: #9fb7b9; color: #fff; }
-.post-terms .badge.inpursuit-location{ background: #c3b0a1; color: #fff; }
 
-.post-terms .badge.inpursuit-location::after{ content: "\f230"; }
+.post-terms .badge.inpursuit-location, .post-terms .badge.location{ background: #c3b0a1; color: #fff; }
+.post-terms .badge.inpursuit-location::after, .post-terms .badge.location::after{ content: "\f230"; }
 
 
 
