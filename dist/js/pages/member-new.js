@@ -9,6 +9,7 @@ module.exports = Vue.component( 'inpursuit-member-new', {
 			this.post.location = '';
 			this.post.profession = [];
 			this.post.group = [];
+			this.post.special_events = { birthday: '', wedding: '' };
 		}
 	}
 } );
