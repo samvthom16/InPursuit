@@ -61,7 +61,6 @@ module.exports = {
 			//hide_post_content : false,
 			post_type					: 'members',
 			post				: {
-				date_gmt 	: '',
 				title 		: { rendered : '', raw: '' },
 				content 	: { rendered : '', raw : '' },
 				status 		: 'publish',

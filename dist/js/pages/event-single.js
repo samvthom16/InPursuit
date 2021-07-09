@@ -8,7 +8,7 @@ module.exports = Vue.component( 'inpursuit-member', {
 			<p><router-link to='/events'>&#8592;List Of Events</router-link></p>
 			<div v-if='post.title' class='inpursuit-document' style='margin-bottom:30px;'>
 				<div class='inpursuit-event-title'>
-					<inpursuit-event-progress v-if='post.attendants_percentage' :percentage='post.attendants_percentage'></inpursuit-event-progress>
+					<inpursuit-event-progress :percentage='post.attendants_percentage'></inpursuit-event-progress>
 					<div>
 						<h1 v-if='post.title'>{{ post.title.rendered }}</h1>
 						<div v-if='post.content' class='inpursuit-text-muted' v-html='post.content.rendered'></div>
