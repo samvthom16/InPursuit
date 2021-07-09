@@ -1,4 +1,3 @@
-Vue.use( Dropdown );
 Vue.use( VueRouter );
 
 var routes = require( './lib/routes.js' );
@@ -10,8 +9,6 @@ var components = [ 'choropleth', 'comments', 'dropdown', 'event-card', 'event-pr
 for( var key in components ){
 	require( './components/' + components[key] + ".js" );
 }
-
-
 
 window['inpursuit_settings'] = {};
 

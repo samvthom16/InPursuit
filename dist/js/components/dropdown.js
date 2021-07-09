@@ -1,6 +1,9 @@
 var debounceMixin = require( '../mixins/debounce.js' );
 var defaultMixin = require( '../mixins/default.js' );
 
+var vuejsDropdown = require( '../vuejs-dropdown.js' );
+Vue.use( Dropdown );
+
 module.exports = Vue.component( 'inpursuit-dropdown', {
 	props		: ['settings', 'placeholder', 'slug'],
 	mixins	: [ defaultMixin, debounceMixin ],
