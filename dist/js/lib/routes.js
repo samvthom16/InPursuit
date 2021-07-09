@@ -1,3 +1,7 @@
+var memberSingle = require( '../pages/member-single.js' );
+
+//console.log( memberSingle.options.template );
+
 module.exports = [
 	{
 		path			: '/',

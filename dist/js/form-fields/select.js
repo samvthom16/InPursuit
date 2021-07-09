@@ -9,15 +9,7 @@ module.exports  = Vue.component( 'inpursuit-select', {
  		"</select></div>",
 	methods: {
 		getDefaultOption: function(){
-			//console.log( this.post[this.field] );
 			return { id : '', name: 'Choose' };
 		}
-		/*
-		updateParent: function( event ){
-			var value = event.target.value;
-			if( value != '' ){ value = parseInt( value ); }
-			this.$parent.post[ this.field ] = value;
-		},
-		*/
 	}
 } );

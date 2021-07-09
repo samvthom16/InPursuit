@@ -5,8 +5,8 @@ var routes = require( './lib/routes.js' );
 
 var router = new VueRouter( { routes } );
 
-var components = [ 'checkbox', 'choropleth', 'comments', 'dropdown', 'event-card', 'event-progress', 'featured-image', 'latest-updates', 'member-card',
-'pagination', 'search-text', 'select-members', 'select', 'special-event', 'timeline-event', 'timeline' ];
+var components = [ 'choropleth', 'comments', 'dropdown', 'event-card', 'event-progress', 'featured-image', 'latest-updates', 'member-card',
+'pagination', 'search-text', 'select-members', 'special-event', 'timeline-event', 'timeline' ];
 for( var key in components ){
 	require( './components/' + components[key] + ".js" );
 }

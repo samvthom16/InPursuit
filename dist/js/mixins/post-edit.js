@@ -4,46 +4,57 @@ var defaultMixin = require( '../mixins/default.js' );
 
 var API = require( '../lib/api.js' );
 
+var vuejsDatepicker = require( '../vuejs-datepicker.min.js' );
+
+require( '../form-fields/select.js' );
+require( '../form-fields/checkbox.js' );
+require( '../form-fields/image.js' );
+
 module.exports = {
 	mixins	: [ defaultMixin ],
 	components: { vuejsDatepicker },
-	template: "<div class='inpursuit-form' style='margin-top:30px;'>" +
+	template: `<div class='inpursuit-form' style='margin-top:30px;'>
+			<div class='inpursuit-form-field'>
+				<label>{{ labels.title }}</label><input v-model='post.title.raw' type='text' />
+			</div>
 
-		"<div class='inpursuit-form-field'>" +
-		"<label>{{ labels.title }}</label><input v-model='post.title.raw' type='text' />" +
-		"</div>" +
+			<div v-if='!hide_post.date' class='inpursuit-form-field'>
+				<label>{{ labels.date }}</label><vuejs-datepicker v-model='post.date' />
+			</div>
 
-		"<div v-if='!hide_post.date' class='inpursuit-form-field'>" +
-		"<label>{{ labels.date }}</label><vuejs-datepicker v-model='post.date' />" +
-		"</div>" +
+			<div class='inpursuit-grid2'><div class='inpursuit-form-field' v-for='metafield in metafields'>
+				<label>{{ metafield.label }}</label><input v-model='post[metafield.field]' type='text' />
+			</div></div>
 
-		"<div class='inpursuit-grid2'><div class='inpursuit-form-field' v-for='metafield in metafields'>" +
-		"<label>{{ metafield.label }}</label><input v-model='post[metafield.field]' type='text' />" +
-		"</div></div>" +
+			<div class='inpursuit-grid2'><div class='inpursuit-form-field' v-for='event in getSpecialEvents()'>
+				<label>{{ event.label }}</label><vuejs-datepicker v-model='post.special_events[event.field]' />
+			</div></div>
 
-		"<div class='inpursuit-grid2'><div class='inpursuit-form-field' v-for='event in getSpecialEvents()'>" +
-		"<label>{{ event.label }}</label><vuejs-datepicker v-model='post.special_events[event.field]' />" +
-		"</div></div>" +
+			<div v-if='!hide_post.content' class='inpursuit-form-field'>
+				<label>{{ labels.content }}</label><textarea rows='5' v-model='post.content.raw'></textarea>
+			</div>
 
-		"<div v-if='!hide_post.content' class='inpursuit-form-field'>" +
-		"<label>{{ labels.content }}</label><textarea rows='5' v-model='post.content.raw'></textarea>" +
-		"</div>" +
+			<div class='inpursuit-form-field inpursuit-grid2'>
+				<inpursuit-select v-for='dropdown in dropdowns' :field='dropdown.field' :label='dropdown.label' :post='post'></inpursuit-select>
+			</div>
 
-		"<div class='inpursuit-form-field inpursuit-grid2'>" +
-		"<inpursuit-select v-for='dropdown in dropdowns' :field='dropdown.field' :label='dropdown.label' :post='post'></inpursuit-select>" +
-		"</div>" +
+			<div class='inpursuit-form-field inpursuit-grid2'>
+				<inpursuit-checkbox v-for='multiselect in multiselects' :field='multiselect.field' :label='multiselect.label' :post='post'></inpursuit-checkbox>
+			</div>
 
-		"<div class='inpursuit-form-field inpursuit-grid2'>" +
-		"<inpursuit-checkbox v-for='multiselect in multiselects' :field='multiselect.field' :label='multiselect.label' :post='post'></inpursuit-checkbox>" +
-		"</div>" +
+			<div class='inpursuit-form-field' v-if='!hide_post.featured_media'>
+				<p><label>{{ labels.featured_media }}</label></p>
+				<inpursuit-select-image :post='post'></inpursuit-select-image>
+			</div>
 
-		"<div class='inpursuit-form-field' style='margin-top: 40px;'><p>" +
-		"<button class='button' type='button' @click='savePost()'>Save Changes</button>" +
-		" or <router-link :to='getPermalink()'>Cancel</router-link>" +
-		"<span class='spinner' :class='{active: loading}'></span>" +
-		"</p></div>" +
-
-		"</div>",
+			<div class='inpursuit-form-field' style='margin-top: 40px;'>
+				<p>
+					<button class='button' type='button' @click='savePost()'>Save Changes</button>
+		 			or <router-link :to='getPermalink()'>Cancel</router-link>
+					<span class='spinner' :class='{active: loading}'></span>
+				</p>
+			</div>
+		</div>`,
 	data(){
 		return {
 			hide_post:{},
@@ -62,11 +73,12 @@ module.exports = {
 			post_id				: 0,
 			loading				: true,
 			labels				: {
-				title 		: "Post Title",
-				date			: "Post Date",
-				content 	: "Post Content",
-				wedding		: "Date of Wedding",
-				birthday	: "Date of Birth"
+				title 					: "Post Title",
+				date						: "Post Date",
+				content 				: "Post Content",
+				wedding					: "Date of Wedding",
+				birthday				: "Date of Birth",
+				featured_media	: "Featured Image"
 			},
 		}
 	},

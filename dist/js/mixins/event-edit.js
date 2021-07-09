@@ -5,6 +5,9 @@ module.exports = {
 	mixins	: [ defaultMixin, postEditMixin ],
 	data(){
 		return {
+			hide_post: {
+				featured_media: true
+			},
 			dropdowns	: [
 				{ label: 'Event type', field: 'event_type' },
 				{ label: 'Location', field: 'location' }

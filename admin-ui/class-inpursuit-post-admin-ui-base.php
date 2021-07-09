@@ -121,7 +121,7 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 
 			wp_enqueue_script( 'vue-related', plugins_url( 'InPursuit/dist/js/vue-related.js' ), array(), null, true );
 
-			wp_enqueue_script( 'vue-datepicker', 'https://unpkg.com/vuejs-datepicker@1.6.2/dist/vuejs-datepicker.min.js', array('vue-related'), null, true );
+			//wp_enqueue_script( 'vue-datepicker', 'https://unpkg.com/vuejs-datepicker@1.6.2/dist/vuejs-datepicker.min.js', array('vue-related'), null, true );
 
 			// JS FOR CHOROPLETH
 			//wp_enqueue_script( 'leaflet-csv', plugins_url( 'InPursuit/dist/js/leaflet.geocsv.js' ), array(), INPURSUIT_VERSION , true );
@@ -138,7 +138,7 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 
 			//wp_enqueue_script( 'inpursuit-main', plugins_url( 'InPursuit/dist/js/admin.js' ), array( 'vue-related', 'inpursuit-api', 'inpursuit-vue', 'choropleth' ), null, true);
 
-			wp_enqueue_script( 'inpursuit-app', plugins_url( 'InPursuit/dist/js/app-final.js' ), array( 'vue-related', 'vue-datepicker' ), null, true);
+			wp_enqueue_script( 'inpursuit-app', plugins_url( 'InPursuit/dist/js/app-final.js' ), array( 'vue-related' ), null, true);
 
 			wp_localize_script( 'inpursuit-app', 'inpursuitSettings', array(
     		'root' => esc_url_raw( rest_url() ),
