@@ -105,10 +105,7 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 
 	function assets( $hook ) {
 
-		//print_r( $hook );
-
-		global $post_type;
-		//if( $post_type == $this->post_type ){
+		if( 'toplevel_page_inpursuit' == $hook ){
 
 			// CSS FOR CHOROPLETH MAP
 			wp_enqueue_style( 'choropleth', plugins_url( 'InPursuit/dist/css/choropleth.css' ), array(), INPURSUIT_VERSION );
@@ -124,7 +121,7 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
     		'nonce' => wp_create_nonce( 'wp_rest' )
 			) );
 
-		//}
+		}
 	}
 
 

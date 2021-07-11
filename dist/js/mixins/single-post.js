@@ -1,6 +1,16 @@
 var API = require( '../lib/api.js' );
 var endpoints = require( '../lib/endpoints.js' );
 
+Vue.component( 'inpursuit-post-actions', {
+	props: ['post', 'actionCallback'],
+	template: `<ul class='inpursuit-post-actions'>
+			<li v-if='post.status != "draft"'><a href='#' class='archive' @click='actionCallback'>Archive</a></li>
+			<li v-if='post.status != "publish"'><a href='#' class='archive' @click='actionCallback'>Publish</a></li>
+			<li><a href='#' class='edit' @click='actionCallback'>Edit</a></li>
+			<li><a href='#' class='delete' @click='actionCallback'>Delete</a></li>
+		</ul>`,
+} );
+
 module.exports = {
 	data(){
 		return {
@@ -23,21 +33,8 @@ module.exports = {
 				}
 			} );
 		},
-		editLink: function(){
-			var route  = {
-				name		: "SingleMemberEdit",
-				params 	: { id : this.post.id, post: this.post }
-			};
+		deletePost: function(){
 
-			if( this.post_type == 'events' ){
-				route.name = 'SingleEventEdit';
-			}
-
-			return route;
-			//return '/' + this.post_type + '/' + this.post_id + '/edit';
-		},
-		deletePost: function( ev ){
-			ev.preventDefault();
 			if( confirm('Are you sure you want to delete this?') ){
 				var component = this;
 
@@ -51,6 +48,46 @@ module.exports = {
 					}
 				} );
 			}
+		},
+		editLink: function(){
+			var route  = {
+				name		: "SingleMemberEdit",
+				params 	: { id : this.post.id, post: this.post }
+			};
+
+			if( this.post.type == 'inpursuit-events' ){
+				route.name = 'SingleEventEdit';
+			}
+			return route;
+		},
+		updatePostStatus: function( newStatus ){
+			this.post.status = newStatus;
+			API.request( {
+				method	: 'post',
+				data 		: this.post,
+				url			: this.getAPIUrl(),
+				callbackFn: function( response ){
+				}
+			} );
+		},
+		actionCallback: function( ev ){
+			ev.preventDefault();
+
+			var action = ev.target.innerHTML;
+
+			if( action == 'Delete' ){
+				this.deletePost();
+			}
+			else if( action == 'Edit' ){
+				 this.$router.push( this.editLink() );
+			}
+			else if( action == 'Archive' ){
+				this.updatePostStatus( 'draft' );
+			}
+			else if( action == 'Publish' ){
+				this.updatePostStatus( 'publish' );
+			}
+
 		}
 	},
 	created: function(){
@@ -67,7 +104,5 @@ module.exports = {
 		else{
 			this.getPost();
 		}
-
-
 	}
 };
