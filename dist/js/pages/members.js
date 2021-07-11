@@ -17,7 +17,4 @@ module.exports = Vue.component( 'template-members', {
 			per_page: 9,
 		}
 	},
-	methods: {
-		
-	}
 } );

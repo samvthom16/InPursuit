@@ -50,6 +50,7 @@ module.exports = {
 		},
 		getDefaultParams: function(){
 			return {
+				status		: ['draft', 'publish'],
 				search 		: this.searchQuery,
 				page			: this.page,
 				per_page	: this.per_page,

@@ -179,6 +179,12 @@
 
 
 .inpursuit-member-card{ padding: 15px; background: #fff; }
+.inpursuit-member-card.draft{ position: relative; }
+.inpursuit-member-card.draft::after{
+	content: "Archived"; top: 0; right: 0;
+	background: #555; color: #fff;
+	position: absolute; padding: 5px 10px;
+}
 .inpursuit-member-card a[href]{ text-decoration: none; outline: none; }
 .inpursuit-member-title, .inpursuit-event-title{ grid-template-columns: 120px 1fr; grid-gap: 15px; display: grid; }
 .inpursuit-event-title{ grid-template-columns: 80px 1fr; }
