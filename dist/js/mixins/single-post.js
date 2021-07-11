@@ -24,7 +24,17 @@ module.exports = {
 			} );
 		},
 		editLink: function(){
-			return '/' + this.post_type + '/' + this.post_id + '/edit';
+			var route  = {
+				name		: "SingleMemberEdit",
+				params 	: { id : this.post.id, post: this.post }
+			};
+
+			if( this.post_type == 'events' ){
+				route.name = 'SingleEventEdit';
+			}
+
+			return route;
+			//return '/' + this.post_type + '/' + this.post_id + '/edit';
 		},
 		deletePost: function( ev ){
 			ev.preventDefault();
@@ -44,10 +54,20 @@ module.exports = {
 		}
 	},
 	created: function(){
+
 		var post_id = this.$route.params.id;
 		if( post_id ){
 			this.post_id = post_id;
 		}
-		this.getPost();
+
+		// CHECK IF POST INFORMATION HAS BEEN PASSED IN THE ROUTE
+		if( this.$route.params.post != undefined ){
+			this.post = this.$route.params.post;
+		}
+		else{
+			this.getPost();
+		}
+
+
 	}
 };

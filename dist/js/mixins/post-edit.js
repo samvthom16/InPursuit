@@ -50,7 +50,7 @@ module.exports = {
 			<div class='inpursuit-form-field' style='margin-top: 40px;'>
 				<p>
 					<button class='button' type='button' @click='savePost()'>Save Changes</button>
-		 			or <router-link :to='getPermalink()'>Cancel</router-link>
+		 			or <router-link :to='getPostLink( post )'>Cancel</router-link>
 					<span class='spinner' :class='{active: loading}'></span>
 				</p>
 			</div>
@@ -121,18 +121,13 @@ module.exports = {
 
 					component.post_id = response.data.id;
 
+					component.post = response.data;
+
 					// REDIRECT TO THE SINGLE PAGE
-					component.$router.push( component.getPermalink() );
+					component.$router.push( component.getPostLink( component.post ) );
 				}
 			} );
 
-		},
-		getPermalink	: function(){
-			var url = '/' + this.post_type;
-			if( this.post_id ){
-				url += '/' + this.post_id;
-			}
-			return url;
 		},
 		getSpecialEvents: function(){
 			var events = [];
@@ -158,5 +153,12 @@ module.exports = {
 		else{
 			this.loading = false;
 		}
+
+		// CHECK IF POST INFORMATION HAS BEEN PASSED IN THE ROUTE
+		// THIS CAN BE USED AS CACHE
+		if( this.$route.params.post != undefined ){
+			this.post = this.$route.params.post;
+		}
+
 	}
 };

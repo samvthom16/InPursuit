@@ -32,5 +32,18 @@ module.exports = {
 			}
 			return names;
 		},
+		getPostLink: function( post ){
+			var route = {
+				name		: "",
+				params 	: { id : post.id, post: post }
+			};
+			if( post.type != undefined && post.type == 'inpursuit-members' ){
+				route.name = "SingleMember";
+			}
+			else if( post.type != undefined && post.type == 'inpursuit-events' ){
+				route.name = "SingleEvent";
+			}
+			return route;
+		}
 	}
 };
