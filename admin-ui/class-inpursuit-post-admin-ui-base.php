@@ -107,6 +107,8 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 
 		if( 'toplevel_page_inpursuit' == $hook ){
 
+			wp_enqueue_style( 'tui-calendar', plugins_url( 'InPursuit/dist/css/tui-calendar.min.css' ), array(), INPURSUIT_VERSION );
+
 			// CSS FOR CHOROPLETH MAP
 			wp_enqueue_style( 'choropleth', plugins_url( 'InPursuit/dist/css/choropleth.css' ), array(), INPURSUIT_VERSION );
 

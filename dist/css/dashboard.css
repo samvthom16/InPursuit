@@ -179,7 +179,7 @@
 
 
 .inpursuit-member-card{ padding: 15px; background: #fff; }
-.inpursuit-member-card.draft{ position: relative; }
+.inpursuit-member-card.draft{ position: relative; border: #555 solid 1px; }
 .inpursuit-member-card.draft::after{
 	content: "Archived"; top: 0; right: 0;
 	background: #555; color: #fff;
@@ -278,3 +278,5 @@
 	color: #fff;
 }
 .inpursuit-post-archived::after{ font-family: dashicons; position: absolute; left: 10px; top: 10px; content: "\f17b"; }
+
+.list-inline li{ display: inline-block; }

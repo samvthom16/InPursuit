@@ -22,9 +22,16 @@ Vue.component( 'select-member', {
 
 module.exports = Vue.component( 'select-members', {
 	props			: ['event_id'],
-	template	: "<div><ul class='posts-list inpursuit-grid3'>" +
-		"<li class='inpursuit-select-member' :class='{selected: post.attended}' v-for='post in posts'><select-member :post='post'></select-member></li>" +
-		"</ul><inpursuit-page-pagination :total_pages='total_pages'></inpursuit-page-pagination></div>",
+	template	: `
+		<div>
+			<inpursuit-searchfilters :searchQuery='searchQuery' :filterTerms='filterTerms' :loading='loading'></inpursuit-searchfilters>
+			<ul class='posts-list inpursuit-grid3'>
+				<li class='inpursuit-select-member' :class='{selected: post.attended}' v-for='post in posts'>
+					<select-member :post='post'></select-member>
+				</li>
+			</ul>
+			<inpursuit-page-pagination :total_pages='total_pages'></inpursuit-page-pagination>
+		</div>`,
 	mixins		: [ defaultMixin, memberMixin, paginationMixin ],
 	data() {
 		return {

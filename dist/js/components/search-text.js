@@ -12,11 +12,12 @@ module.exports = Vue.component( 'inpursuit-searchfilters', {
 			<inpursuit-search-text :searchQuery="searchQuery" :debounceCallback="debounceCallbackForSearch"></inpursuit-search-text>
 			<inpursuit-dropdown v-for="term in filterTerms" :key="term.slug" :slug="term.slug" :placeholder="term.label" :selectCallback='dropdownSelectedCallback'></inpursuit-dropdown>
 			<span class="spinner" :class="{active: loading}"></span>
-			<router-link class="button" style="float:right;" :to="newLink">{{ newLabel }}</router-link>
+			<router-link v-if='newLabel' class="button" style="float:right;" :to="newLink">{{ newLabel }}</router-link>
 		</p>`,
 	methods: {
 		debounceCallbackForSearch: function( event ){
 			this.$parent.searchQuery = event.target.value;
+			if( this.$parent.page != undefined ){ this.$parent.page = 1;}
 			this.$parent.getPosts();
 		},
 		dropdownSelectedCallback: function( slug, term_id ){
