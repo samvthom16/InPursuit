@@ -29,7 +29,7 @@ Vue.component( 'inpursuit-calendar', {
 	  		}
 				else if ( viewName === 'month' &&
 	    		(!options.month.visibleWeeksCount || options.month.visibleWeeksCount > 4)) {
-	    		html.push(moment(cal.getDate().getTime()).format('YYYY.MM'));
+	    		html.push( moment( cal.getDate().getTime() ).format( 'MMMM YYYY' ) );
 	  		}
 				else {
 	    		html.push(moment(cal.getDateRangeStart().getTime()).format('YYYY.MM.DD'));
@@ -73,8 +73,6 @@ Vue.component( 'inpursuit-calendar', {
 				isReadOnly: true
 			} );
 
-			console.log( 'created' );
-
 		} );
 	}
 } );
@@ -95,7 +93,7 @@ module.exports = Vue.component( 'template-dashboard', {
 					<inpursuit-choropleth-map></inpursuit-choropleth-map>
 				</div>
 			</div>
-			<div class='inpursuit-dashboard'>
+			<div class='inpursuit-dashboard' style='margin-top: 30px;'>
 				<h4 class='inpursuit-dashboard-title'>Calendar</h4>
 				<inpursuit-calendar></inpursuit-calendar>
 			</div>
