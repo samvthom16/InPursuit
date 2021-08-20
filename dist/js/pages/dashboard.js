@@ -93,9 +93,9 @@ module.exports = Vue.component( 'template-dashboard', {
 					<inpursuit-choropleth-map></inpursuit-choropleth-map>
 				</div>
 			</div>
-			<div class='inpursuit-dashboard' style='margin-top: 30px;'>
+			<!--div class='inpursuit-dashboard' style='margin-top: 30px;'>
 				<h4 class='inpursuit-dashboard-title'>Calendar</h4>
 				<inpursuit-calendar></inpursuit-calendar>
-			</div>
+			</div-->
 		</div>`
 } );
