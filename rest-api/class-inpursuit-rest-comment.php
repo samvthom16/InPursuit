@@ -109,7 +109,13 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
 		$comment_db = INPURSUIT_DB_COMMENT::getInstance();
 		$insert_id = $comment_db->insert( $item );
 
+    $comment_email = INPURSUIT_EMAIL::getInstance();
+
 		if( $insert_id ){
+
+      // SEND EMAIL
+      $comment_email->sendCommentEmailNotification( $item );
+
 			return new WP_REST_Response( $item, 200 );
 		}
 		return new WP_Error( 'cant-create', __( 'message', 'text-domain' ), array( 'status' => 500 ) );
@@ -162,7 +168,7 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
 		if( $comment_db->delete_row( $request['id'] ) ){
 			return new WP_REST_Response( true, 200 );
 		}
-		
+
     return new WP_Error( 'cant-delete', __( 'message', 'text-domain' ), array( 'status' => 500 ) );
   }
 
