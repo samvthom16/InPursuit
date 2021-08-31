@@ -63,7 +63,7 @@ class INPURSUIT_GREETINGS extends INPURSUIT_BASE {
             $greeting = $this->prepareGreeting($member, $event);
 
             if( isset( $greeting['to'] ) ) {
-                $mailer->sendEmail( $greeting['to'], $greeting['subject'], $greeting['body'], $greeting['headers'] );
+              $mailer->sendEmail( $greeting['to'], $greeting['subject'], $greeting['body'] );
             }
 
         }
@@ -74,28 +74,24 @@ class INPURSUIT_GREETINGS extends INPURSUIT_BASE {
         $member_meta = get_post_meta($member->member_id);
         $member_email = $member_meta['email'][0];
 
-        //exit with empty array if member doesn't has email address
-        if($member_email == '') {
-            return [];
-        }
+        // exit with empty array if member doesn't has email address
+        if( $member_email == '' ) return [];
 
-        $member_name = get_the_title($member->member_id);
-
-        $template_key = 'inpursuit_settings_template_' . strtolower($event);
-        $template = get_option($template_key);
-
+        $member_name = get_the_title( $member->member_id );
         $template_vars = [ '$name' => $member_name ];
 
-        $body = strtr($template, $template_vars);
+        $template = get_option( 'inpursuit_settings_template_' . strtolower( $event ) );
+        $subject = get_option( 'inpursuit_settings_subject_' . strtolower( $event ) );
+        $body = strtr( $template, $template_vars );
 
-        $from = get_option('inpursuit_settings_email_from');
-        $cont_type = 'Content-Type: text/html; charset=UTF-8';
+        //$from = get_option('inpursuit_settings_email_from');
+        //$cont_type = 'Content-Type: text/html; charset=UTF-8';
 
         $greeting = [
             'to'        => $member_email,
-            'subject'   => get_option('inpursuit_settings_email_subject'),
+            'subject'   => $subject,
             'body'      => $body,
-            'headers'   => [ $cont_type, $from ]
+            //'headers'   => [ $cont_type, $from ]
         ];
 
         return $greeting;

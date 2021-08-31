@@ -153,7 +153,10 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 
 		//register setting
 
+
+
 		$setting_args = [
+			/*
 			[
 				'page-slug' 	=> 'inpursuit-email-templates',
 				'setting-name' 	=> 'inpursuit_settings_template_birthday',
@@ -173,7 +176,7 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 					             'default' => ''
 					        	]
 			],
-
+			*/
 			[
 				'page-slug' 	=> 'inpursuit-email-fields',
 				'setting-name' 	=> 'inpursuit_settings_email_from',
@@ -205,14 +208,13 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 			],
 		];
 
-		foreach ($setting_args as $key => $option) {
-			$this->registerSetting($option);
-		}
+
 
 
 		//register setting field
 
 		$settings_fields_args = [
+			/*
 			[
 				'setting-name' => 'inpursuit_settings_template_birthday',
 				'field-title'  => 'Birthday Email Template',
@@ -234,7 +236,7 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 							 	 'label_for' => 'inpursuit_settings_template_wedding',
 							    ],
 			],
-
+			*/
 			[
 				'setting-name' => 'inpursuit_settings_email_from',
 				'field-title'  => 'Email From',
@@ -271,6 +273,60 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 			],
 		];
 
+
+		// ADD EVENT DATE TYPES
+		$member_dates_db = INPURSUIT_DB_MEMBER_DATES::getInstance();
+		$event_types = $member_dates_db->getEventTypes();
+		//print_r( $event_types );
+
+		foreach( $event_types as $event_slug => $event_title ){
+
+			$page_slug = 'inpursuit-email-templates';
+
+			// SUBJECT SETTINGS
+			$setting_name = 'inpursuit_settings_subject_' . $event_slug;
+			array_push( $setting_args, array(
+				'page-slug' 		=> $page_slug,
+				'setting-name' 	=> $setting_name,
+			  'type-args' 		=> array(
+					'type' 							=> 'string',
+					'sanitize_callback' => 'sanitize_textarea_field',
+					'default' 					=> ''
+				)
+			) );
+			array_push( $settings_fields_args, array(
+				'setting-name' 		=> $setting_name,
+				'field-title' 	 	=> $event_title . ' Email Subject',
+				'field-callback' 	=> [ $this, 'textFieldCb' ],
+				'page-slug'	   		=> $page_slug,
+				'section-id'   		=> 'inpursuit_email_template_section',
+				'field-args' 			=> [ 'label_for' => $setting_name ],
+			) );
+
+			// TEMPLATE SETTINGS
+			$setting_name = 'inpursuit_settings_template_' . $event_slug;
+			array_push( $setting_args, array(
+				'page-slug' 		=> $page_slug,
+				'setting-name' 	=> $setting_name,
+			  'type-args' 		=> array(
+					'type' 							=> 'string',
+					'sanitize_callback' => 'sanitize_textarea_field',
+					'default' 					=> ''
+				)
+			) );
+			array_push( $settings_fields_args, array(
+				'setting-name' 		=> $setting_name,
+				'field-title' 	 	=> $event_title . ' Email Template',
+				'field-callback' 	=> [ $this, 'textareaFieldCb' ],
+				'page-slug'	   		=> $page_slug,
+				'section-id'   		=> 'inpursuit_email_template_section',
+				'field-args' 			=> [ 'label_for' => $setting_name ],
+			) );
+		}
+
+		foreach ($setting_args as $key => $option) {
+			$this->registerSetting($option);
+		}
 
 		foreach ($settings_fields_args as $key => $option) {
 			$this->registerSettingField($option);

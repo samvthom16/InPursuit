@@ -21,7 +21,16 @@ class INPURSUIT_MAILER extends INPURSUIT_BASE {
      * Use this function when asyncronus wp_mail behaviour is required
      * Schedules each outgoing email as a cron job
      */
-	function sendEmail($to, $subject, $body, $header){
+	function sendEmail( $to, $subject, $body, $header = array() ){
+
+    // DEFAULT HEADER INFORMATION
+    if( count( $header ) == 0 ){
+
+      $header = array(
+        'Content-Type: text/html; charset=UTF-8',
+        get_bloginfo( 'admin_email' )
+      );
+    }
 
 		$args = array(
 				'to'		=> $to,
