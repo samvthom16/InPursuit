@@ -11,29 +11,28 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 
 
 	/**
-	 * Callback function for registering menu 
+	 * Callback function for registering submenu
 	 */
 	public function registerMenu()
 	{
-		add_menu_page(
-	        'InPursuit Settings',
-	        'InPursuit',
-	        'manage_options',
-	        'inpursuit-settings',
-	        [$this, 'settingsTemplateCallback'],
-	        'dashicons-sos',
-	        82
-	    );
+		add_submenu_page(
+			'inpursuit',
+			'InPursuit Email Settings',
+      'Email Settings',
+      'manage_options',
+      'inpursuit-email-settings',
+      [$this, 'settingsTemplateCallback']
+	   );
 	}
 
 
 	/**
-	 * Initialize options for Tabbed Navigation. 
+	 * Initialize options for Tabbed Navigation.
 	 * Update this attribute if new tab needs to be added
-	 * Match the 'section-page' value to 'page-slug' value of section-settings-attributes 
+	 * Match the 'section-page' value to 'page-slug' value of section-settings-attributes
 	 */
 	public function setNavigationTabs()
-	{		
+	{
 		$this->navigationTabs = [
 			[
 				'slug' 			=> 'email-templates',
@@ -74,7 +73,7 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 	      <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
 
 	      <?php
-		  	$navigation_tabs = $this->getNavgitaionTabs(); 
+		  	$navigation_tabs = $this->getNavgitaionTabs();
 		  	$active_tab = 'email-templates';
 
 	      	if(isset($_GET['tab'])) {
@@ -83,30 +82,30 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 	      ?>
 
 		  <h2 class="nav-tab-wrapper">
-			  <?php 
+			  <?php
 			 	foreach ($navigation_tabs as $tab) {
-					
-					$active_class = ($tab['slug'] == $active_tab) ? 'nav-tab-active' : '';
-					
-					echo '<a href="?page=inpursuit-settings&tab='.$tab['slug'].'" class="nav-tab '.$active_class.'">'.$tab['title'].'</a>';
 
-				} 
+					$active_class = ($tab['slug'] == $active_tab) ? 'nav-tab-active' : '';
+
+					echo '<a href="?page=inpursuit-email-settings&tab='.$tab['slug'].'" class="nav-tab '.$active_class.'">'.$tab['title'].'</a>';
+
+				}
 			  ?>
 		  </h2>
 
 
 	      <form action="options.php" method="post">
 	        <?php
-			
+
 			foreach ($navigation_tabs as $tab) {
 				if( $active_tab == $tab['slug'] ) {
 					settings_fields( $tab['section-page'] );
 					do_settings_sections( $tab['section-page'] );
-					
+
 					break;
 				}
-			}	
-	        
+			}
+
 	        // output save settings button
 	        submit_button( 'Save Settings' );
 	        ?>
@@ -162,7 +161,7 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 					             'type' => 'string',
 					             'sanitize_callback' => 'sanitize_textarea_field',
 					             'default' => ''
-					        	] 
+					        	]
 			],
 
 			[
@@ -172,7 +171,7 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 					             'type' => 'string',
 					             'sanitize_callback' => 'sanitize_textarea_field',
 					             'default' => ''
-					        	] 
+					        	]
 			],
 
 			[
@@ -182,7 +181,7 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 					             'type' => 'string',
 					             'sanitize_callback' => 'sanitize_text_field',
 					             'default' => ''
-					        	] 
+					        	]
 			],
 
 			[
@@ -192,7 +191,7 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 					             'type' => 'string',
 					             'sanitize_callback' => 'sanitize_text_field',
 					             'default' => ''
-					        	] 
+					        	]
 			],
 
 			[
@@ -202,7 +201,7 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 					             'type' => 'string',
 					             'sanitize_callback' => 'sanitize_text_field',
 					             'default' => ''
-					        	] 
+					        	]
 			],
 		];
 
@@ -210,69 +209,69 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 			$this->registerSetting($option);
 		}
 
-		
+
 		//register setting field
 
 		$settings_fields_args = [
 			[
-				'setting-name' => 'inpursuit_settings_template_birthday', 
-				'field-title'  => 'Birthday Email Template', 
-				'field-callback' =>	[$this, 'textareaFieldCb'], 
-				'page-slug'	   => 'inpursuit-email-templates', 
+				'setting-name' => 'inpursuit_settings_template_birthday',
+				'field-title'  => 'Birthday Email Template',
+				'field-callback' =>	[$this, 'textareaFieldCb'],
+				'page-slug'	   => 'inpursuit-email-templates',
 				'section-id'   => 'inpursuit_email_template_section',
 				'field-args' => [
 							 	 'label_for' => 'inpursuit_settings_template_birthday',
-							    ],	
+							    ],
 			],
 
 			[
-				'setting-name' => 'inpursuit_settings_template_wedding', 
-				'field-title'  => 'Marriage Anniversary Email Template', 
-				'field-callback' =>	[$this, 'textareaFieldCb'], 
-				'page-slug'	   => 'inpursuit-email-templates', 
+				'setting-name' => 'inpursuit_settings_template_wedding',
+				'field-title'  => 'Marriage Anniversary Email Template',
+				'field-callback' =>	[$this, 'textareaFieldCb'],
+				'page-slug'	   => 'inpursuit-email-templates',
 				'section-id'   => 'inpursuit_email_template_section',
 				'field-args' => [
 							 	 'label_for' => 'inpursuit_settings_template_wedding',
-							    ],	
+							    ],
 			],
 
 			[
-				'setting-name' => 'inpursuit_settings_email_from', 
-				'field-title'  => 'Email From', 
-				'field-callback' =>	[$this, 'textFieldCb'], 
-				'page-slug'	   => 'inpursuit-email-fields', 
+				'setting-name' => 'inpursuit_settings_email_from',
+				'field-title'  => 'Email From',
+				'field-callback' =>	[$this, 'textFieldCb'],
+				'page-slug'	   => 'inpursuit-email-fields',
 				'section-id'   => 'inpursuit_email_field_section',
 				'field-args' => [
 							 	 'label_for' => 'inpursuit_settings_email_from',
-							    ],	
+							    ],
 			],
 
 			[
-				'setting-name' => 'inpursuit_settings_email_subject', 
-				'field-title'  => 'Email Subject', 
-				'field-callback' =>	[$this, 'textFieldCb'], 
-				'page-slug'	   => 'inpursuit-email-fields', 
+				'setting-name' => 'inpursuit_settings_email_subject',
+				'field-title'  => 'Email Subject',
+				'field-callback' =>	[$this, 'textFieldCb'],
+				'page-slug'	   => 'inpursuit-email-fields',
 				'section-id'   => 'inpursuit_email_field_section',
 				'field-args' => [
-							 	 'label_for' => 'inpursuit_settings_email_subject',	
-							    ],	
+							 	 'label_for' => 'inpursuit_settings_email_subject',
+							    ],
 			],
 
 			[
-				'setting-name' => 'inpursuit_settings_cron_time', 
-				'field-title'  => 'Time to Schedule Email', 
-				'field-callback' =>	[$this, 'textFieldCb'], 
-				'page-slug'	   => 'inpursuit-cron-settings', 
+				'setting-name' => 'inpursuit_settings_cron_time',
+				'field-title'  => 'Time to Schedule Email',
+				'field-callback' =>	[$this, 'textFieldCb'],
+				'page-slug'	   => 'inpursuit-cron-settings',
 				'section-id'   => 'inpursuit_cron_settings_section',
 				'field-args' => [
 							 	 'label_for' 	=> 'inpursuit_settings_cron_time',
 								 'class'	 	=> '',
 								 'placeholder' 	=> 'HH:MM:SS'
-							    ],	
+							    ],
 			],
 		];
 
-	
+
 		foreach ($settings_fields_args as $key => $option) {
 			$this->registerSettingField($option);
 		}
@@ -286,9 +285,9 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 	public function registerSection($arg)
 	{
 		add_settings_section(
-			$arg['section-id'], 
-			$arg['section-title'], 
-			$arg['section-callback'], 
+			$arg['section-id'],
+			$arg['section-title'],
+			$arg['section-callback'],
 			$arg['page-slug']
 		);
 	}
@@ -296,12 +295,12 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 
 	/**
 	 * Wrapper function for registering a Setting
-	 */		
+	 */
 	public function registerSetting($arg)
 	{
 		register_setting(
-			$arg['page-slug'], 
-			$arg['setting-name'], 
+			$arg['page-slug'],
+			$arg['setting-name'],
 			$arg['type-args']
 		);
 	}
@@ -313,11 +312,11 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 	public function registerSettingField($arg)
 	{
 		add_settings_field(
-			$arg['setting-name'], 
-			$arg['field-title'], 
-			$arg['field-callback'], 
-			$arg['page-slug'], 
-			$arg['section-id'], 
+			$arg['setting-name'],
+			$arg['field-title'],
+			$arg['field-callback'],
+			$arg['page-slug'],
+			$arg['section-id'],
 			$arg['field-args']
 		);
 	}
@@ -327,11 +326,11 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 	 * Callback for rendering textarea field for registered setting
 	 */
 	public function textareaFieldCb($args)
-	{ 
+	{
 		$option =  get_option($args['label_for']); ?>
 
 		<textarea name="<?php echo $args['label_for'];?>" class="large-text" rows="10"><?php echo isset($option) ? $option : '';  ?></textarea>
-			
+
 		<?php
 	}
 
