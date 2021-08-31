@@ -1,4 +1,5 @@
 var API = require( '../lib/api.js' );
+var endpoints = require( '../lib/endpoints.js' );
 
 module.exports = Vue.component( 'add-comment', {
 	template	: "<div><button type='button' class='button' @click='openForm()'>Add Comment</button><div class='thickbox-modal' :class='status'><div class='thickbox-modal-content'><header>Add Comment<button type='button' class='close-btn' @click='closeForm()'>&times;</button></header><p><textarea v-model='comment.comment'></textarea></p><p><button type='button' class='button' @click='saveForm()'>Submit</button><span class='spinner' :class='{active: loading}'></span></p></div></div></div>",

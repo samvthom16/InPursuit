@@ -23,6 +23,7 @@
 		'rest-authentication/rest-authentication.php',
 		'lib/class-inpursuit-greetings.php',
 		'lib/class-inpursuit-mailer.php',
+		'email/email.php'
 	);
 
 	foreach( $inc_files as $inc_file ){

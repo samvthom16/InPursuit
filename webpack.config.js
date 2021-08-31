@@ -5,13 +5,15 @@ const config = {
 		app: "./dist/js/app.js",
 	},
 	output: {
-		path: __dirname + "/dist/js/",
+		path: __dirname + "/dist/js/final/",
 		filename: "app-final.js"
 	},
 	plugins: [
+
 	],
   module: {
-
+		rules: [
+		]
 	}
 };
 

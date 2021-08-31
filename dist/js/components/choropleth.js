@@ -3,9 +3,12 @@ var API = require( '../lib/api.js' );
 var endpoints = require( '../lib/endpoints.js' );
 
 module.exports = Vue.component( 'inpursuit-choropleth-map', {
-	template: "<div data-behaviour='choropleth-map'><div id='map'></div></div>",
+	template: "<div data-behaviour='choropleth-map'>" +
+		"<span class='inpursuit-spinner spinner' :class='{active: loading}'></span>" +
+		"<div id='map'></div></div>",
 	data(){
 		return {
+			loading		: true,
 			data 			: {},
 			map_jsons : {},
 		}
@@ -99,6 +102,8 @@ module.exports = Vue.component( 'inpursuit-choropleth-map', {
 			if( window_width < 500 ){ zoomLevel = data['map']['mobile']['zoom']; }
 			else if( window_width < 768 ){ zoomLevel = data['map']['tablet']['zoom']; }
 
+			//var L = require( '../leaflet.geocsv.js' );
+
 			//SETUP BASEMAP
 			var map = L.map('map').setView( [center_lat, center_lng], zoomLevel );
 
@@ -122,6 +127,7 @@ module.exports = Vue.component( 'inpursuit-choropleth-map', {
 				callbackFn	: function( response ){
 					component.map_jsons = response.data;
 					component.drawMap();
+					component.loading = false;
 				}
 			} );
 		},
@@ -136,7 +142,14 @@ module.exports = Vue.component( 'inpursuit-choropleth-map', {
 		}
 	},
 	created: function(){
-		this.getMapData();
-		this.getRegionsData();
+		var component = this;
+		require.ensure(['../leaflet.geocsv.js'], function( ){
+
+			// LOAD THE REQUIRED CODE
+			require( '../leaflet.geocsv.js' );
+
+			component.getMapData();
+			component.getRegionsData();
+		} );
 	}
 } );

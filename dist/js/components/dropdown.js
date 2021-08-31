@@ -1,16 +1,18 @@
 var debounceMixin = require( '../mixins/debounce.js' );
 var defaultMixin = require( '../mixins/default.js' );
 
+var vuejsDropdown = require( '../vuejs-dropdown.js' );
+Vue.use( Dropdown );
+
 module.exports = Vue.component( 'inpursuit-dropdown', {
-	props		: ['settings', 'placeholder', 'slug'],
+	props		: ['placeholder', 'slug', 'selectCallback'],
 	mixins	: [ defaultMixin, debounceMixin ],
 	template: '<Dropdown :options="getOptions()" :disabled="false" v-on:selected="debounceEvent" :maxItem="10" :placeholder="placeholder"></Dropdown>',
 	methods	: {
 		debounceCallback: function( option ){
 			if( option.id != undefined ){
-				this.$parent.filterTerms[ this.slug ]['value'] = option.id;
-				if( this.$parent.page != undefined ){ this.$parent.page = 1;}
-				this.$parent.getPosts();
+				// CALLBACK FROM THE PROPS
+				this.selectCallback( this.slug, option.id );
 			}
 		},
 		getOptions: function(){

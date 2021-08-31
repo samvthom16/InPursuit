@@ -42,7 +42,7 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 		$field_name = apply_filters( 'inpursuit_rest_callback_field', $field_name );
 		$terms = wp_get_object_terms( $object['id'], $field_name, array( 'fields' => 'ids' ) );
 
-		$single_taxonomy_list = array( 'inpursuit-gender', 'inpursuit-status' );
+		$single_taxonomy_list = array( 'inpursuit-gender', 'inpursuit-status', 'inpursuit-location', 'inpursuit-event-type' );
 
 		if( is_array( $terms ) && in_array( $field_name, $single_taxonomy_list ) ){
 			if( count( $terms ) ) return $terms[0];

@@ -6,15 +6,17 @@
 #inpursuit-misc .orbit-form-group{ padding-top: 0; margin-top: -3px; }
 #inpursuit-misc select, #inpursuit-misc input[type=date]{ line-height: 1.7; min-height: 0; font-size: 12px; width: 100%; }
 
-.inpursuit-grid3, .inpursuit-grid2{ display: grid; grid-template-columns: 1fr 1fr 1fr; grid-gap: 10px; }
+.inpursuit-grid3, .inpursuit-grid2, .inpursuit-grid21{ display: grid; grid-template-columns: 1fr 1fr 1fr; grid-gap: 10px; }
 .inpursuit-grid2{ grid-template-columns: 1fr 1fr; }
+.inpursuit-grid21{ grid-template-columns: 2fr 1fr; }
 
 
 #inpursuit-event-members .spinner,#inpursuit-member-history .spinner,.inpursuit-search-filters .spinner,
-.inpursuit-form .spinner{
+.inpursuit-form .spinner, .inpursuit-spinner.spinner{
 	float: none;
+	display: none;
 }
-.spinner.active { visibility: visible; }
+.spinner.active { visibility: visible; display: inline-block; }
 
 @media( max-width: 960px ){
 	.inpursuit-grid3{ grid-template-columns: 1fr 1fr;  }
@@ -44,13 +46,13 @@
 .post-terms .badge.inpursuit-profession::after{ content: "\f12b"; }
 
 
-.post-terms .badge.inpursuit-event-type{ background: #c8a379; color: #fff; }
-.post-terms .badge.inpursuit-event-type::after{ content: "\f508"; }
+.post-terms .badge.inpursuit-event-type, .post-terms .badge.event_type{ background: #c8a379; color: #fff; }
+.post-terms .badge.inpursuit-event-type::after, .post-terms .badge.event_type::after{ content: "\f508"; }
 
 .post-terms .badge.inpursuit-status{ background: #9fb7b9; color: #fff; }
-.post-terms .badge.inpursuit-location{ background: #c3b0a1; color: #fff; }
 
-.post-terms .badge.inpursuit-location::after{ content: "\f230"; }
+.post-terms .badge.inpursuit-location, .post-terms .badge.location{ background: #c3b0a1; color: #fff; }
+.post-terms .badge.inpursuit-location::after, .post-terms .badge.location::after{ content: "\f230"; }
 
 
 
@@ -177,6 +179,12 @@
 
 
 .inpursuit-member-card{ padding: 15px; background: #fff; }
+.inpursuit-member-card.draft{ position: relative; border: #555 solid 1px; }
+.inpursuit-member-card.draft::after{
+	content: "Archived"; top: 0; right: 0;
+	background: #555; color: #fff;
+	position: absolute; padding: 5px 10px;
+}
 .inpursuit-member-card a[href]{ text-decoration: none; outline: none; }
 .inpursuit-member-title, .inpursuit-event-title{ grid-template-columns: 120px 1fr; grid-gap: 15px; display: grid; }
 .inpursuit-event-title{ grid-template-columns: 80px 1fr; }
@@ -218,3 +226,57 @@
 
 .inpursuit-form label{ color: #555; }
 .inpursuit-form .inpursuit-form-field{ margin-bottom: 20px; }
+
+.m-chckbox--container{ margin: 5px 0 !important;}
+.m-chckbox--label{ padding-left: 10px !important; }
+
+.inpursuit-meta{
+	margin: 0;
+	margin-bottom: 5px;
+	color: #555;
+	position: relative;
+	padding-left: 30px;
+}
+
+.inpursuit-meta span{ font-weight: 600;}
+
+.inpursuit-meta::after{
+	font-family: dashicons; position: absolute; left: 0px; top:-5px;
+	font-size: 22px; color: #999;
+}
+.inpursuit-meta.wedding::after{ content: "\f508"; }
+.inpursuit-meta.birthday::after{ content: "\f145"; }
+.inpursuit-meta.email::after{ content: "\f466"; }
+.inpursuit-meta.phone::after{ content: "\f125"; }
+
+.inpursuit-meta-headline{
+	margin: 0 0 15px 0;
+	text-transform: uppercase;
+	color: #999;
+}
+
+.inpursuit-post-actions{
+	position: absolute;
+	right: -10px;
+	top: -20px;
+	color: #999;
+	line-height: 1;
+}
+.inpursuit-post-actions a[href]{ padding-left: 15px; position: relative; text-decoration: none; color: inherit;}
+.inpursuit-post-actions a[href]:hover{ text-decoration: underline;}
+.inpursuit-post-actions a[href]::after{ font-family: dashicons; position: absolute; left: 0px; top: 4px; }
+.inpursuit-post-actions a[href].edit::after{ content: "\f464"; }
+.inpursuit-post-actions a[href].delete::after{ content: "\f182"; }
+.inpursuit-post-actions a[href].archive::after{ content: "\f17b"; }
+
+.inpursuit-post-archived{
+	position: relative;
+	padding: 10px;
+	background: #555;
+	margin-bottom: 20px;
+	padding-left: 30px;
+	color: #fff;
+}
+.inpursuit-post-archived::after{ font-family: dashicons; position: absolute; left: 10px; top: 10px; content: "\f17b"; }
+
+.list-inline li{ display: inline-block; }
