@@ -3,6 +3,7 @@
 
 	$inc_files = array(
 		'class-inpursuit-admin-ui.php',
+		'class-inpursuit-admin-settings.php',
 		'class-inpursuit-post-admin-ui-base.php',
 		'class-inpursuit-member-admin-ui.php',
 		'class-inpursuit-event-admin-ui.php',

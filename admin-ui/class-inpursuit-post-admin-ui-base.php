@@ -24,9 +24,13 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 
 		// disable wyswyg for custom post type, using the global $post
 		add_filter('user_can_richedit', function( $default ){
-  		global $post;
-  		if( $post->post_type === $this->getPostType() )  return false;
-  		return $default;
+	  		global $post;
+	  		
+	  		if( isset($post->post_type) && $post->post_type === $this->getPostType() ) {
+	  			return false;	
+	  		} 
+	  		
+	  		return $default;
 		});
 
 		// disable for post types
@@ -200,7 +204,7 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 			'inpursuit-location'=> 'dashicons-admin-site',
 			'inpursuit-status' 	=> 'dashicons-performance',
 			'inpursuit-gender' 	=> 'dashicons-admin-users',
-			'inpursuit-group'	 	=> 'dashicons-networking'
+			'inpursuit-group'	=> 'dashicons-networking'
 		);
 		if( isset( $icons[ $slug ] ) ) return $icons[ $slug ];
 		return 'dashicons-admin-tools';

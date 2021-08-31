@@ -12,7 +12,7 @@ class INPURSUIT_DB_MEMBER_DATES extends INPURSUIT_DB_BASE{
 
 		$this->setEventTypes( array(
 			'birthday'	=> 'Birthday',
-			'wedding'		=> 'Wedding',
+			'wedding'	=> 'Wedding',
 		) );
 
 		parent::__construct();
@@ -84,6 +84,28 @@ class INPURSUIT_DB_MEMBER_DATES extends INPURSUIT_DB_BASE{
 			'birthday'
 		) );
 		return $wpdb->get_var( $query );
+	}
+
+	/**
+	 * Returns list of members for each events on current date. 
+	 *
+	 **/
+	public function getMembersEventForToday()
+	{
+		global $wpdb;
+		$table = $this->getTable();
+		$events = strtolower(implode("','", $this->getEventTypes()));
+		
+		$query = "SELECT member_id, event_type, event_date FROM $table WHERE event_type IN ('". $events ."') AND event_date=CURDATE();";
+		
+		$rows = $wpdb->get_results($query);
+		
+		$result = [];
+		foreach ($rows as $row) {
+			$result[$row->event_type][] = $row; 
+		}
+		
+		return $result;
 	}
 
 }

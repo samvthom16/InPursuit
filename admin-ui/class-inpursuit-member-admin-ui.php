@@ -7,13 +7,13 @@ class INPURSUIT_MEMBER_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 
 		$this->setMetaBoxes( array(
 			array(
-				'id'				=> 'inpursuit-member-info',
-				'title'			=> 'Additional Information',
+				'id'		=> 'inpursuit-member-info',
+				'title'		=> 'Additional Information',
 				'context'	=> 'side'
 			),
 			array(
-				'id'				=> 'inpursuit-member-history',
-				'title'			=> 'History',
+				'id'		=> 'inpursuit-member-history',
+				'title'		=> 'History',
 				'supports'	=>	array('editor')
 			),
 		) );
