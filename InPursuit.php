@@ -20,7 +20,8 @@
 		'db/db.php',
 		'admin-ui/admin-ui.php',
 		'rest-api/rest-api.php',
-		'rest-authentication/rest-authentication.php'
+		'rest-authentication/rest-authentication.php',
+		'email/email.php'
 	);
 
 	foreach( $inc_files as $inc_file ){
