@@ -19,7 +19,10 @@ class INPURSUIT_EMAIL extends INPURSUIT_BASE{
 
     $to = $this->getInpursuitUsersEmail();
 
-    $from = 'From: Inpursuit <stephen@sputznik.com>';
+    $site_admin_email = get_bloginfo('admin_email');
+
+    $from = 'From: Inpursuit <'.$site_admin_email.'>';
+
     $cont_type = 'Content-Type: text/html; charset=UTF-8';
 
     $headers = array( $cont_type, $from );
