@@ -11,15 +11,15 @@ class INPURSUIT_MAILER extends INPURSUIT_BASE {
 
     /**
      *  action hook cb to be used in scheduling cron email events
-     * */ 
+     * */
 	function cronEmailCb($to, $subject, $body, $header){
 		wp_mail($to, $subject, $body, $header);
 	}
-	
+
 
 	/**
      * Use this function when asyncronus wp_mail behaviour is required
-     * Schedules each outgoing email as a cron job 
+     * Schedules each outgoing email as a cron job
      */
 	function sendEmail($to, $subject, $body, $header){
 
@@ -27,13 +27,13 @@ class INPURSUIT_MAILER extends INPURSUIT_BASE {
 				'to'		=> $to,
 				'subject'	=> $subject,
 				'body'		=> $body,
-				'header'	=> $header	
+				'header'	=> $header
 			);
-			
+
 		if(!wp_next_scheduled( 'inpursuit_cron_email' )){
 			wp_schedule_single_event( time(), 'inpursuit_cron_email', $args );
 		}
-	}    
+	}
 
 }
 

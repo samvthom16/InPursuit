@@ -109,14 +109,9 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
 		$comment_db = INPURSUIT_DB_COMMENT::getInstance();
 		$insert_id = $comment_db->insert( $item );
 
-    $comment_email = INPURSUIT_EMAIL::getInstance();
-
-		if( $insert_id ){
-
-      // SEND EMAIL
-      $comment_email->sendCommentEmailNotification( $item );
-
-			return new WP_REST_Response( $item, 200 );
+    if( $insert_id ){
+      do_action( 'inpursuit_comment_created', $item );
+      return new WP_REST_Response( $item, 200 );
 		}
 		return new WP_Error( 'cant-create', __( 'message', 'text-domain' ), array( 'status' => 500 ) );
   }

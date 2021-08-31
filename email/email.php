@@ -2,6 +2,10 @@
 
 class INPURSUIT_EMAIL extends INPURSUIT_BASE{
 
+  function __construct(){
+    add_action( 'inpursuit_comment_created', array( $this, 'sendCommentEmailNotification' ) );
+  }
+
   // SEND EMAIL TO ALL THE ADMINSTRATORS
   function sendCommentEmailNotification( $comment_details ){
 
@@ -54,3 +58,5 @@ class INPURSUIT_EMAIL extends INPURSUIT_BASE{
   }
 
 }
+
+INPURSUIT_EMAIL::getInstance();
