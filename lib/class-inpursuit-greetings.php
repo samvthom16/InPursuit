@@ -69,36 +69,31 @@ class INPURSUIT_GREETINGS extends INPURSUIT_BASE {
         }
     }
 
-    public function prepareGreeting($member, $event)
-    {
-        $member_meta = get_post_meta($member->member_id);
-        $member_email = $member_meta['email'][0];
+    public function prepareGreeting( $member, $event ){
 
-        // exit with empty array if member doesn't has email address
-        if( $member_email == '' ) return [];
+      // GET MEMBER EMAIL ADDRESS
+      $member_meta = get_post_meta( $member->member_id );
+      $member_email = $member_meta['email'][0];
 
-        $member_name = get_the_title( $member->member_id );
-        $template_vars = [ '$name' => $member_name ];
+      // GET TEMPLATE BODY AND SUBJECT FROM THE SETTINGS SECTION
+      $template = get_option( 'inpursuit_settings_template_' . strtolower( $event ) );
+      $subject = get_option( 'inpursuit_settings_subject_' . strtolower( $event ) );
 
-        $template = get_option( 'inpursuit_settings_template_' . strtolower( $event ) );
-        $subject = get_option( 'inpursuit_settings_subject_' . strtolower( $event ) );
-        $body = strtr( $template, $template_vars );
+      // exit with empty array if member doesn't has email address
+      if( ( $member_email == '' ) || ( $template == '' ) || ( $subject == '' ) ) return [];
 
-        $body = str_replace( "\r\n", "<br />", $body );
+      $member_name = get_the_title( $member->member_id );
+      $template_vars = [ '$name' => $member_name ];
+      $body = strtr( $template, $template_vars );
+      $body = str_replace( "\r\n", "<br />", $body );
 
-        //$from = get_option('inpursuit_settings_email_from');
-        //$cont_type = 'Content-Type: text/html; charset=UTF-8';
-
-        $greeting = [
-            'to'        => $member_email,
-            'subject'   => $subject,
-            'body'      => $body,
-            //'headers'   => [ $cont_type, $from ]
-        ];
-
-        return $greeting;
+      $greeting = [
+        'to'        => $member_email,
+        'subject'   => $subject,
+        'body'      => $body,
+      ];
+      return $greeting;
     }
-
 }
 
 INPURSUIT_GREETINGS::getInstance();
