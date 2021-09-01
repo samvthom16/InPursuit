@@ -84,7 +84,7 @@ class INPURSUIT_GREETINGS extends INPURSUIT_BASE {
         $subject = get_option( 'inpursuit_settings_subject_' . strtolower( $event ) );
         $body = strtr( $template, $template_vars );
 
-        $body = str_replace( "\r\n", "<br>", $body );
+        $body = str_replace( "\r\n", "<br />", $body );
 
         //$from = get_option('inpursuit_settings_email_from');
         //$cont_type = 'Content-Type: text/html; charset=UTF-8';
