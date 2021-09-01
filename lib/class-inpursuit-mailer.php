@@ -27,7 +27,7 @@ class INPURSUIT_MAILER extends INPURSUIT_BASE {
     if( count( $header ) == 0 ){
 
       $header = array(
-        'Content-Type: text/html; charset=UTF-8',
+        'Content-Type: text/plain; charset=UTF-8',
         get_bloginfo( 'admin_email' )
       );
     }
