@@ -15,7 +15,7 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 				'user_id'			=> $row->user_id,
 				'author_name'	=> get_the_author_meta( 'display_name', $row->user_id ),
 				'title'				=> array( 'rendered' => $row->text ),
-				'date'				=> $row->post_date,
+				'date'				=> get_date_from_gmt( $row->post_date ),
 				'type'				=> $row->type,
 				'text'				=> '',
 				'edit_url'		=> admin_url( 'post.php?action=edit&post=' . $row->ID )

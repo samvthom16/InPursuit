@@ -98,3 +98,5 @@ class INPURSUIT_GREETINGS extends INPURSUIT_BASE {
     }
 
 }
+
+INPURSUIT_GREETINGS::getInstance();
