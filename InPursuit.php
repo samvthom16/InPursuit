@@ -16,14 +16,11 @@
 
 	$inc_files = array(
 		'class-inpursuit-base.php',
-		'lib/class-inpursuit-wp-util.php',
 		'db/db.php',
 		'admin-ui/admin-ui.php',
 		'rest-api/rest-api.php',
 		'rest-authentication/rest-authentication.php',
-		'lib/class-inpursuit-greetings.php',
-		'lib/class-inpursuit-mailer.php',
-		'email/email.php'
+		'lib/lib.php',
 	);
 
 	foreach( $inc_files as $inc_file ){
