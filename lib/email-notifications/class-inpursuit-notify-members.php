@@ -44,6 +44,7 @@ class INPURSUIT_NOTIFY_MEMBERS extends INPURSUIT_BASE {
       $greeting = $this->prepareGreeting($member, $event);
       if( isset( $greeting['to'] ) ) {
         $mailer->sendEmail( $greeting['to'], $greeting['subject'], $greeting['body'] );
+        do_action( 'inpursuit_members_notified', $greeting );
       }
     }
   }

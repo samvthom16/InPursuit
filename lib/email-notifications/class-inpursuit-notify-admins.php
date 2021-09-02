@@ -4,6 +4,7 @@ class INPURSUIT_NOTIFY_ADMINS extends INPURSUIT_BASE{
 
   function __construct(){
     add_action( 'inpursuit_comment_created', array( $this, 'notifyComment' ) );
+    add_action( 'inpursuit_members_notified', array( $this, 'notifyGreeting' ) );
   }
 
   // SEND EMAIL TO ALL THE ADMINSTRATORS
@@ -13,11 +14,20 @@ class INPURSUIT_NOTIFY_ADMINS extends INPURSUIT_BASE{
     $comment_body = $comment_details['comment']; // Comment body
 
     ob_start();
-    include( 'templates/comment-email.php' );
+    include( 'templates/comment.php' );
     $body = ob_get_contents();
     ob_end_clean();
-    
+
     $this->sendEmail( $this->getEmailsOfAdmins(), 'Comment Notification', $body );
+  }
+
+  function notifyGreeting( $greeting ){
+    ob_start();
+    include( 'templates/greeting.php' );
+    $body = ob_get_contents();
+    ob_end_clean();
+
+    $this->sendEmail( $this->getEmailsOfAdmins(), 'Greeting Notification', $body );
   }
 
   function sendEmail( $to, $subject, $body ){

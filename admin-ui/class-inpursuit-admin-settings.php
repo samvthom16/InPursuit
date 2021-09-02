@@ -42,7 +42,7 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 
 			[
 				'slug' 			=> 'email-fields',
-				'title'			=> 'Email Fields',
+				'title'			=> 'Email From Fields',
 				'section-page' 	=> 'inpursuit-email-fields'
 			],
 
