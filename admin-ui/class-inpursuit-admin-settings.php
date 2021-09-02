@@ -152,111 +152,56 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 
 
 		//register setting
-
-
-
 		$setting_args = [
-			/*
 			[
-				'page-slug' 	=> 'inpursuit-email-templates',
-				'setting-name' 	=> 'inpursuit_settings_template_birthday',
-			    'type-args' =>  [
-					             'type' => 'string',
-					             'sanitize_callback' => 'sanitize_textarea_field',
-					             'default' => ''
-					        	]
+				'page-slug' 		=> 'inpursuit-email-fields',
+				'setting-name' 	=> 'inpursuit_settings_email_from_name',
+			  'type-args' 		=>  [
+					'type' 							=> 'string',
+					'sanitize_callback' => 'sanitize_text_field',
+					'default' 					=> ''
+				]
 			],
-
 			[
-				'page-slug' 	=> 'inpursuit-email-templates',
-				'setting-name' 	=> 'inpursuit_settings_template_wedding',
-			    'type-args' =>  [
-					             'type' => 'string',
-					             'sanitize_callback' => 'sanitize_textarea_field',
-					             'default' => ''
-					        	]
+				'page-slug' 		=> 'inpursuit-email-fields',
+				'setting-name' 	=> 'inpursuit_settings_email_from_address',
+			  'type-args' 		=>  [
+					 'type' 							=> 'string',
+					 'sanitize_callback' 	=> 'sanitize_text_field',
+					 'default' 						=> ''
+				 ]
 			],
-			*/
 			[
-				'page-slug' 	=> 'inpursuit-email-fields',
-				'setting-name' 	=> 'inpursuit_settings_email_from',
-			    'type-args' =>  [
-					             'type' => 'string',
-					             'sanitize_callback' => 'sanitize_text_field',
-					             'default' => ''
-					        	]
-			],
-
-			[
-				'page-slug' 	=> 'inpursuit-email-fields',
-				'setting-name' 	=> 'inpursuit_settings_email_subject',
-			    'type-args' =>  [
-					             'type' => 'string',
-					             'sanitize_callback' => 'sanitize_text_field',
-					             'default' => ''
-					        	]
-			],
-
-			[
-				'page-slug' 	=> 'inpursuit-cron-settings',
+				'page-slug' 		=> 'inpursuit-cron-settings',
 				'setting-name' 	=> 'inpursuit_settings_cron_time',
-			    'type-args' =>  [
-					             'type' => 'string',
-					             'sanitize_callback' => 'sanitize_text_field',
-					             'default' => ''
-					        	]
+			  'type-args' 		=>  [
+					'type' => 'string',
+					'sanitize_callback' => 'sanitize_text_field',
+					'default' => ''
+				]
 			],
 		];
 
 
 
 
-		//register setting field
-
+		// register setting field
 		$settings_fields_args = [
-			/*
 			[
-				'setting-name' => 'inpursuit_settings_template_birthday',
-				'field-title'  => 'Birthday Email Template',
-				'field-callback' =>	[$this, 'textareaFieldCb'],
-				'page-slug'	   => 'inpursuit-email-templates',
-				'section-id'   => 'inpursuit_email_template_section',
-				'field-args' => [
-							 	 'label_for' => 'inpursuit_settings_template_birthday',
-							    ],
+				'setting-name' 		=> 'inpursuit_settings_email_from_name',
+				'field-title'  		=> 'Email From Name',
+				'field-callback' 	=>	[$this, 'textFieldCb'],
+				'page-slug'	   		=> 'inpursuit-email-fields',
+				'section-id'   		=> 'inpursuit_email_field_section',
+				'field-args' 			=> [ 'label_for' => 'inpursuit_settings_email_from_name',],
 			],
-
 			[
-				'setting-name' => 'inpursuit_settings_template_wedding',
-				'field-title'  => 'Marriage Anniversary Email Template',
-				'field-callback' =>	[$this, 'textareaFieldCb'],
-				'page-slug'	   => 'inpursuit-email-templates',
-				'section-id'   => 'inpursuit_email_template_section',
-				'field-args' => [
-							 	 'label_for' => 'inpursuit_settings_template_wedding',
-							    ],
-			],
-			*/
-			[
-				'setting-name' => 'inpursuit_settings_email_from',
-				'field-title'  => 'Email From',
-				'field-callback' =>	[$this, 'textFieldCb'],
-				'page-slug'	   => 'inpursuit-email-fields',
-				'section-id'   => 'inpursuit_email_field_section',
-				'field-args' => [
-							 	 'label_for' => 'inpursuit_settings_email_from',
-							    ],
-			],
-
-			[
-				'setting-name' => 'inpursuit_settings_email_subject',
-				'field-title'  => 'Email Subject',
-				'field-callback' =>	[$this, 'textFieldCb'],
-				'page-slug'	   => 'inpursuit-email-fields',
-				'section-id'   => 'inpursuit_email_field_section',
-				'field-args' => [
-							 	 'label_for' => 'inpursuit_settings_email_subject',
-							    ],
+				'setting-name' 		=> 'inpursuit_settings_email_from_address',
+				'field-title'  		=> 'Email From Address',
+				'field-callback' 	=>	[$this, 'textFieldCb'],
+				'page-slug'	   		=> 'inpursuit-email-fields',
+				'section-id'   		=> 'inpursuit_email_field_section',
+				'field-args' 			=> [ 'label_for' => 'inpursuit_settings_email_from_address' ],
 			],
 
 			[

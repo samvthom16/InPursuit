@@ -26,9 +26,12 @@ class INPURSUIT_MAILER extends INPURSUIT_BASE {
     // DEFAULT HEADER INFORMATION
     if( count( $header ) == 0 ){
 
+      $from_name = get_option( 'inpursuit_settings_email_from_name' );
+      $from_mail = get_option( 'inpursuit_settings_email_from_address' );
+
       $header = array(
         'Content-Type: text/html; charset=ISO-8859-1',
-        get_option( 'inpursuit_settings_email_from' )
+        "$from_name <$from_mail>"
       );
     }
 
