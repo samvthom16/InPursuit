@@ -2,15 +2,15 @@
 <p>
   <b>To:</b>
   <br>
-  <?php echo $greeting['to']; ?>
+  <?php echo $data['to']; ?>
 </p>
 <p>
   <b>Subject:</b>
   <br>
-  <?php echo $greeting['subject']; ?>
+  <?php echo $data['subject']; ?>
 </p>
 <p>
   <b>Body:</b>
   <br>
-  <?php echo $greeting['body']; ?>
+  <?php echo $data['body']; ?>
 </p>

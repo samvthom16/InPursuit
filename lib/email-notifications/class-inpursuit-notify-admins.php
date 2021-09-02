@@ -7,31 +7,24 @@ class INPURSUIT_NOTIFY_ADMINS extends INPURSUIT_BASE{
     add_action( 'inpursuit_members_notified', array( $this, 'notifyGreeting' ) );
   }
 
-  // SEND EMAIL TO ALL THE ADMINSTRATORS
   function notifyComment( $comment_details ){
-    $member_name = get_post_field( 'post_title', $comment_details['post_id'] );
-    $commentor_name = get_the_author_meta( 'display_name', $comment_details['user_id'] );
-    $comment_body = $comment_details['comment']; // Comment body
-
-    ob_start();
-    include( 'templates/comment.php' );
-    $body = ob_get_contents();
-    ob_end_clean();
-
-    $this->sendEmail( $this->getEmailsOfAdmins(), 'Comment Notification', $body );
+    $this->notify( $comment_details, 'comment' );
   }
 
   function notifyGreeting( $greeting ){
+    $this->notify( $greeting, 'greeting' );
+  }
+
+  function notify( $data, $template ){
     ob_start();
-    include( 'templates/greeting.php' );
+    include( "templates/$template.php" );
     $body = ob_get_contents();
     ob_end_clean();
-
-    $this->sendEmail( $this->getEmailsOfAdmins(), 'Greeting Notification', $body );
+    $this->sendEmail( $this->getEmailsOfAdmins(), $template, $body );
   }
 
   function sendEmail( $to, $subject, $body ){
-    $subject .= " From " . get_bloginfo( 'name' );
+    $subject .= " Notification From " . get_bloginfo( 'name' );
     $mailer = INPURSUIT_MAILER::getInstance();
     return $mailer->sendEmail( $to, $subject, $body );
   }
