@@ -28,7 +28,7 @@ class INPURSUIT_MAILER extends INPURSUIT_BASE {
 
       $header = array(
         'Content-Type: text/html; charset=ISO-8859-1',
-        get_bloginfo( 'admin_email' )
+        get_option( 'inpursuit_settings_email_from' )
       );
     }
 
