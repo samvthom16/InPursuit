@@ -7,4 +7,5 @@ module.exports = {
 	'comments'	: 'inpursuit/v1/comments',
 	'map'				: 'inpursuit/v1/map',
 	'regions'		: 'inpursuit/v1/regions',
+	'users' 		: 'wp/v2/users'
 };
