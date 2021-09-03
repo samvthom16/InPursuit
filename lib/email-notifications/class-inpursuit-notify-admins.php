@@ -22,7 +22,7 @@ class INPURSUIT_NOTIFY_ADMINS extends INPURSUIT_BASE{
     ob_end_clean();
     $this->sendEmail( $this->getEmailsOfAdmins(), $template, $body );
   }
-
+  
   function sendEmail( $to, $subject, $body ){
     $subject .= " Notification From " . get_bloginfo( 'name' );
     $mailer = INPURSUIT_MAILER::getInstance();

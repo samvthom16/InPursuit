@@ -17,10 +17,10 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 	{
 		add_submenu_page(
 			'inpursuit',
-			'InPursuit Email Settings',
-      'Email Settings',
+			'Settings',
+      'Settings',
       'manage_options',
-      'inpursuit-email-settings',
+      'inpursuit-settings',
       [$this, 'settingsTemplateCallback']
 	   );
 	}
@@ -31,260 +31,94 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 	 * Update this attribute if new tab needs to be added
 	 * Match the 'section-page' value to 'page-slug' value of section-settings-attributes
 	 */
-	public function setNavigationTabs()
-	{
-		$this->navigationTabs = [
-			[
-				'slug' 			=> 'email-templates',
-				'title'			=> 'Email Templates',
-				'section-page' 	=> 'inpursuit-email-templates'
-			],
-
-			[
-				'slug' 			=> 'email-fields',
-				'title'			=> 'Email From Fields',
-				'section-page' 	=> 'inpursuit-email-fields'
-			],
-
-			[
-				'slug' 			=> 'cron-settings',
-				'title'			=> 'Cron Settings',
-				'section-page' 	=> 'inpursuit-cron-settings'
-			],
-
-		];
+	public function setNavigationTabs(){
+		$this->navigationTabs = array();
 	}
 
 
-	/**
-	 * Returns array config for TabbedNavigation
-	 */
-	public function getNavgitaionTabs()
-	{
-		return $this->navigationTabs;
-	}
+	/*
+	* Returns array config for TabbedNavigation
+	*/
+	public function getNavigationTabs(){ return $this->navigationTabs; }
 
+	public function settingsTemplateCallback(){
+	?>
+		<div class="wrap">
+			<h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
+			<?php
+		  	$navigation_tabs = apply_filters( 'inpursuit_settings_tabs', $this->getNavigationTabs() );
 
-
-	public function settingsTemplateCallback()
-	{
-		?>
-	    <div class="wrap">
-	      <h1><?php echo esc_html( get_admin_page_title() ); ?></h1>
-
-	      <?php
-		  	$navigation_tabs = $this->getNavgitaionTabs();
-		  	$active_tab = 'email-templates';
-
-	      	if(isset($_GET['tab'])) {
-		      	$active_tab = $_GET['tab'];
-	      	}
-	      ?>
+				// CHECK IF ACTIVE TAB IS PASSED IN THE URL
+				// OR ELSE THE SLUG OF THE FIRST TAB
+		  	$active_tab = '';
+				if( isset( $_GET['tab'] ) ){ $active_tab = $_GET['tab']; }
+				elseif( count( $navigation_tabs ) ){
+					$active_tab = $navigation_tabs[0]['slug'];
+				}
+	    ?>
 
 		  <h2 class="nav-tab-wrapper">
-			  <?php
-			 	foreach ($navigation_tabs as $tab) {
-
+			<?php
+				foreach ($navigation_tabs as $tab) {
 					$active_class = ($tab['slug'] == $active_tab) ? 'nav-tab-active' : '';
 
-					echo '<a href="?page=inpursuit-email-settings&tab='.$tab['slug'].'" class="nav-tab '.$active_class.'">'.$tab['title'].'</a>';
+					$page = $_GET['page'];
+					$tab_slug = $tab['slug'];
+					$tab_title = $tab['title'];
 
+					echo "<a href='?page=$page&tab=$tab_slug' class='nav-tab $active_class'>$tab_title</a>";
 				}
-			  ?>
+			?>
 		  </h2>
 
-
-	      <form action="options.php" method="post">
-	        <?php
-
-			foreach ($navigation_tabs as $tab) {
-				if( $active_tab == $tab['slug'] ) {
-					settings_fields( $tab['section-page'] );
-					do_settings_sections( $tab['section-page'] );
-
-					break;
+			<form action="options.php" method="post">
+			<?php
+				foreach ($navigation_tabs as $tab) {
+					if( $active_tab == $tab['slug'] ) {
+						settings_fields( $tab['section-page'] );
+						do_settings_sections( $tab['section-page'] );
+						break;
+					}
 				}
-			}
 
-	        // output save settings button
-	        submit_button( 'Save Settings' );
-	        ?>
-	      </form>
-	    </div>
+				// output save settings button
+	      submit_button( 'Save Settings' );
+			?>
+			</form>
+		</div>
     <?php
 	}
 
 
-	/**
+	/*
 	* Settings Options Registeration
 	*/
-	public function settingsOptionsRegistration()
-	{
+	public function settingsOptionsRegistration(){
 
 		//section settings attributes setup
+		$section_args = apply_filters( 'inpursuit_settings_sections', array() );
 
-		$section_args = [
-			[
-				'section-id' 	=> 'inpursuit_email_template_section',
-				'section-title' => '',
-				'section-callback' => '',
-				'page-slug'		=> 'inpursuit-email-templates'
-			],
-
-			[
-				'section-id' 	=> 'inpursuit_email_field_section',
-				'section-title' => '',
-				'section-callback' => '',
-				'page-slug'		=> 'inpursuit-email-fields'
-			],
-
-			[
-				'section-id' 	=> 'inpursuit_cron_settings_section',
-				'section-title' => '',
-				'section-callback' => '',
-				'page-slug'		=> 'inpursuit-cron-settings'
-			],
-		];
-
-		foreach ($section_args as $key => $option) {
+		foreach ( $section_args as $key => $option ) {
 			$this->registerSection($option);
 		}
 
-
-		//register setting
-		$setting_args = [
-			[
-				'page-slug' 		=> 'inpursuit-email-fields',
-				'setting-name' 	=> 'inpursuit_settings_email_from_name',
-			  'type-args' 		=>  [
-					'type' 							=> 'string',
-					'sanitize_callback' => 'sanitize_text_field',
-					'default' 					=> ''
-				]
-			],
-			[
-				'page-slug' 		=> 'inpursuit-email-fields',
-				'setting-name' 	=> 'inpursuit_settings_email_from_address',
-			  'type-args' 		=>  [
-					 'type' 							=> 'string',
-					 'sanitize_callback' 	=> 'sanitize_text_field',
-					 'default' 						=> ''
-				 ]
-			],
-			[
-				'page-slug' 		=> 'inpursuit-cron-settings',
-				'setting-name' 	=> 'inpursuit_settings_cron_time',
-			  'type-args' 		=>  [
-					'type' => 'string',
-					'sanitize_callback' => 'sanitize_text_field',
-					'default' => ''
-				]
-			],
-		];
-
-
-
-
-		// register setting field
-		$settings_fields_args = [
-			[
-				'setting-name' 		=> 'inpursuit_settings_email_from_name',
-				'field-title'  		=> 'Email From Name',
-				'field-callback' 	=>	[$this, 'textFieldCb'],
-				'page-slug'	   		=> 'inpursuit-email-fields',
-				'section-id'   		=> 'inpursuit_email_field_section',
-				'field-args' 			=> [ 'label_for' => 'inpursuit_settings_email_from_name',],
-			],
-			[
-				'setting-name' 		=> 'inpursuit_settings_email_from_address',
-				'field-title'  		=> 'Email From Address',
-				'field-callback' 	=>	[$this, 'textFieldCb'],
-				'page-slug'	   		=> 'inpursuit-email-fields',
-				'section-id'   		=> 'inpursuit_email_field_section',
-				'field-args' 			=> [ 'label_for' => 'inpursuit_settings_email_from_address' ],
-			],
-
-			[
-				'setting-name' => 'inpursuit_settings_cron_time',
-				'field-title'  => 'Time to Schedule Email',
-				'field-callback' =>	[$this, 'textFieldCb'],
-				'page-slug'	   => 'inpursuit-cron-settings',
-				'section-id'   => 'inpursuit_cron_settings_section',
-				'field-args' => [
-							 	 'label_for' 	=> 'inpursuit_settings_cron_time',
-								 'class'	 	=> '',
-								 'placeholder' 	=> 'HH:MM:SS'
-							    ],
-			],
-		];
-
-
-		// ADD EVENT DATE TYPES
-		$member_dates_db = INPURSUIT_DB_MEMBER_DATES::getInstance();
-		$event_types = $member_dates_db->getEventTypes();
-		//print_r( $event_types );
-
-		foreach( $event_types as $event_slug => $event_title ){
-
-			$page_slug = 'inpursuit-email-templates';
-
-			// SUBJECT SETTINGS
-			$setting_name = 'inpursuit_settings_subject_' . $event_slug;
-			array_push( $setting_args, array(
-				'page-slug' 		=> $page_slug,
-				'setting-name' 	=> $setting_name,
-			  'type-args' 		=> array(
-					'type' 							=> 'string',
-					'sanitize_callback' => 'sanitize_textarea_field',
-					'default' 					=> ''
-				)
-			) );
-			array_push( $settings_fields_args, array(
-				'setting-name' 		=> $setting_name,
-				'field-title' 	 	=> $event_title . ' Email Subject',
-				'field-callback' 	=> [ $this, 'textFieldCb' ],
-				'page-slug'	   		=> $page_slug,
-				'section-id'   		=> 'inpursuit_email_template_section',
-				'field-args' 			=> [ 'label_for' => $setting_name ],
-			) );
-
-			// TEMPLATE SETTINGS
-			$setting_name = 'inpursuit_settings_template_' . $event_slug;
-			array_push( $setting_args, array(
-				'page-slug' 		=> $page_slug,
-				'setting-name' 	=> $setting_name,
-			  'type-args' 		=> array(
-					'type' 							=> 'string',
-					'sanitize_callback' => 'sanitize_textarea_field',
-					'default' 					=> ''
-				)
-			) );
-			array_push( $settings_fields_args, array(
-				'setting-name' 		=> $setting_name,
-				'field-title' 	 	=> $event_title . ' Email Template',
-				'field-callback' 	=> [ $this, 'textareaFieldCb' ],
-				'page-slug'	   		=> $page_slug,
-				'section-id'   		=> 'inpursuit_email_template_section',
-				'field-args' 			=> [ 'label_for' => $setting_name ],
-			) );
-		}
-
-		foreach ($setting_args as $key => $option) {
+		$setting_args = apply_filters( 'inpursuit_settings_args', array() );
+		foreach ( $setting_args as $key => $option ) {
 			$this->registerSetting($option);
 		}
 
-		foreach ($settings_fields_args as $key => $option) {
+		$settings_fields_args = apply_filters( 'inpursuit_settings_fields_args', array() );
+		foreach ( $settings_fields_args as $key => $option ) {
 			$this->registerSettingField($option);
 		}
 
 	}
 
 
-	/**
-	 * Wrapper function for registering section
-	 */
-	public function registerSection($arg)
-	{
+	/*
+	* Wrapper function for registering section
+	*/
+	public function registerSection( $arg ){
 		add_settings_section(
 			$arg['section-id'],
 			$arg['section-title'],
@@ -294,11 +128,10 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 	}
 
 
-	/**
-	 * Wrapper function for registering a Setting
-	 */
-	public function registerSetting($arg)
-	{
+	/*
+	* Wrapper function for registering a Setting
+	*/
+	public function registerSetting( $arg ){
 		register_setting(
 			$arg['page-slug'],
 			$arg['setting-name'],
@@ -310,8 +143,7 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 	/**
 	 * Wrapper function for registering Settings Field
 	 */
-	public function registerSettingField($arg)
-	{
+	public function registerSettingField( $arg ){
 		add_settings_field(
 			$arg['setting-name'],
 			$arg['field-title'],
@@ -326,8 +158,7 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 	/**
 	 * Callback for rendering textarea field for registered setting
 	 */
-	public function textareaFieldCb($args)
-	{
+	public function textareaFieldCb( $args ){
 		$option =  get_option($args['label_for']); ?>
 
 		<textarea name="<?php echo $args['label_for'];?>" class="large-text" rows="10"><?php echo isset($option) ? $option : '';  ?></textarea>
