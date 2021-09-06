@@ -238,7 +238,14 @@
 	padding-left: 30px;
 }
 
-.inpursuit-meta span{ font-weight: 600;}
+.inpursuit-meta span,
+.inpursuit-manager-meta span{ font-weight: 600;}
+
+.inpursuit-manager-meta{
+	margin: 0;
+	margin-bottom: 5px;
+	color: #555555;
+}
 
 .inpursuit-meta::after{
 	font-family: dashicons; position: absolute; left: 0px; top:-5px;
@@ -255,17 +262,22 @@
 	color: #999;
 }
 
-.inpursuit-post-actions{
+.inpursuit-post-actions,
+.inpursuit-user-actions{
 	position: absolute;
 	right: -10px;
 	top: -20px;
 	color: #999;
 	line-height: 1;
 }
-.inpursuit-post-actions a[href]{ padding-left: 15px; position: relative; text-decoration: none; color: inherit;}
-.inpursuit-post-actions a[href]:hover{ text-decoration: underline;}
-.inpursuit-post-actions a[href]::after{ font-family: dashicons; position: absolute; left: 0px; top: 4px; }
-.inpursuit-post-actions a[href].edit::after{ content: "\f464"; }
+.inpursuit-post-actions a[href],
+.inpursuit-user-actions a[href]{ padding-left: 15px; position: relative; text-decoration: none; color: inherit;}
+.inpursuit-post-actions a[href]:hover,
+.inpursuit-user-actions a[href]:hover{ text-decoration: underline;}
+.inpursuit-post-actions a[href]::after,
+.inpursuit-user-actions a[href]::after{ font-family: dashicons; position: absolute; left: 0px; top: 4px; }
+.inpursuit-post-actions a[href].edit::after,
+.inpursuit-user-actions a[href].edit::after{ content: "\f464"; }
 .inpursuit-post-actions a[href].delete::after{ content: "\f182"; }
 .inpursuit-post-actions a[href].archive::after{ content: "\f17b"; }
 

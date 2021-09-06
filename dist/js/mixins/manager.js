@@ -14,6 +14,18 @@ module.exports = {
 				per_page	: this.per_page,
 				context		: 'edit'
 			}
+		},
+		getPostLink: function( post ){
+			var route = {
+				name		: "",
+				params 	: { id : post.id, post: post }
+			};
+
+			if( post.id ){
+				route.name = "SingleManager";
+			}
+
+			return route;
 		}
 	},
 

@@ -54,7 +54,9 @@ var API = function(){
 			if ( typeof options.callbackFn === 'function' ) {
 				options.callbackFn( response );
 			}
-		} );
+		} ).catch(function(error){
+			options.callbackFn( error.response );
+		});
 	};
 
 	return self;
