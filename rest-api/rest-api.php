@@ -8,7 +8,8 @@ $inc_files = array(
 	'class-inpursuit-rest-member.php',
 	'class-inpursuit-rest-event.php',
 	'class-inpursuit-rest-custom.php',
-	'class-inpursuit-rest-comment.php'
+	'class-inpursuit-rest-comment.php',
+	'class-inpursuit-rest-user.php'
 );
 
 foreach( $inc_files as $inc_file ){

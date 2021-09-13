@@ -8,8 +8,12 @@ module.exports = {
 	data(){
 		return {
 			show_element	: {
-				update: true
-			}
+				update: true,
+				multiselect: true
+			},
+			multiselects : [
+				{ label: 'Limit User Access', field: 'group' }
+			],
 		}
 	},
 

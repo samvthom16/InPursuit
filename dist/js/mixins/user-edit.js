@@ -1,10 +1,13 @@
 var endpoints = require( '../lib/endpoints.js' );
+var defaultMixin = require( '../mixins/default.js' );
 var managerMixin = require( '../mixins/manager.js' );
 
 var API = require( '../lib/api.js' );
 
+require( '../form-fields/checkbox.js' );
+
 module.exports = {
-	mixins	: [ managerMixin ],
+	mixins	: [ defaultMixin, managerMixin ],
 	template: `<div class='inpursuit-form' style='margin-top:30px;'>
 				<p v-if="errors.length" style="color: red;font-weight: 500;margin-top: 5px;">
 					<b>Please correct the following error(s):</b>
@@ -23,6 +26,10 @@ module.exports = {
 						<option v-for="role in getRoles()" v-bind:value="role.slug">{{role.name}}</option>
 					</select>
 				</div>
+			</div>
+
+			<div class='inpursuit-form-field inpursuit-grid2' v-if='show_element.multiselect'>
+				<inpursuit-checkbox v-for='multiselect in multiselects' :field='multiselect.field' :label='multiselect.label' :post='post'></inpursuit-checkbox>
 			</div>
 
 			<div class='inpursuit-form-field' style='margin-top: 40px;'>
@@ -44,6 +51,7 @@ module.exports = {
 			errors				: [],
 			post_id				: 0,
 			loading				: true,
+			multiselects : [],
 			metafields : [
 				{	name: 'email', label: "Email Address" },
 				{	name: 'password', label: "Password" },
@@ -210,6 +218,7 @@ module.exports = {
 		// THIS CAN BE USED AS CACHE
 		if( this.$route.params.post != undefined ){
 			this.post = this.$route.params.post;
+			// console.log(this.post);
 		}
 
 	}
