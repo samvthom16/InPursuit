@@ -30,11 +30,14 @@ class INPURSUIT_REST_AUTHENTICATION extends INPURSUIT_BASE{
 
     if( !empty( $username ) && !empty( $password ) ){
 
+      /*
       $user = wp_signon( array(
         'user_login'    => $username,
         'user_password' => $password
       ) );
+      */
 
+      $user = wp_authenticate_username_password( null, $username, $password );
 
       if( is_wp_error( $user ) ){
         $data = $user;

@@ -17,8 +17,8 @@ class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 	{
 		add_submenu_page(
 			'inpursuit',
-			'Settings',
-      'Settings',
+			'Email Settings',
+      'Email Settings',
       'manage_options',
       'inpursuit-settings',
       [$this, 'settingsTemplateCallback']
