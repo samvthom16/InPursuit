@@ -12,8 +12,8 @@ defined( 'ABSPATH' ) or die( 'Hey you cannot access this plugin, you silly human
 class INPURSUIT_REST_AUTHENTICATION extends INPURSUIT_BASE{
 
   function __construct(){
-    add_action( 'wp_ajax_auth_with_flutter', array( $this, 'authentication' ) );
-    add_action( 'wp_ajax_nopriv_auth_with_flutter', array( $this, 'authentication' ) );
+    //add_action( 'wp_ajax_auth_with_flutter', array( $this, 'authentication' ) );
+    //add_action( 'wp_ajax_nopriv_auth_with_flutter', array( $this, 'authentication' ) );
     add_action( 'rest_api_init', array( $this, 'signup' ) );
 
     // ENABLES APPLICATION_PASSWORD SECTION
@@ -21,6 +21,7 @@ class INPURSUIT_REST_AUTHENTICATION extends INPURSUIT_BASE{
 
   }
 
+  /*
   function authentication(){
 
     $data = array();
@@ -29,13 +30,6 @@ class INPURSUIT_REST_AUTHENTICATION extends INPURSUIT_BASE{
     $password = base64_decode($_REQUEST['pkey']);
 
     if( !empty( $username ) && !empty( $password ) ){
-
-      /*
-      $user = wp_signon( array(
-        'user_login'    => $username,
-        'user_password' => $password
-      ) );
-      */
 
       $user = wp_authenticate_username_password( null, $username, $password );
 
@@ -69,6 +63,7 @@ class INPURSUIT_REST_AUTHENTICATION extends INPURSUIT_BASE{
     wp_die();
 
   }
+  */
 
   /* USER REGISTRATION ENDPOINT */
   function signup(){
@@ -77,6 +72,55 @@ class INPURSUIT_REST_AUTHENTICATION extends INPURSUIT_BASE{
       'callback' => array( $this, 'user_registration_callback' ),
       'permission_callback' => '__return_true'
     )	);
+
+    register_rest_route('inpursuit/v1', 'auth', array(
+      'methods' => 'POST',
+      'callback' => array( $this, 'auth_callback' ),
+      'permission_callback' => '__return_true'
+    )	);
+
+  }
+
+  function auth_callback( $request = null ){
+    $response 	= array();
+  	$parameters = $request->get_params();
+  	$username 	= base64_decode( sanitize_text_field( $parameters['username'] ) );
+  	$password 	= base64_decode( sanitize_text_field( $parameters['password'] ) );
+
+    $error = new WP_Error();
+    if ( empty( $username ) ) {
+  		$error->add( 400, __("Username is required.", 'wp-rest-user'), array( 'status' => 400 ) );
+  		return $error;
+  	}
+  	if ( empty( $password ) ) {
+  		$error->add( 400, __("Password is required.", 'wp-rest-user'), array( 'status' => 400 ) );
+  		return $error;
+  	}
+
+    $user = wp_authenticate_username_password( null, $username, $password );
+    if( is_wp_error( $user ) ){
+      $error->add( 400, __("Invalid credentials.", 'wp-rest-user'), array( 'status' => 400 ) );
+      return $error;
+    }
+
+    if( !class_exists('WP_Application_Passwords') ){
+      $error->add( 400, __("WP Application Passwords is disabled.", 'wp-rest-user'), array( 'status' => 400 ) );
+      return $error;
+    }
+
+    $app = new WP_Application_Passwords;
+    $local_time  = current_datetime();
+    $current_time = $local_time->getTimestamp() + $local_time->getOffset();
+
+    $unique_app_name = 'inpursuit_app_'.$current_time;
+    list( $new_password, $new_item ) = $app->create_new_application_password( $user->ID, array( 'name'=> $unique_app_name ) );
+
+    // APPLICATION_PASSWORD
+    $response['new_password'] = $new_password;
+    if( isset( $user->data ) ){
+      $response['user'] = $user->data;
+    }
+    return new WP_REST_Response( $response, 123 );
   }
 
   function user_registration_callback( $request = null ) {
