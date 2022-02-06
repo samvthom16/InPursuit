@@ -85,7 +85,7 @@
     return $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 	}
 
-	/* CORS ENABLED FOR THE TEST VUE SITE */
+	/* CORS ENABLED FOR THE TEST VUE SITE * DIDNT WORK AS EXPECTED
 	add_action('init', function(){
 		$origin = get_http_origin();
     if ( $origin === 'https://inpursuit.vercel.app' ) {
