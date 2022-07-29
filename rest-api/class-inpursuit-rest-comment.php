@@ -88,15 +88,12 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
 	}
 
 	function prepare_item_for_response( $item, $request ){
-		return array(
+
+    return array(
 			'id'				=> $item->ID,
 			'comment'		=> isset( $item->text ) ? $item->text : $item->comment,
 
-      'member'    => array(
-        'id'              => $item->post_id,
-        'title'           => get_the_title( $item->post_id ),
-        'featured_image'  => INPURSUIT_DB::getInstance()->getFeaturedImageURL( $item->post_id )
-      ),
+      'member'    => INPURSUIT_REST_MEMBER::getInstance()->prepareItemResponse( $item->post_id ),
 
       'user'			=> array(
         'id'    => $item->user_id,

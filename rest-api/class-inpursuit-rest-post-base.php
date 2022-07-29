@@ -112,18 +112,29 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 		  function( $post, $field_name, $request ){
 		    $id = $post['id'];
 				return INPURSUIT_DB::getInstance()->getFeaturedImageURL( $id );
-				/*
-		    if( has_post_thumbnail( $id ) ){
-		      $img_arr = wp_get_attachment_image_src( get_post_thumbnail_id( $id ), 'full' );
-		      $url = $img_arr[0];
-		      return $url;
-		    } else {
-		      return plugins_url( "InPursuit/dist/images/default-profile.png" );
-		    }
-				*/
-		  }
+			}
 		);
 
+	}
+
+	function prepareItemResponse( $post_id ){
+		$post = get_post( $post_id );
+		return array(
+			'id'              => $post->ID,
+			'title'           => array(
+				'rendered' => $post->post_title
+			),
+			'featured_image'  => INPURSUIT_DB::getInstance()->getFeaturedImageURL( $post_id ),
+			'slug'            => $post->post_name,
+			'type'            => $post->post_type,
+			'author'					=> intval( $post->post_author ),
+			'date'						=> $post->post_date,
+			'date_gmt'				=> $post->post_date_gmt,
+			'modified'				=> $post->post_modified,
+			'modified_gmt'		=> $post->post_modified_gmt,
+			'status'					=> $post->post_status,
+			//'data'            => $post
+		);
 	}
 
 

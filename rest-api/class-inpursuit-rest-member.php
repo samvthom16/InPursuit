@@ -2,8 +2,6 @@
 
 class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 
-
-
 	function __construct(){
 
 		$post_type = INPURSUIT_MEMBERS_POST_TYPE;
