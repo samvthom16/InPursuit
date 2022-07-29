@@ -62,13 +62,35 @@ class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 	function addRestData(){
 		parent::addRestData();
 
-		// AUTHOR NAME
+		// AUTHOR AGE
 		$this->registerRestField(
 			'age',
 			function( $post, $field_name, $request ){
 				$member_dates_db = INPURSUIT_DB_MEMBER_DATES::getInstance();
 				$age = $member_dates_db->age( $post['id'] );
 				return $age;
+			}
+		);
+
+		// AUTHOR AGE
+		$this->registerRestField(
+			'last_seen',
+			function( $post, $field_name, $request ){
+
+				$event_db 			= INPURSUIT_DB::getInstance();
+				$response_data 	= $event_db->getHistory( array(
+					'id' => $post['id'],
+				) );
+
+				if(
+					isset( $response_data['data'] ) &&
+					is_array( $response_data['data'] ) &&
+					count( $response_data['data'] ) &&
+					isset( $response_data['data'][0]->post_date )
+				)
+					return $response_data['data'][0]->post_date;
+
+				return '';
 			}
 		);
 
