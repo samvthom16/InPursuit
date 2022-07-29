@@ -53,7 +53,14 @@ class INPURSUIT_DB extends INPURSUIT_DB_BASE{
 		);
 	}
 
-	
+	function getFeaturedImageURL( $post_id ){
+		if( has_post_thumbnail( $post_id ) ){
+			$img_arr = wp_get_attachment_image_src( get_post_thumbnail_id( $post_id ), 'full' );
+			$url = $img_arr[0];
+			return $url;
+		}
+		return plugins_url( "InPursuit/dist/images/default-profile.png" );
+	}	
 
 }
 
