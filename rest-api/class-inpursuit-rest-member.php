@@ -79,7 +79,8 @@ class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 
 				$event_db 			= INPURSUIT_DB::getInstance();
 				$response_data 	= $event_db->getHistory( array(
-					'id' => $post['id'],
+					'id' 				=> $post['id'],
+					'per_page' 	=> 1
 				) );
 
 				if(
