@@ -87,7 +87,7 @@ class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 					count( $response_data['data'] ) &&
 					isset( $response_data['data'][0]->post_date )
 				)
-					return $response_data['data'][0]->post_date;
+					return get_date_from_gmt( $response_data['data'][0]->post_date );
 
 				return '';
 			}

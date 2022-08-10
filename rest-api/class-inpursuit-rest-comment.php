@@ -99,7 +99,7 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
         'id'    => $item->user_id,
         'name'  => get_userdata( $item->user_id )->display_name
       ),
-			'post_date'	=> isset( $item->post_date ) ? $item->post_date : $item->modified_on
+			'post_date'	=> isset( $item->post_date ) ? get_date_from_gmt( $item->post_date ) : get_date_from_gmt( $item->modified_on )
 		);
 	}
 
