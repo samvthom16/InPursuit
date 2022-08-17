@@ -59,6 +59,13 @@ class INPURSUIT_DB extends INPURSUIT_DB_BASE{
 			$url = $img_arr[0];
 			return $url;
 		}
+
+		$gender_terms = wp_get_object_terms( $post_id, 'inpursuit-gender', array( 'fields' => 'names' ) );
+		if( count( $gender_terms ) ){
+			if( $gender_terms[0] == "Male" ) return plugins_url( "InPursuit/dist/images/male-profile.jpg" );
+			else return plugins_url( "InPursuit/dist/images/female-profile.jpg" );
+		}
+
 		return plugins_url( "InPursuit/dist/images/default-profile.png" );
 	}
 
