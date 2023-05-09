@@ -75,15 +75,24 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 				'fields' => 'ids'
 			) );
 
+
+			$new_term_name = '';
+			if( is_numeric( $value ) ){
+				// ID HAS BEEN PASSED, SO PICK UP NAME FROM THE DATABASE
+				$new_term = get_term_by( 'term_taxonomy_id', $value );
+				$new_term_name = $new_term->name;
+			}
+			else{
+				// 	TERM NAME HAS BEEN PASSED BY DEFAULT
+				$new_term_name = $value;
+			}
+
 			// CHECK FOR VALUE IF CHANGED
 			// ADD TO COMMENT SECTION
 			if( is_array( $old_terms ) && count( $old_terms ) && ( $old_terms[0] != $value ) ){
 
 				$old_term = get_term_by( 'term_taxonomy_id', $old_terms[0] );
 				$old_term_name = $old_term->name;
-
-				$new_term = get_term_by( 'term_taxonomy_id', intval( $value ) );
-				$new_term_name = $new_term->name;
 
 				$comment_db = INPURSUIT_DB_COMMENT::getInstance();
 				$item = $comment_db->sanitize( array(
