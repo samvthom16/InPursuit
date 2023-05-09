@@ -43,6 +43,15 @@ class INPURSUIT_DB_COMMENT extends INPURSUIT_DB_BASE{
 		return $query;
 	}
 
+	function sanitize( $request ){
+		$data = array(
+			'comment'	=> isset( $request['comment'] ) ? $request['comment'] : '',
+			'post_id'	=> isset( $request['post'] ) ? $request['post'] : 0,
+			'user_id'	=> get_current_user_id()
+		);
+		return $data;
+	}
+
 
 
 }

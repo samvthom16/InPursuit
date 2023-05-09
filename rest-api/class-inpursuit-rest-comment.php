@@ -230,12 +230,17 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
    * @return WP_Error|object $prepared_item
    */
   protected function prepare_item_for_database( $request ) {
+
+    return INPURSUIT_DB_COMMENT::getInstance()->sanitize( $request );
+
+    /*
 		$data = array(
 			'comment'	=> isset( $request['comment'] ) ? $request['comment'] : '',
 			'post_id'	=> isset( $request['post'] ) ? $request['post'] : 0,
 			'user_id'	=> get_current_user_id()
 		);
 		return $data;
+    */
   }
 
 

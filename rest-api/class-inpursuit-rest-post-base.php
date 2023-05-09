@@ -52,9 +52,52 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 	}
 
 	function updateCallbackForTerm( $value, $post, $field_name, $request, $object_type ){
-		//$taxonomy = 'inpursuit-' . $field_name;
-		$field_name = apply_filters( 'inpursuit_rest_callback_field', $field_name );
-		wp_set_object_terms( $post->ID, $value, $field_name );
+
+		$taxonomy = apply_filters( 'inpursuit_rest_callback_field', $field_name );
+
+
+		/*
+		* IF CHANGE IN STATUS
+		* ADD AS COMMENT FOR NOTIFICATION
+		*/
+
+		$field_labels = array(
+			'member_status' => 'Status',
+			'group'					=> 'Group'
+		);
+
+
+		if( isset( $field_labels[ $field_name ] ) && $field_labels[ $field_name ] ){
+
+			$field_label = $field_labels[ $field_name ];
+
+			$old_terms = wp_get_object_terms( $post->ID, $taxonomy, array(
+				'fields' => 'ids'
+			) );
+
+			// CHECK FOR VALUE IF CHANGED
+			// ADD TO COMMENT SECTION
+			if( is_array( $old_terms ) && count( $old_terms ) && ( $old_terms[0] != $value ) ){
+
+				$old_term = get_term_by( 'term_taxonomy_id', $old_terms[0] );
+				$old_term_name = $old_term->name;
+
+				$new_term = get_term_by( 'term_taxonomy_id', $value );
+				$new_term_name = $new_term->name;
+
+				$comment_db = INPURSUIT_DB_COMMENT::getInstance();
+				$item = $comment_db->sanitize( array(
+					'comment'	=> "$field_label changed from $old_term_name to $new_term_name",
+					'post'		=> $post->ID
+				) );
+				$comment_db->insert( $item );
+			}
+		}
+
+		// SET NEW TERM FIELDS
+		wp_set_object_terms( $post->ID, $value, $taxonomy );
+
+
 	}
 	/* REST CALLBACK FUNCTIONS FOR TERMS */
 

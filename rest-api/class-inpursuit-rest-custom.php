@@ -42,8 +42,7 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 		global $inpursuit_vars;
 
 		$data = array(
-			'name' 				=> get_bloginfo( 'name' ),
-			//'taxonomies'	=> $taxonomies
+			'name' 		=> get_bloginfo( 'name' ),
 		);
 
 		$taxonomies = $inpursuit_vars['taxonomies'];
