@@ -82,7 +82,7 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 				$old_term = get_term_by( 'term_taxonomy_id', $old_terms[0] );
 				$old_term_name = $old_term->name;
 
-				$new_term = get_term_by( 'term_taxonomy_id', $value );
+				$new_term = get_term_by( 'term_taxonomy_id', intval( $value ) );
 				$new_term_name = $new_term->name;
 
 				$comment_db = INPURSUIT_DB_COMMENT::getInstance();
