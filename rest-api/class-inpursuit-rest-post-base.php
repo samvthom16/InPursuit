@@ -72,7 +72,7 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 			$field_label = $field_labels[ $field_name ];
 
 			$old_terms = wp_get_object_terms( $post->ID, $taxonomy, array(
-				'fields' => 'ids'
+				'fields' => 'names'
 			) );
 
 
@@ -89,10 +89,10 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 
 			// CHECK FOR VALUE IF CHANGED
 			// ADD TO COMMENT SECTION
-			if( is_array( $old_terms ) && count( $old_terms ) && ( $old_terms[0] != $value ) ){
+			if( is_array( $old_terms ) && count( $old_terms ) && ( $old_terms[0] != $new_term_name ) ){
 
-				$old_term = get_term_by( 'term_taxonomy_id', $old_terms[0] );
-				$old_term_name = $old_term->name;
+				//$old_term = get_term_by( 'term_taxonomy_id', $old_terms[0] );
+				$old_term_name = $old_terms[0];
 
 				$comment_db = INPURSUIT_DB_COMMENT::getInstance();
 				$item = $comment_db->sanitize( array(
