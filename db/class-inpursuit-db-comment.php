@@ -35,19 +35,24 @@ class INPURSUIT_DB_COMMENT extends INPURSUIT_DB_BASE{
 
 	function getResultsQuery( $args ){
 		$comment_table = $this->getTable();
-		$query = "SELECT ID, comment as text, post_id, user_id, modified_on as post_date, 'comment' as type FROM $comment_table";
+		$query = "SELECT ID, comment as text, post_id, user_id, modified_on as post_date, 'comment' as type FROM $comment_table WHERE 1=1";
 
 		/*
 		* SEARCH QUERY
 		*/
 		if( isset( $args['search'] ) && $args['search'] ){
 			$search = $args['search'];
-			$query .= " WHERE comment LIKE '%$search%'";
+			$query .= " AND comment LIKE '%$search%'";
 		}
 		if( isset( $args['member_id'] ) && $args['member_id'] ){
 			$member_id = $args['member_id'];
-			$query .= " WHERE post_id=$member_id";
+			$query .= " AND post_id=$member_id";
 		}
+		if( isset( $args['user_id'] ) && $args['user_id'] ){
+			$user_id = $args['user_id'];
+			$query .= " AND user_id=$user_id";
+		}
+
 		return $query;
 	}
 
