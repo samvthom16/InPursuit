@@ -117,20 +117,22 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_POST_BASE{
 		$previous_members = $this->_totalStats( $prev_grouped_stats );
 		$previous_events = count( $prev_grouped_stats );
 		$previous_average = $this->_average( $previous_members, $previous_events );
-		
+
 
 		$total_members = $this->_totalStats( $grouped_stats );
 		$total_events = count( $grouped_stats );
 		$total_average = $this->_average( $total_members, $total_events );
+		$growth = $this->_growth( $total_average, $previous_average );
+		$growth_sign = $growth > 0 ? '+' : '-';
 
 		return array(
 			'previous_members' 	=> $previous_members,
 			'previous_events' 	=> $previous_events,
-			'previous_average'	=> $previous_average,
+			'previous_average'	=> round( $previous_average, 2 ),
 			'total_members'			=> $total_members,
 			'total_events'			=> $total_events,
-			'total_average'			=> $total_average,
-			'growth'						=> $this->_growth( $total_average, $previous_average )
+			'total_average'			=> round( $total_average, 2 ),
+			'growth'						=> $growth_sign . round( $growth, 2 ) . '%'
 		);
 	}
 
