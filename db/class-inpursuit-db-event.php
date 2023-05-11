@@ -107,7 +107,7 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_POST_BASE{
 	}
 
 	function _growth( $total, $prev ){
-		return $total ? ( $total - $previous ) * 100 / $total : 0;
+		return $total ? ( $total - $prev ) * 100 / $total : 0;
 	}
 
 	function totalStatsForEventType( $event_type_id ){
@@ -117,6 +117,7 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_POST_BASE{
 		$previous_members = $this->_totalStats( $prev_grouped_stats );
 		$previous_events = count( $prev_grouped_stats );
 		$previous_average = $this->_average( $previous_members, $previous_events );
+		
 
 		$total_members = $this->_totalStats( $grouped_stats );
 		$total_events = count( $grouped_stats );
