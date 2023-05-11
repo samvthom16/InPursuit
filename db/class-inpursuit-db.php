@@ -129,20 +129,24 @@ class INPURSUIT_DB extends INPURSUIT_DB_BASE{
 		return $total ? ( $total - $prev ) * 100 / $total : 0;
 	}
 
-	function totalStatsForEventType( $event_type_id ){
-		$grouped_stats = $this->queryStatsForEventType( $event_type_id, date( 'Y-m-d', strtotime( '-180 days' ) ), date( 'Y-m-d' ) );
-		$prev_grouped_stats = $this->queryStatsForEventType( $event_type_id, date( 'Y-m-d', strtotime( '-360 days' ) ), date( 'Y-m-d', strtotime( '-180 days' ) ) );
+	function totalStatsForEventType( $event_type_id, $period ){
+
+		$today_date = date( 'Y-m-d' );
+		$before_date = $this->_get_date( $period );
+		$prev_before_date = $this->_get_date( $period * 2 );
+
+		$grouped_stats = $this->queryStatsForEventType( $event_type_id, $before_date, $today_date );
+		$prev_grouped_stats = $this->queryStatsForEventType( $event_type_id, $prev_before_date, $before_date );
 
 		$previous_members = $this->_totalStats( $prev_grouped_stats );
 		$previous_events = count( $prev_grouped_stats );
 		$previous_average = $this->_average( $previous_members, $previous_events );
 
-
 		$total_members = $this->_totalStats( $grouped_stats );
 		$total_events = count( $grouped_stats );
 		$total_average = $this->_average( $total_members, $total_events );
+
 		$growth = $this->_growth( $total_average, $previous_average );
-		$growth_sign = $growth > 0 ? '+' : '';
 
 		return array(
 			'previous_members' 	=> $previous_members,
@@ -151,7 +155,7 @@ class INPURSUIT_DB extends INPURSUIT_DB_BASE{
 			'total_members'			=> $total_members,
 			'total_events'			=> $total_events,
 			'total_average'			=> round( $total_average, 2 ),
-			'growth'						=> $growth_sign . round( $growth, 2 ) . '%'
+			'growth'						=> $this->_growth_text( $growth )
 		);
 	}
 
@@ -166,9 +170,23 @@ class INPURSUIT_DB extends INPURSUIT_DB_BASE{
 		return $this->get_var( $query );
 	}
 
-	function totalStatsForPostType( $post_type, $post_status = 'publish' ){
-		$total = $this->queryTotalPosts( $post_type, $post_status, date( 'Y-m-d', strtotime( '-180 days' ) ), date( 'Y-m-d' ) );
-		$prev_total = $this->queryTotalPosts( $post_type, $post_status, date( 'Y-m-d', strtotime( '-360 days' ) ), date( 'Y-m-d', strtotime( '-180 days' ) ) );
+	function _growth_text( $growth ){
+		$growth_sign = $growth > 0 ? '+' : '';
+		return $growth_sign . round( $growth, 2 ) . '%';
+	}
+
+	function _get_date( $period = 180 ){
+		return date( 'Y-m-d', strtotime( "-$period days" ) );
+	}
+
+	function totalStatsForPostType( $post_type, $period=180, $post_status = 'publish' ){
+
+		$today_date = date( 'Y-m-d' );
+		$before_date = $this->_get_date( $period );
+		$prev_before_date = $this->_get_date( $period * 2 );
+
+		$total = $this->queryTotalPosts( $post_type, $post_status, $before_date, $today_date  );
+		$prev_total = $this->queryTotalPosts( $post_type, $post_status, $prev_before_date, $before_date );
 
 		$growth = $this->_growth( $total, $prev_total );
 		$growth_sign = $growth > 0 ? '+' : '';
@@ -176,7 +194,7 @@ class INPURSUIT_DB extends INPURSUIT_DB_BASE{
 		return array(
 			'previous' 	=> $prev_total,
 			'total'			=> $total,
-			'growth'		=> $growth_sign . round( $growth, 2 ) . '%'
+			'growth'		=> $this->_growth_text( $growth )
 		);
 	}
 

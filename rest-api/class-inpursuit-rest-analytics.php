@@ -2,7 +2,8 @@
 
 class INPURSUIT_REST_ANALYTICS extends INPURSUIT_REST_BASE{
 
-	function getStatsForEventTypes(){
+	function getStatsForEventTypes( $period ){
+
 		$data = array();
 
 		$total_data = array();
@@ -16,7 +17,7 @@ class INPURSUIT_REST_ANALYTICS extends INPURSUIT_REST_BASE{
 
 		foreach( $terms as $term_id => $term_name ){
 
-			$total_stats = $db->totalStatsForEventType( $term_id );
+			$total_stats = $db->totalStatsForEventType( $term_id, $period );
 
 			if( $total_stats[ 'total_members' ] ){
 				$row = array(
@@ -36,6 +37,8 @@ class INPURSUIT_REST_ANALYTICS extends INPURSUIT_REST_BASE{
 
 	function getAnalyticsCallback( WP_REST_Request $args ){
 
+		$period = isset( $args['period'] ) ? $args['period'] : 30;
+
 		$data = array();
 
 		$db = INPURSUIT_DB::getInstance();
@@ -43,7 +46,7 @@ class INPURSUIT_REST_ANALYTICS extends INPURSUIT_REST_BASE{
 		/*
 		* STATS FOR ACTIVE MEMBERS
 		*/
-		$members_stats = $db->totalStatsForPostType( 'inpursuit-members' );
+		$members_stats = $db->totalStatsForPostType( 'inpursuit-members', $period );
 		$data[] = array(
 			'label'		=> 'Active Members',
 			'total'		=> $members_stats['total'],
@@ -53,27 +56,18 @@ class INPURSUIT_REST_ANALYTICS extends INPURSUIT_REST_BASE{
 		/*
 		* STATS FOR ARCHIVED MEMBERS
 		*/
-		$archive_members_stats = $db->totalStatsForPostType( 'inpursuit-members', 'draft' );
+		$archive_members_stats = $db->totalStatsForPostType( 'inpursuit-members', $period, 'draft' );
 		$data[] = array(
 			'label'		=> 'Archived Members',
 			'total'		=> $archive_members_stats['total'],
 			'growth' 	=> $archive_members_stats['growth'],
 		);
 
-		/*
-		* STATS FOR EVENTS
-		*/
-		$events_stats = $db->totalStatsForPostType( 'inpursuit-events' );
-		$data[] = array(
-			'label'		=> 'All Events',
-			'total'		=> $events_stats['total'],
-			'growth' 	=> $events_stats['growth'],
-		);
 
 		/*
 		* STATS FOR EACH EVENT TYPE
 		*/
-		$data = array_merge( $data, $this->getStatsForEventTypes() );
+		$data = array_merge( $data, $this->getStatsForEventTypes( $period ) );
 
 		$response = new WP_REST_Response( $data );
 		return $response;
