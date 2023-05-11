@@ -106,6 +106,10 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_POST_BASE{
 		return $denom ? $num/$denom : 0;
 	}
 
+	function _growth( $total, $prev ){
+		return $total ? ( $total - $previous ) * 100 / $total : 0;
+	}
+
 	function totalStatsForEventType( $event_type_id ){
 		$grouped_stats = $this->statsForEventType( $event_type_id, date( 'Y-m-d', strtotime( '-180 days' ) ), date( 'Y-m-d' ) );
 		$prev_grouped_stats = $this->statsForEventType( $event_type_id, date( 'Y-m-d', strtotime( '-360 days' ) ), date( 'Y-m-d', strtotime( '-180 days' ) ) );
@@ -125,7 +129,7 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_POST_BASE{
 			'total_members'			=> $total_members,
 			'total_events'			=> $total_events,
 			'total_average'			=> $total_average,
-			'growth'						=> ( $total_average - $previous_average ) * 100 / $total_average
+			'growth'						=> $this->_growth( $total_average, $previous_average )
 		);
 	}
 
