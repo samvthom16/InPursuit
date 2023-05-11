@@ -116,54 +116,12 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 		return $response;
 	}
 
-	function getAnalyticsCallback( WP_REST_Request $args ){
 
-		$data = array();
-
-		$total_data = array();
-
-		$terms = get_terms( array(
-			'taxonomy' 		=> 'inpursuit-event-type',
-			'hide_empty' 	=> false,
-			'fields'			=> 'id=>name'
-		) );
-
-		$event_db = INPURSUIT_DB_EVENT::getInstance();
-
-		foreach( $terms as $term_id => $term_name ){
-
-			$total_stats = $event_db->totalStatsForEventType( $term_id );
-
-			if( $total_stats[ 'total_members' ] ){
-				$row = array(
-					'label'	=> $term_name,
-					'id'		=> $term_id,
-				);
-
-				foreach( $total_stats as $stat_key => $stat_num ){
-					$row[ $stat_key ] = $stat_num;
-				}
-
-				$total_data[] = $row['total_members'];
-
-				array_push( $data, $row );
-			}
-
-
-		}
-
-		array_multisort( $total_data, SORT_DESC, $data );
-
-		$response = new WP_REST_Response( $data );
-		return $response;
-	}
 
 	function addRestData(){
 		$this->registerRoute( 'history', array( $this, 'getHistoryCallback' ) );
 		$this->registerRoute( 'history/(?P<id>\d+)', array( $this, 'getHistoryCallback' ) );
 		$this->registerRoute( 'settings', array( $this, 'getSettingsCallback' ) );
-
-		$this->registerRoute( 'analytics', array( $this, 'getAnalyticsCallback' ) );
 
 		$this->registerRoute( 'map', array( $this, 'getMapCallback' ) );
 		$this->registerRoute( 'regions', array( $this, 'getRegionsCallback' ) );

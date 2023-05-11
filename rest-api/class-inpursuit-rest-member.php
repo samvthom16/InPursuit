@@ -164,6 +164,8 @@ class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 
 	}
 
+	
+
 }
 
 INPURSUIT_REST_MEMBER::getInstance();

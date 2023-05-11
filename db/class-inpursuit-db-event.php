@@ -78,63 +78,7 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_POST_BASE{
 	}
 	*/
 
-	function statsForEventType( $event_type_id, $after_date, $before_date ){
-		global $wpdb;
-		$db_event_member_relation = INPURSUIT_DB_EVENT_MEMBER_RELATION::getInstance()->getTable();
-		$db_posts = $wpdb->posts;
-		$db_term_relation = $wpdb->term_relationships;
-		$db_term_taxonomy = $wpdb->term_taxonomy;
-
-		$query = "SELECT count(member_id) as total, event_id FROM $db_event_member_relation WHERE event_id IN
-			(SELECT ID FROM $db_posts WHERE (post_date BETWEEN '$after_date' AND '$before_date') AND ID IN
-				(SELECT object_id FROM $db_term_relation WHERE term_taxonomy_id IN
-					(SELECT term_taxonomy_id FROM $db_term_taxonomy WHERE term_id=$event_type_id) ) ) GROUP BY event_id";
-
-
-		return $this->get_results( $query );
-	}
-
-	function _totalStats( $grouped_stats ){
-		$total = 0;
-		foreach( $grouped_stats as $stat ){
-			$total += $stat->total;
-		}
-		return $total;
-	}
-
-	function _average( $num, $denom ){
-		return $denom ? $num/$denom : 0;
-	}
-
-	function _growth( $total, $prev ){
-		return $total ? ( $total - $prev ) * 100 / $total : 0;
-	}
-
-	function totalStatsForEventType( $event_type_id ){
-		$grouped_stats = $this->statsForEventType( $event_type_id, date( 'Y-m-d', strtotime( '-180 days' ) ), date( 'Y-m-d' ) );
-		$prev_grouped_stats = $this->statsForEventType( $event_type_id, date( 'Y-m-d', strtotime( '-360 days' ) ), date( 'Y-m-d', strtotime( '-180 days' ) ) );
-
-		$previous_members = $this->_totalStats( $prev_grouped_stats );
-		$previous_events = count( $prev_grouped_stats );
-		$previous_average = $this->_average( $previous_members, $previous_events );
-
-
-		$total_members = $this->_totalStats( $grouped_stats );
-		$total_events = count( $grouped_stats );
-		$total_average = $this->_average( $total_members, $total_events );
-		$growth = $this->_growth( $total_average, $previous_average );
-		$growth_sign = $growth > 0 ? '+' : '-';
-
-		return array(
-			'previous_members' 	=> $previous_members,
-			'previous_events' 	=> $previous_events,
-			'previous_average'	=> round( $previous_average, 2 ),
-			'total_members'			=> $total_members,
-			'total_events'			=> $total_events,
-			'total_average'			=> round( $total_average, 2 ),
-			'growth'						=> $growth_sign . round( $growth, 2 ) . '%'
-		);
-	}
+	
 
 	function numberOfRegisteredMembers( $event_id ){
 		$registered_members = 1;
