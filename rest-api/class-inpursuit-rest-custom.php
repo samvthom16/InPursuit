@@ -120,6 +120,8 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 
 		$data = array();
 
+		$total_data = array();
+
 		$terms = get_terms( array(
 			'taxonomy' 		=> 'inpursuit-event-type',
 			'hide_empty' 	=> false,
@@ -142,13 +144,15 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 					$row[ $stat_key ] = $stat_num;
 				}
 
+				$total_data[] = $row['total_members'];
+
 				array_push( $data, $row );
 			}
 
 
 		}
 
-		//$data = $terms;
+		array_multisort( $total_data, SORT_DESC, $data );
 
 		$response = new WP_REST_Response( $data );
 		return $response;
