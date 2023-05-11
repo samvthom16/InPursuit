@@ -130,18 +130,16 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 
 		foreach( $terms as $term_id => $term_name ){
 
-			$total = 0;
-			$grouped_stats = $event_db->statsByEventType( $term_id );
-			foreach( $grouped_stats as $stat ){
-				$total += $stat->total;
-			}
+			$total_stats = $event_db->totalStatsForEventType( $term_id );
 
 			$row = array(
 				'label'	=> $term_name,
 				'id'		=> $term_id,
-				'total_members'	=> $total,
-				'total_events'	=> count( $grouped_stats )
 			);
+
+			foreach( $total_stats as $stat_key => $stat_num ){
+				$row[ $stat_key ] = $stat_num;
+			}
 
 			array_push( $data, $row );
 		}
