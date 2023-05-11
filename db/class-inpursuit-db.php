@@ -142,7 +142,7 @@ class INPURSUIT_DB extends INPURSUIT_DB_BASE{
 		$total_events = count( $grouped_stats );
 		$total_average = $this->_average( $total_members, $total_events );
 		$growth = $this->_growth( $total_average, $previous_average );
-		$growth_sign = $growth > 0 ? '+' : '-';
+		$growth_sign = $growth > 0 ? '+' : '';
 
 		return array(
 			'previous_members' 	=> $previous_members,
@@ -171,7 +171,7 @@ class INPURSUIT_DB extends INPURSUIT_DB_BASE{
 		$prev_total = $this->queryTotalPosts( $post_type, $post_status, date( 'Y-m-d', strtotime( '-360 days' ) ), date( 'Y-m-d', strtotime( '-180 days' ) ) );
 
 		$growth = $this->_growth( $total, $prev_total );
-		$growth_sign = $growth > 0 ? '+' : '-';
+		$growth_sign = $growth > 0 ? '+' : '';
 
 		return array(
 			'previous' 	=> $prev_total,
