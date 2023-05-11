@@ -102,15 +102,30 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_POST_BASE{
 		return $total;
 	}
 
+	function _average( $num, $denom ){
+		return $denom ? $num/$denom : 0;
+	}
+
 	function totalStatsForEventType( $event_type_id ){
 		$grouped_stats = $this->statsForEventType( $event_type_id, date( 'Y-m-d', strtotime( '-180 days' ) ), date( 'Y-m-d' ) );
 		$prev_grouped_stats = $this->statsForEventType( $event_type_id, date( 'Y-m-d', strtotime( '-360 days' ) ), date( 'Y-m-d', strtotime( '-180 days' ) ) );
 
+		$previous_members = $this->_totalStats( $prev_grouped_stats );
+		$previous_events = count( $prev_grouped_stats );
+		$previous_average = $this->_average( $previous_members, $previous_events );
+
+		$total_members = $this->_totalStats( $grouped_stats );
+		$total_events = count( $grouped_stats );
+		$total_average = $this->_average( $total_members, $total_events );
+
 		return array(
-			'previous_members' 	=> $this->_totalStats( $prev_grouped_stats ),
-			'previous_events' 	=> count( $prev_grouped_stats ),
-			'total_members'			=> $this->_totalStats( $grouped_stats ),
-			'total_events'			=> count( $grouped_stats )
+			'previous_members' 	=> $previous_members,
+			'previous_events' 	=> $previous_events,
+			'previous_average'	=> $previous_average,
+			'total_members'			=> $total_members,
+			'total_events'			=> $total_events,
+			'total_average'			=> $total_average,
+			'growth'						=> ( $total_average - $previous_average ) * 100 / $total_average
 		);
 	}
 
