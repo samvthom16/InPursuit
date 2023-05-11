@@ -78,6 +78,23 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_POST_BASE{
 	}
 	*/
 
+	function statsByEventType( $event_type_id ){
+		global $wpdb;
+		$db_event_member_relation = INPURSUIT_DB_EVENT_MEMBER_RELATION::getInstance()->getTable();
+		$db_posts = $wpdb->posts;
+		$db_term_relation = $wpdb->term_relationships;
+		$db_term_taxonomy = $wpdb->term_taxonomy;
+
+		$after_date = date( 'Y-m-d', strtotime( '-180 days' ) );
+
+		$query = "SELECT count(member_id) as total, event_id FROM $db_event_member_relation WHERE event_id IN
+			(SELECT ID FROM $db_posts WHERE post_date > $after_date AND ID IN
+				(SELECT object_id FROM $db_term_relation WHERE term_taxonomy_id IN
+					(SELECT term_taxonomy_id FROM $db_term_taxonomy WHERE term_id=$event_type_id) ) ) GROUP BY event_id";
+
+		return $this->get_results( $query );
+	}
+
 	function numberOfRegisteredMembers( $event_id ){
 		$registered_members = 1;
 		$event_date = explode( ',', get_the_time( 'Y,m,d', $event_id ) );
