@@ -11,7 +11,7 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 			$args[ 'user_id' ] = $current_user_id;
 		}
 
-		print_r( $args );
+		//print_r( $args );
 
 		$response_data 	= $event_db->getHistory( $args );
 
