@@ -141,8 +141,8 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 
 	function addRestData(){
 
-		$this->registerRoute( 'history', array( $this, 'getHistoryCallback' ), array( $this, 'check_for_permissions' ) );
-		$this->registerRoute( 'history/(?P<id>\d+)', array( $this, 'getHistoryCallback' ), array( $this, 'check_for_permissions' ) );
+		$this->registerRoute( 'history', array( $this, 'getHistoryCallback' ) );
+		$this->registerRoute( 'history/(?P<id>\d+)', array( $this, 'getHistoryCallback' ) );
 		$this->registerRoute( 'settings', array( $this, 'getSettingsCallback' ) );
 
 		$this->registerRoute( 'map', array( $this, 'getMapCallback' ) );
