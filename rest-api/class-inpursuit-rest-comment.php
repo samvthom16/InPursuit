@@ -61,13 +61,32 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
 
   public function get_items( $request ) {
 		$comment_db = INPURSUIT_DB_COMMENT::getInstance();
-		$response_data = $comment_db->getResults( $request );
 
-		$data = array();
-		foreach( $response_data['data'] as $row ){
-			$item = $this->prepare_item_for_response( $row, $request );
-			array_push( $data, $item );
-		}
+    $data = array();
+
+    if( is_user_logged_in() ){
+
+      $params = $request->get_params();
+
+      if( !current_user_can( 'administrator' ) ){
+
+        $current_user = wp_get_current_user();
+
+        $current_user_id = $current_user->ID;
+
+        $params[ 'user_id' ] = $current_user_id;
+
+      }
+
+  		$response_data = $comment_db->getResults( $params );
+
+  		foreach( $response_data['data'] as $row ){
+  			$item = $this->prepare_item_for_response( $row, $request );
+  			array_push( $data, $item );
+  		}
+    }
+
+
 
 		$response = new WP_REST_Response( $data, 200 );
 		$response->header( 'X-WP-TotalPages', $response_data['total_pages'] );

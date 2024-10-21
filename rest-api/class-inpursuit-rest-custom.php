@@ -4,6 +4,15 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 
 	function getHistoryCallback( WP_REST_Request $args ){
 		$event_db 			= INPURSUIT_DB::getInstance();
+
+		if( is_user_logged_in() && !current_user_can( 'administrator' ) ){
+			$current_user = wp_get_current_user();
+			$current_user_id = $current_user->ID;
+			$args[ 'user_id' ] = $current_user_id;
+		}
+
+		//print_r( $args );
+
 		$response_data 	= $event_db->getHistory( $args );
 
 		$data = array();
