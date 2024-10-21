@@ -6,7 +6,7 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 		$event_db 			= INPURSUIT_DB::getInstance();
 		$params 				= $args->get_params();
 
-		if( is_user_logged_in() && !current_user_can( 'administrator' ) ){
+		if( !current_user_can( 'administrator' ) ){
 			$current_user = wp_get_current_user();
 			$current_user_id = $current_user->ID;
 			$params[ 'user_id' ] = $current_user_id;
@@ -124,11 +124,25 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 		return $response;
 	}
 
+	function check_for_permissions(){
 
+		if ( current_user_can( 'administrator' ) ||
+			current_user_can( 'editor' )
+		) {
+			return true;
+		}
+
+		return new WP_Error(
+			'rest_cannot_view',
+			__( 'Sorry, you are not allowed to see this information.' ),
+			array( 'status' => rest_authorization_required_code() )
+		);
+	}
 
 	function addRestData(){
-		$this->registerRoute( 'history', array( $this, 'getHistoryCallback' ) );
-		$this->registerRoute( 'history/(?P<id>\d+)', array( $this, 'getHistoryCallback' ) );
+
+		$this->registerRoute( 'history', array( $this, 'getHistoryCallback' ), array( $this, 'check_for_permissions' ) );
+		$this->registerRoute( 'history/(?P<id>\d+)', array( $this, 'getHistoryCallback' ), array( $this, 'check_for_permissions' ) );
 		$this->registerRoute( 'settings', array( $this, 'getSettingsCallback' ) );
 
 		$this->registerRoute( 'map', array( $this, 'getMapCallback' ) );
