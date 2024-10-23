@@ -8,8 +8,8 @@ class INPURSUIT_REST_BASE extends INPURSUIT_BASE{
 
 	function registerRoute( $route, $callback, $permission_callback = '__return_true' ){
 		register_rest_route( 'inpursuit/v1', '/' . $route, array(
-    	'methods' => 'GET',
-    	'callback' => $callback,
+    	'methods' 						=> 'GET',
+    	'callback' 						=> $callback,
 			'permission_callback'	=> $permission_callback
   	) );
 	}
