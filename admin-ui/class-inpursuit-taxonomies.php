@@ -81,7 +81,7 @@ class INPURSUIT_TAXONOMIES extends INPURSUIT_BASE{
       'query_var' 			=> true,
       'show_in_menu' 			=> $r['show_in_menu'],
       'rewrite' 				=> array( 'slug' => $r['slug'] ),
-      'show_in_rest'		=> isset( $r['show_in_rest'] ) && $r['show_in_rest'] ? $r['show_in_rest'] : false,
+      'show_in_rest'		=> isset( $r['show_in_rest'] ) && $r['show_in_rest'] ? $r['show_in_rest'] : true,
     ));
   }
 
