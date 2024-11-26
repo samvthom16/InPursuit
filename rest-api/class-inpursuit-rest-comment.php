@@ -61,13 +61,32 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
 
   public function get_items( $request ) {
 		$comment_db = INPURSUIT_DB_COMMENT::getInstance();
-		$response_data = $comment_db->getResults( $request );
 
-		$data = array();
-		foreach( $response_data['data'] as $row ){
-			$item = $this->prepare_item_for_response( $row, $request );
-			array_push( $data, $item );
-		}
+    $data = array();
+
+    if( is_user_logged_in() ){
+
+      $params = $request->get_params();
+
+      if( !current_user_can( 'administrator' ) ){
+
+        $current_user = wp_get_current_user();
+
+        $current_user_id = $current_user->ID;
+
+        $params[ 'user_id' ] = $current_user_id;
+
+      }
+
+  		$response_data = $comment_db->getResults( $params );
+
+  		foreach( $response_data['data'] as $row ){
+  			$item = $this->prepare_item_for_response( $row, $request );
+  			array_push( $data, $item );
+  		}
+    }
+
+
 
 		$response = new WP_REST_Response( $data, 200 );
 		$response->header( 'X-WP-TotalPages', $response_data['total_pages'] );
@@ -88,12 +107,18 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
 	}
 
 	function prepare_item_for_response( $item, $request ){
-		return array(
+
+    return array(
 			'id'				=> $item->ID,
 			'comment'		=> isset( $item->text ) ? $item->text : $item->comment,
-			'post'			=> $item->post_id,
-			'user'			=> $item->user_id,
-			'post_date'	=> isset( $item->post_date ) ? $item->post_date : $item->modified_on
+
+      'member'    => INPURSUIT_REST_MEMBER::getInstance()->prepareItemResponse( $item->post_id ),
+
+      'user'			=> array(
+        'id'    => $item->user_id,
+        'name'  => get_userdata( $item->user_id )->display_name
+      ),
+			'post_date'	=> isset( $item->post_date ) ? get_date_from_gmt( $item->post_date ) : get_date_from_gmt( $item->modified_on )
 		);
 	}
 
@@ -224,12 +249,17 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
    * @return WP_Error|object $prepared_item
    */
   protected function prepare_item_for_database( $request ) {
+
+    return INPURSUIT_DB_COMMENT::getInstance()->sanitize( $request );
+
+    /*
 		$data = array(
 			'comment'	=> isset( $request['comment'] ) ? $request['comment'] : '',
 			'post_id'	=> isset( $request['post'] ) ? $request['post'] : 0,
 			'user_id'	=> get_current_user_id()
 		);
 		return $data;
+    */
   }
 
 

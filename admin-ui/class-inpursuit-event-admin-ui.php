@@ -21,9 +21,9 @@ class INPURSUIT_EVENT_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 		) );
 
 
-		add_filter('manage_'. $this->post_type . '_posts_columns', [$this, 'columnFilterCb']);
+		//add_filter('manage_'. $this->post_type . '_posts_columns', [$this, 'columnFilterCb']);
 
-		add_action('manage_'. $this->post_type .'_posts_custom_column', [$this, 'columnActionCb'], 10,2);
+		//add_action('manage_'. $this->post_type .'_posts_custom_column', [$this, 'columnActionCb'], 10,2);
 
 		parent::__construct();
 	}
@@ -31,10 +31,10 @@ class INPURSUIT_EVENT_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 
 	public function columnFilterCb($columns)
 	{
+
 		$columns = array_merge(
 			$columns,
-			array(
-				'inpursuit-event-attendance' => 'Participation')
+			array('inpursuit-event-attendance' => 'Participation')
 		);
 
 		$ordered_columns = array();

@@ -78,6 +78,8 @@ class INPURSUIT_DB_EVENT extends INPURSUIT_DB_POST_BASE{
 	}
 	*/
 
+	
+
 	function numberOfRegisteredMembers( $event_id ){
 		$registered_members = 1;
 		$event_date = explode( ',', get_the_time( 'Y,m,d', $event_id ) );

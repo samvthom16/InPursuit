@@ -4,7 +4,7 @@ var optionsMixin = require( '../mixins/options-form-field.js' );
 module.exports  = Vue.component( 'inpursuit-select', {
 	props: ['field', 'post', 'label'],
 	mixins : [defaultMixin, optionsMixin],
-	template: "<div><label>{{ label }}</label><select v-model='post[field]'>" +
+	template: "<div v-if='getOptions().length > 1'><label>{{ label }}</label><select v-model='post[field]'>" +
     "<option v-for='option in getOptions()' v-bind:value='option.id' >{{ option.name }}</option>" +
  		"</select></div>",
 	methods: {

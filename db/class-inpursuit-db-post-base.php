@@ -37,4 +37,6 @@ class INPURSUIT_DB_POST_BASE extends INPURSUIT_DB_BASE{
 		}
 	}
 
+	
+
 }

@@ -52,9 +52,61 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 	}
 
 	function updateCallbackForTerm( $value, $post, $field_name, $request, $object_type ){
-		//$taxonomy = 'inpursuit-' . $field_name;
-		$field_name = apply_filters( 'inpursuit_rest_callback_field', $field_name );
-		wp_set_object_terms( $post->ID, $value, $field_name );
+
+		$taxonomy = apply_filters( 'inpursuit_rest_callback_field', $field_name );
+
+
+		/*
+		* IF CHANGE IN STATUS
+		* ADD AS COMMENT FOR NOTIFICATION
+		*/
+
+		$field_labels = array(
+			'member_status' => 'Status',
+			'group'					=> 'Group'
+		);
+
+
+		if( isset( $field_labels[ $field_name ] ) && $field_labels[ $field_name ] ){
+
+			$field_label = $field_labels[ $field_name ];
+
+			$old_terms = wp_get_object_terms( $post->ID, $taxonomy, array(
+				'fields' => 'names'
+			) );
+
+
+			$new_term_name = '';
+			if( is_numeric( $value ) ){
+				// ID HAS BEEN PASSED, SO PICK UP NAME FROM THE DATABASE
+				$new_term = get_term_by( 'term_taxonomy_id', $value );
+				$new_term_name = $new_term->name;
+			}
+			else{
+				// 	TERM NAME HAS BEEN PASSED BY DEFAULT
+				$new_term_name = $value;
+			}
+
+			// CHECK FOR VALUE IF CHANGED
+			// ADD TO COMMENT SECTION
+			if( is_array( $old_terms ) && count( $old_terms ) && ( $old_terms[0] != $new_term_name ) ){
+
+				//$old_term = get_term_by( 'term_taxonomy_id', $old_terms[0] );
+				$old_term_name = $old_terms[0];
+
+				$comment_db = INPURSUIT_DB_COMMENT::getInstance();
+				$item = $comment_db->sanitize( array(
+					'comment'	=> "$field_label changed from $old_term_name to $new_term_name",
+					'post'		=> $post->ID
+				) );
+				$comment_db->insert( $item );
+			}
+		}
+
+		// SET NEW TERM FIELDS
+		wp_set_object_terms( $post->ID, $value, $taxonomy );
+
+
 	}
 	/* REST CALLBACK FUNCTIONS FOR TERMS */
 
@@ -111,16 +163,30 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 		  'featured_image',
 		  function( $post, $field_name, $request ){
 		    $id = $post['id'];
-		    if( has_post_thumbnail( $id ) ){
-		      $img_arr = wp_get_attachment_image_src( get_post_thumbnail_id( $id ), 'full' );
-		      $url = $img_arr[0];
-		      return $url;
-		    } else {
-		      return plugins_url( "InPursuit/dist/images/default-profile.png" );
-		    }
-		  }
+				return INPURSUIT_DB::getInstance()->getFeaturedImageURL( $id );
+			}
 		);
 
+	}
+
+	function prepareItemResponse( $post_id ){
+		$post = get_post( $post_id );
+		return array(
+			'id'              => $post->ID,
+			'title'           => array(
+				'rendered' => $post->post_title
+			),
+			'featured_image'  => INPURSUIT_DB::getInstance()->getFeaturedImageURL( $post_id ),
+			'slug'            => $post->post_name,
+			'type'            => $post->post_type,
+			'author'					=> intval( $post->post_author ),
+			'date'						=> $post->post_date,
+			'date_gmt'				=> $post->post_date_gmt,
+			'modified'				=> $post->post_modified,
+			'modified_gmt'		=> $post->post_modified_gmt,
+			'status'					=> $post->post_status,
+			//'data'            => $post
+		);
 	}
 
 

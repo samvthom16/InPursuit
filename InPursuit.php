@@ -16,14 +16,11 @@
 
 	$inc_files = array(
 		'class-inpursuit-base.php',
-		'lib/class-inpursuit-wp-util.php',
 		'db/db.php',
 		'admin-ui/admin-ui.php',
 		'rest-api/rest-api.php',
 		'rest-authentication/rest-authentication.php',
-		'lib/class-inpursuit-greetings.php',
-		'lib/class-inpursuit-mailer.php',
-		'email/email.php'
+		'lib/lib.php',
 	);
 
 	foreach( $inc_files as $inc_file ){
@@ -87,6 +84,32 @@
     }
     return $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 	}
+
+	/* CORS ENABLED FOR THE TEST VUE SITE * DIDNT WORK AS EXPECTED
+	add_action('init', function(){
+		$origin = get_http_origin();
+    if ( $origin === 'https://inpursuit.vercel.app' ) {
+			header("Access-Control-Allow-Origin: yourfrontenddomain");
+			header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE");
+			header("Access-Control-Allow-Credentials: true");
+			header('Access-Control-Allow-Headers: Origin, X-Requested-With, X-WP-Nonce, Content-Type, Accept, Authorization');
+			if ('OPTIONS' == $_SERVER['REQUEST_METHOD']) {
+				status_header(200);
+				exit();
+			}
+    }
+	} );
+
+	add_filter( 'rest_authentication_errors', function( $errors ){
+		$request_server = $_SERVER['REMOTE_ADDR'];
+    $origin = get_http_origin();
+    if ($origin !== 'https://inpursuit.vercel.app') return new WP_Error('forbidden_access', $origin, array(
+        'status' => 403
+    ));
+    return $errors;
+	} );
+	/* CORS ENABLED FOR THE TEST VUE SITE */
+
 
 
 	add_action( 'init', function(){

@@ -4,7 +4,15 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 
 	function getHistoryCallback( WP_REST_Request $args ){
 		$event_db 			= INPURSUIT_DB::getInstance();
-		$response_data 	= $event_db->getHistory( $args );
+		$params 				= $args->get_params();
+
+		if( !current_user_can( 'administrator' ) ){
+			$current_user = wp_get_current_user();
+			$current_user_id = $current_user->ID;
+			$params[ 'user_id' ] = $current_user_id;
+		}
+
+		$response_data 	= $event_db->getHistory( $params );
 
 		$data = array();
 
@@ -42,8 +50,7 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 		global $inpursuit_vars;
 
 		$data = array(
-			'name' 				=> get_bloginfo( 'name' ),
-			//'taxonomies'	=> $taxonomies
+			'name' 		=> get_bloginfo( 'name' ),
 		);
 
 		$taxonomies = $inpursuit_vars['taxonomies'];
@@ -117,10 +124,27 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 		return $response;
 	}
 
+	function check_for_permissions(){
+
+		if ( current_user_can( 'administrator' ) ||
+			current_user_can( 'editor' )
+		) {
+			return true;
+		}
+
+		return new WP_Error(
+			'rest_cannot_view',
+			__( 'Sorry, you are not allowed to see this information.' ),
+			array( 'status' => rest_authorization_required_code() )
+		);
+	}
+
 	function addRestData(){
+
 		$this->registerRoute( 'history', array( $this, 'getHistoryCallback' ) );
 		$this->registerRoute( 'history/(?P<id>\d+)', array( $this, 'getHistoryCallback' ) );
 		$this->registerRoute( 'settings', array( $this, 'getSettingsCallback' ) );
+
 		$this->registerRoute( 'map', array( $this, 'getMapCallback' ) );
 		$this->registerRoute( 'regions', array( $this, 'getRegionsCallback' ) );
 	}
