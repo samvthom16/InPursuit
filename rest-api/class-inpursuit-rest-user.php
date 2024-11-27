@@ -21,12 +21,14 @@ class INPURSUIT_REST_USER extends INPURSUIT_REST_POST_BASE{
 				return $selected_groups;
 			},
 			function( $value, $post, $field_name, $request ){
+				$user_db = INPURSUIT_DB_USER::getInstance();
+				$group 	 = $user_db->getTaxonomy();
 
 				// CONVERT ARRAY OF INTEGER(S) TO ARRAY OF STRING(S)
 				$meta_value = array_map( function( $el ) { return (string) $el; }, $value );
 
 				if( $post->ID > 0 ){
-					update_user_meta( $post->ID, 'inpursuit-group', $meta_value );
+					update_user_meta( $post->ID, $group, $meta_value );
 				}
 			},
 			array(
