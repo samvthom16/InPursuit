@@ -52,12 +52,6 @@ module.exports = {
 			post_id				: 0,
 			loading				: true,
 			multiselects : [],
-			metafields : [
-				{	name: 'email', label: "Email Address" },
-				{	name: 'password', label: "Password" },
-				{	name: 'first_name', label: "First Name" },
-				{	name: 'last_name', label: "Last Name" },
-			],
 		}
 	},
 	methods: {
@@ -73,14 +67,19 @@ module.exports = {
 				url					: this.getURL(),
 				params			: { context: 'edit' },
 				callbackFn	: function( response ){
-					component.post = response.data;
 
 					// STOP THE LOADER
 					component.loading = false;
+
+					if( response.status == 200 || response.status == 201 ){
+						component.post = response.data;
+					} else {
+						component.errors.push(response.data?.message ?? "Something went wrong.")
+					}
+
 				}
 			} );
 		},
-
 		getRoles:function(){
 			return [
 				{ slug: 'subscriber', name: 'Subscriber' },
@@ -92,9 +91,7 @@ module.exports = {
 		},
 		getMangerData :function(){
 			var component	= this;
-
 			return Object.assign( {}, component.post );
-
 		},
 		isEmptyField: function( field ){
 			if( field && field.replace(/^\s+|\s+$/gm,'') ){
@@ -155,10 +152,6 @@ module.exports = {
 
 			}
 
-			// console.log(manager);
-
-			this.isvalidEmail( manager.email );
-
 			this.sendRequest( 'post', manager )
 
 		},
@@ -188,13 +181,10 @@ module.exports = {
 
 							// REDIRECT TO THE SINGLE PAGE
 							component.$router.push( component.getPostLink( component.post ) );
-						}
-
-						else{
-							// THROW ERROR IF USERNAME OR EMAIL ALREADY EXISTS IN THE DB
-							if( response.data.code == "rest_user_invalid_email" || response.data.code == "existing_user_login" || response.data.code == "existing_user_email" ){
-								component.errors.push("Email already exists!");
-							}
+						} else if( response.data.code == "rest_user_invalid_email" || response.data.code == "existing_user_login" || response.data.code == "existing_user_email" ){
+							component.errors.push("Email already exists!");
+						} else {
+							component.errors.push(response.data?.message ?? "Something went wrong.")
 						}
 
 					}
@@ -202,15 +192,17 @@ module.exports = {
 
 			}
 
-		}
+		},
+		init: function(){}
 	},
 	created: function(){
+		this.init();
 		var post_id = this.$route.params.id;
+
 		if( post_id ){
 			this.post_id = post_id;
 			this.getPost();
-		}
-		else{
+		} else{
 			this.loading = false;
 		}
 
@@ -218,7 +210,6 @@ module.exports = {
 		// THIS CAN BE USED AS CACHE
 		if( this.$route.params.post != undefined ){
 			this.post = this.$route.params.post;
-			// console.log(this.post);
 		}
 
 	}

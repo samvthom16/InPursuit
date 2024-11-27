@@ -1,8 +1,7 @@
-var managerEditMixin = require( '../mixins/manager-edit.js' );
 var singleUserMixin = require( '../mixins/single-user.js' );
 
 module.exports = Vue.component( 'inpursuit-managers', {
-	mixins	: [ singleUserMixin, managerEditMixin ],
+	mixins	: [ singleUserMixin ],
 	template: `<div style='max-width:960px; margin-top: 30px;'>
 			<p><router-link to='/managers'>&#8592;List Of Managers</router-link></p>
 			<div class='inpursuit-grid21' style='margin-bottom:30px;'>

@@ -23,11 +23,23 @@ module.exports = {
 			var component = this;
 			API.request( {
 				url					: component.getAPIUrl(),
+				params			: { context: 'edit' },
 				callbackFn	: function( response ){
 					component.post = response.data;
 					component.loading = false;
 				}
 			} );
+		},
+		getGroups: function(){
+			var group_names 		 = [];
+			var user_groups 		 = this.post?.group ?? [];
+			var available_groups = window?.inpursuit_settings?.group ?? {};
+
+			for(var group of user_groups ){
+				group_names.push(available_groups[group]);
+			}
+
+			return group_names;
 		},
 		editLink: function(){
 			var route  = {
@@ -49,15 +61,26 @@ module.exports = {
 		metaHTML: function(){
 			var html = '';
 			var fields = [
-				{ field : 'username', text : 'Username', type: 'meta' },
-				{ field : 'email', text : 'Email', type: 'meta' },
-				{ field : 'roles', text : 'Role', type: 'meta' }
+				{ field : 'username', text : 'Username' },
+				{ field : 'email', text : 'Email' },
+				{ field : 'roles', text : 'Role' },
+				{ field : 'group', text : 'Groups' },
 			];
 
 			for( var i=0; i<fields.length; i++ ){
+				var value = "";
 				var field = fields[i]['field'];
-				var type = fields[i]['type'];
-				var	value = this.post[field] != 'roles' ? this.post[field] : this.post[field][0];
+
+				switch( field ){
+					case "roles":
+						value = this.post[field];
+						break;
+					case "group":
+						value = this.getGroups().join(", ");
+						break;
+					default:
+						value = this.post[field];
+				}
 
 				if( value ){
 					var text = ( fields[i]['text'] ? `<span>${fields[i]['text']} :</span> ` : "" )  + "<span>" + value + "</span>";
