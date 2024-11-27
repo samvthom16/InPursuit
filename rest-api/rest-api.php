@@ -1,7 +1,5 @@
 <?php
 
-
-
 $inc_files = array(
 	'class-inpursuit-rest-base.php',
 	'class-inpursuit-rest-post-base.php',
