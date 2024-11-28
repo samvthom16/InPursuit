@@ -4,6 +4,7 @@
 			<router-link class="nav-tab" to="/dashboard">Dashboard</router-link>
 			<router-link class="nav-tab" to="/members">Members</router-link>
 			<router-link class="nav-tab" to="/events">Events</router-link>
+			<router-link class="nav-tab" to="/managers">Managers</router-link>
 		</h2>
 		<router-view v-if='!loading'></router-view>
 		<p><span class='inpursuit-spinner spinner' :class='{active: loading}'></span></p>

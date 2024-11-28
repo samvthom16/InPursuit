@@ -48,4 +48,22 @@ module.exports = [
 		path			: '/events/:id/edit',
 		component	: require( '../pages/event-single-edit.js' )
 	},
+	{
+		path			: '/managers',
+		component	: require( '../pages/managers.js' )
+	},
+	{
+		path			: '/managers/new',
+		component	: require( '../pages/manager-new.js' )
+	},
+	{
+		name			: 'SingleManager',
+		path			: '/managers/:id',
+		component	: require( '../pages/manager-single.js' )
+	},
+	{
+		name			: 'SingleManagerEdit',
+		path			: '/managers/:id/edit',
+		component	: require( '../pages/manager-single-edit.js' )
+	}
 ];
