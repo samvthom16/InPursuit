@@ -108,6 +108,134 @@ class INPURSUIT_DB_MEMBER_DATES extends INPURSUIT_DB_BASE{
 		return $result;
 	}
 
+	public function getNextOneMonthEvents($args = []) {
+		global $wpdb;
+		$indb = INPURSUIT_DB::getInstance();
+		$table = $this->getTable();
+		$events = strtolower(implode("','", $this->getEventTypes()));
+	
+		$page = isset($args['page']) ? $args['page'] : 1;
+		$per_page = isset($args['per_page']) ? $args['per_page'] : 10;
+	
+		$args_members = array(
+			'post_type'      => 'inpursuit-members',
+			'posts_per_page' => -1,
+			'post_status'    => 'publish',
+		);
+	
+		$members = get_posts($args_members);
+		$memberMap = [];
+		foreach ($members as $member) {
+			$memberMap[intval($member->ID)] = [
+				'name' => $member->post_title,
+				// 'featured_image' => get_the_post_thumbnail_url($member->ID) ?? null,
+				'featured_image' => $indb->getFeaturedImageURL($member->ID),
+			];
+		}
+	
+		$query = "
+			SELECT * 
+			FROM $table
+			WHERE event_type IN ('" . $events . "')
+			AND (
+				(MONTH(event_date) = MONTH(CURRENT_DATE) AND DAY(event_date) >= DAY(CURRENT_DATE)) 
+				OR
+				(MONTH(event_date) = MONTH(CURRENT_DATE + INTERVAL 1 MONTH) AND DAY(event_date) <= DAY(CURRENT_DATE + INTERVAL 30 DAY))
+				OR 
+				(MONTH(event_date) = MONTH(CURRENT_DATE) AND DAY(event_date) < DAY(CURRENT_DATE))
+			)
+		";
+	
+		$countquery = "
+			SELECT COUNT(*) 
+			FROM $table
+			WHERE event_type IN ('" . $events . "')
+			AND (
+				(MONTH(event_date) = MONTH(CURRENT_DATE) AND DAY(event_date) >= DAY(CURRENT_DATE)) 
+				OR
+				(MONTH(event_date) = MONTH(CURRENT_DATE + INTERVAL 1 MONTH) AND DAY(event_date) <= DAY(CURRENT_DATE + INTERVAL 30 DAY))
+				OR 
+				(MONTH(event_date) = MONTH(CURRENT_DATE) AND DAY(event_date) < DAY(CURRENT_DATE))
+			)
+		";
+		$total_count = $wpdb->get_var($countquery);
+		$total_pages = ceil($total_count / $per_page);
+	
+		$offset = ($page - 1) * $per_page;
+		$mainquery = $query . " LIMIT $offset, $per_page";
+	
+		$rows = $wpdb->get_results($mainquery);
+	
+		$result = [];
+		foreach ($rows as $row) {
+			$memberData = $memberMap[intval($row->member_id)] ?? ['name' => null, 'featured_image' => null];
+			$result[] = [
+				'id' => intval($row->ID),
+				'member_id' => intval($row->member_id),
+				'event_type' => $row->event_type,
+				'event_date' => date('Y-m-d', strtotime($row->event_date)),
+				'created_on' => date('Y-m-d', strtotime($row->created_on)),
+				'member_name' => $memberData['name'],
+				'featured_image' => $memberData['featured_image'],
+			];
+		}
+	
+		// return [
+		// 	'data' => $result,
+		// 	'total' => $total_count,
+		// 	'total_pages' => $total_pages,
+		// 	'page' => $page,
+		// 	'per_page' => $per_page,
+		// ];
+		return $result;
+	}
+	
+
+
+	public function _getNextOneMonthEvents(){
+    global $wpdb;
+
+    $table = $this->getTable();
+    $events = strtolower(implode("','", $this->getEventTypes()));
+
+    $query = "
+        SELECT 
+            events.ID AS id,
+            events.member_id,
+            events.event_type,
+            DATE(events.event_date) AS event_date,
+            DATE(events.created_on) AS created_on,
+            members.post_title AS member_name
+        FROM $table AS events
+        LEFT JOIN {$wpdb->posts} AS members
+        ON events.member_id = members.ID
+        WHERE events.event_type IN ('$events')
+          AND (
+              (MONTH(events.event_date) = MONTH(CURRENT_DATE) AND DAY(events.event_date) >= DAY(CURRENT_DATE))
+              OR
+              (MONTH(events.event_date) = MONTH(CURRENT_DATE + INTERVAL 1 MONTH) AND DAY(events.event_date) <= DAY(CURRENT_DATE + INTERVAL 30 DAY))
+              OR
+              (MONTH(events.event_date) = MONTH(CURRENT_DATE) AND DAY(events.event_date) < DAY(CURRENT_DATE))
+          )
+          AND members.post_status = 'publish'
+    ";
+
+    $rows = $wpdb->get_results($query);
+
+    
+    $result = array_map(function ($row) {
+        return [
+            'id' => intval($row->id),
+            'member_id' => intval($row->member_id),
+            'event_type' => $row->event_type,
+            'event_date' => $row->event_date,
+            'created_on' => $row->created_on,
+            'member_name' => $row->member_name,
+        ];
+    }, $rows);
+	
+    return $result;
+	}
 }
 
 INPURSUIT_DB_MEMBER_DATES::getInstance();
