@@ -139,6 +139,11 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 		);
 	}
 
+	function getSpecialDates( WP_REST_Request $request ){
+		$member_model = INPURSUIT_DB_MEMBER_DATES::getInstance();
+		return $member_model->getNextOneMonthEvents( $request->get_params() );
+	}
+
 	function addRestData(){
 
 		$this->registerRoute( 'history', array( $this, 'getHistoryCallback' ) );
@@ -147,6 +152,7 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 
 		$this->registerRoute( 'map', array( $this, 'getMapCallback' ) );
 		$this->registerRoute( 'regions', array( $this, 'getRegionsCallback' ) );
+		$this->registerRoute( 'special-dates', array( $this, 'getSpecialDates' ) );
 	}
 
 
