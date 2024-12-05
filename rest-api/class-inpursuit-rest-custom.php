@@ -139,12 +139,9 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 		);
 	}
 
-	function getSpecialDates(WP_REST_Request $args){
-		$wpdb = INPURSUIT_DB_MEMBER_DATES::getInstance();
-		$params 				= $args->get_params();
-
-		$memberEvents = $wpdb->getNextOneMonthEvents($params);
-		return $memberEvents;
+	function getSpecialDates( WP_REST_Request $request ){
+		$member_model = INPURSUIT_DB_MEMBER_DATES::getInstance();
+		return $member_model->getNextOneMonthEvents( $request->get_params() );
 	}
 
 	function addRestData(){

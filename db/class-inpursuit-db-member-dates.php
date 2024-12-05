@@ -108,134 +108,62 @@ class INPURSUIT_DB_MEMBER_DATES extends INPURSUIT_DB_BASE{
 		return $result;
 	}
 
-	public function getNextOneMonthEvents($args = []) {
+	/**
+	 * Returns members array if their birthday or wedding-anniversary is either today or in the next 30 days.
+	 * else returns an empty array
+	 **/
+	public function getNextOneMonthEvents( $args = [] ){
 		global $wpdb;
-		$indb = INPURSUIT_DB::getInstance();
-		$table = $this->getTable();
-		$events = strtolower(implode("','", $this->getEventTypes()));
-	
-		$page = isset($args['page']) ? $args['page'] : 1;
-		$per_page = isset($args['per_page']) ? $args['per_page'] : 10;
-	
-		$args_members = array(
-			'post_type'      => 'inpursuit-members',
-			'posts_per_page' => -1,
-			'post_status'    => 'publish',
-		);
-	
-		$members = get_posts($args_members);
-		$memberMap = [];
-		foreach ($members as $member) {
-			$memberMap[intval($member->ID)] = [
-				'name' => $member->post_title,
-				// 'featured_image' => get_the_post_thumbnail_url($member->ID) ?? null,
-				'featured_image' => $indb->getFeaturedImageURL($member->ID),
-			];
-		}
-	
+		$result 	 = [];
+		$table 		 = $this->getTable();
+		$events 	 = strtolower(implode("','", $this->getEventTypes()));
+		$page 		 = isset( $args['page'] ) && $args['page'] ? $args['page'] : 1;
+		$per_page  = isset( $args['per_page'] ) && $args['per_page'] ? $args['per_page'] : 10;
+		$offset		 = ( $page - 1 ) * $per_page;
+
+		// FETCH MEMBERS IF EVENT_DATE IS VALID AND THE NEXT EVENT IS EITHER TODAY OR IN THE NEXT 30 DAYS
+		// TIMESTAMPDIFF(YEAR, event_date, CURRENT_DATE) AS age
 		$query = "
-			SELECT * 
+			SELECT ID, member_id, event_type, event_date,
+			DATE_ADD(event_date, INTERVAL TIMESTAMPDIFF(YEAR, event_date, CURRENT_DATE) + 1 YEAR) AS next_event_date
 			FROM $table
 			WHERE event_type IN ('" . $events . "')
-			AND (
-				(MONTH(event_date) = MONTH(CURRENT_DATE) AND DAY(event_date) >= DAY(CURRENT_DATE)) 
-				OR
-				(MONTH(event_date) = MONTH(CURRENT_DATE + INTERVAL 1 MONTH) AND DAY(event_date) <= DAY(CURRENT_DATE + INTERVAL 30 DAY))
-				OR 
-				(MONTH(event_date) = MONTH(CURRENT_DATE) AND DAY(event_date) < DAY(CURRENT_DATE))
-			)
+			AND UNIX_TIMESTAMP(event_date) IS NOT NULL
+			AND DATE_ADD(event_date, INTERVAL TIMESTAMPDIFF(YEAR, event_date, CURRENT_DATE) + 1 YEAR)
+			BETWEEN CURRENT_DATE AND DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY)
+			ORDER BY next_event_date
 		";
-	
-		$countquery = "
-			SELECT COUNT(*) 
-			FROM $table
-			WHERE event_type IN ('" . $events . "')
-			AND (
-				(MONTH(event_date) = MONTH(CURRENT_DATE) AND DAY(event_date) >= DAY(CURRENT_DATE)) 
-				OR
-				(MONTH(event_date) = MONTH(CURRENT_DATE + INTERVAL 1 MONTH) AND DAY(event_date) <= DAY(CURRENT_DATE + INTERVAL 30 DAY))
-				OR 
-				(MONTH(event_date) = MONTH(CURRENT_DATE) AND DAY(event_date) < DAY(CURRENT_DATE))
-			)
-		";
-		$total_count = $wpdb->get_var($countquery);
-		$total_pages = ceil($total_count / $per_page);
-	
-		$offset = ($page - 1) * $per_page;
-		$mainquery = $query . " LIMIT $offset, $per_page";
-	
-		$rows = $wpdb->get_results($mainquery);
-	
-		$result = [];
-		foreach ($rows as $row) {
-			$memberData = $memberMap[intval($row->member_id)] ?? ['name' => null, 'featured_image' => null];
-			$result[] = [
-				'id' => intval($row->ID),
-				'member_id' => intval($row->member_id),
-				'event_type' => $row->event_type,
-				'event_date' => date('Y-m-d', strtotime($row->event_date)),
-				'created_on' => date('Y-m-d', strtotime($row->created_on)),
-				'member_name' => $memberData['name'],
-				'featured_image' => $memberData['featured_image'],
-			];
+
+		$countquery = "SELECT count(*) as total FROM ($query) as temp;";
+		$total 			= $wpdb->get_var( $countquery );
+		$mainquery 	= $query . " LIMIT $offset, $per_page";
+		$rows 			= $wpdb->get_results( $mainquery );
+
+		foreach( $rows as $row ){
+			$member = get_posts( array(
+				'post_type'      => 'inpursuit-members',
+				'posts_per_page' => 1,
+				'include'   		 => $row->member_id,
+				'post_status'    => 'publish'
+			) );
+
+			array_push( $result,  array(
+				'id' 						 => intval( $row->ID ),
+				'member_id' 		 => intval( $row->member_id ),
+				'member_name' 	 => count($member) ? $member[0]->post_title : '',
+				'featured_image' => INPURSUIT_DB::getInstance()->getFeaturedImageURL( $row->member_id ),
+				'event_type' 		 => $row->event_type,
+				'event_date' 		 => date('Y-m-d', strtotime( $row->next_event_date ) ),
+				// 'original_date' => date('Y-m-d', strtotime( $row->event_date ) ),
+			) );
 		}
-	
-		// return [
-		// 	'data' => $result,
-		// 	'total' => $total_count,
-		// 	'total_pages' => $total_pages,
-		// 	'page' => $page,
-		// 	'per_page' => $per_page,
-		// ];
-		return $result;
+
+		$response = new WP_REST_Response( $result, 200 );
+    $response->header( 'X-WP-TotalPages', ceil( $total/$per_page ) );
+		$response->header( 'X-WP-Total', $total );
+    return $response;
 	}
-	
 
-
-	public function _getNextOneMonthEvents(){
-    global $wpdb;
-
-    $table = $this->getTable();
-    $events = strtolower(implode("','", $this->getEventTypes()));
-
-    $query = "
-        SELECT 
-            events.ID AS id,
-            events.member_id,
-            events.event_type,
-            DATE(events.event_date) AS event_date,
-            DATE(events.created_on) AS created_on,
-            members.post_title AS member_name
-        FROM $table AS events
-        LEFT JOIN {$wpdb->posts} AS members
-        ON events.member_id = members.ID
-        WHERE events.event_type IN ('$events')
-          AND (
-              (MONTH(events.event_date) = MONTH(CURRENT_DATE) AND DAY(events.event_date) >= DAY(CURRENT_DATE))
-              OR
-              (MONTH(events.event_date) = MONTH(CURRENT_DATE + INTERVAL 1 MONTH) AND DAY(events.event_date) <= DAY(CURRENT_DATE + INTERVAL 30 DAY))
-              OR
-              (MONTH(events.event_date) = MONTH(CURRENT_DATE) AND DAY(events.event_date) < DAY(CURRENT_DATE))
-          )
-          AND members.post_status = 'publish'
-    ";
-
-    $rows = $wpdb->get_results($query);
-
-    
-    $result = array_map(function ($row) {
-        return [
-            'id' => intval($row->id),
-            'member_id' => intval($row->member_id),
-            'event_type' => $row->event_type,
-            'event_date' => $row->event_date,
-            'created_on' => $row->created_on,
-            'member_name' => $row->member_name,
-        ];
-    }, $rows);
-	
-    return $result;
-	}
 }
 
 INPURSUIT_DB_MEMBER_DATES::getInstance();
