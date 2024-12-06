@@ -109,7 +109,7 @@ class INPURSUIT_DB_MEMBER_DATES extends INPURSUIT_DB_BASE{
 	}
 
 	/**
-	 * Returns members array if their birthday or wedding-anniversary is either today or in the next 30 days.
+	 * Returns members array if their birthday or wedding-anniversary is in the next 30 days.
 	 * else returns an empty array
 	 **/
 	public function getNextOneMonthEvents( $args = [] ){
@@ -121,16 +121,23 @@ class INPURSUIT_DB_MEMBER_DATES extends INPURSUIT_DB_BASE{
 		$per_page  = isset( $args['per_page'] ) && $args['per_page'] ? $args['per_page'] : 10;
 		$offset		 = ( $page - 1 ) * $per_page;
 
-		// FETCH MEMBERS IF EVENT_DATE IS VALID AND THE NEXT EVENT IS EITHER TODAY OR IN THE NEXT 30 DAYS
-		// TIMESTAMPDIFF(YEAR, event_date, CURRENT_DATE) AS age
+		// FETCH ACTIVE MEMBERS IF EVENT_DATE IS VALID AND THE NEXT EVENT IS IN THE NEXT 30 DAYS
 		$query = "
-			SELECT ID, member_id, event_type, event_date,
-			DATE_ADD(event_date, INTERVAL TIMESTAMPDIFF(YEAR, event_date, CURRENT_DATE) + 1 YEAR) AS next_event_date
-			FROM $table
-			WHERE event_type IN ('" . $events . "')
-			AND UNIX_TIMESTAMP(event_date) IS NOT NULL
-			AND DATE_ADD(event_date, INTERVAL TIMESTAMPDIFF(YEAR, event_date, CURRENT_DATE) + 1 YEAR)
-			BETWEEN CURRENT_DATE AND DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY)
+			SELECT
+				member_dates.ID,
+				member_dates.member_id,
+				member_dates.event_type,
+				DATE_ADD(member_dates.event_date, INTERVAL TIMESTAMPDIFF(YEAR, member_dates.event_date, CURRENT_DATE) + 1 YEAR) AS next_event_date,
+				inpursuit_members.post_title AS member_name
+			FROM $table member_dates LEFT JOIN {$wpdb->prefix}posts inpursuit_members
+			ON member_dates.member_id = inpursuit_members.ID
+			WHERE
+				inpursuit_members.post_type='inpursuit-members' AND
+				inpursuit_members.post_status='publish' AND
+				member_dates.event_type IN ('" . $events . "') AND
+				UNIX_TIMESTAMP(member_dates.event_date) IS NOT NULL AND
+				DATE_ADD(member_dates.event_date, INTERVAL TIMESTAMPDIFF(YEAR, member_dates.event_date, CURRENT_DATE) + 1 YEAR)
+				BETWEEN CURRENT_DATE AND DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY)
 			ORDER BY next_event_date
 		";
 
@@ -140,17 +147,10 @@ class INPURSUIT_DB_MEMBER_DATES extends INPURSUIT_DB_BASE{
 		$rows 			= $wpdb->get_results( $mainquery );
 
 		foreach( $rows as $row ){
-			$member = get_posts( array(
-				'post_type'      => 'inpursuit-members',
-				'posts_per_page' => 1,
-				'include'   		 => $row->member_id,
-				'post_status'    => 'publish'
-			) );
-
 			array_push( $result,  array(
 				'id' 						 => intval( $row->ID ),
 				'member_id' 		 => intval( $row->member_id ),
-				'member_name' 	 => count($member) ? $member[0]->post_title : '',
+				'member_name' 	 => $row->member_name,
 				'featured_image' => INPURSUIT_DB::getInstance()->getFeaturedImageURL( $row->member_id ),
 				'event_type' 		 => $row->event_type,
 				'event_date' 		 => date('Y-m-d', strtotime( $row->next_event_date ) ),
