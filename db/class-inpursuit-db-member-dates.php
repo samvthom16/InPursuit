@@ -124,21 +124,30 @@ class INPURSUIT_DB_MEMBER_DATES extends INPURSUIT_DB_BASE{
 		// FETCH ACTIVE MEMBERS IF EVENT_DATE IS VALID AND THE NEXT EVENT IS IN THE NEXT 30 DAYS
 		$query = "
 			SELECT
-				member_dates.ID,
-				member_dates.member_id,
-				member_dates.event_type,
-				DATE_ADD(member_dates.event_date, INTERVAL TIMESTAMPDIFF(YEAR, member_dates.event_date, CURRENT_DATE) + 1 YEAR) AS next_event_date,
-				inpursuit_members.post_title AS member_name
-			FROM $table member_dates LEFT JOIN {$wpdb->prefix}posts inpursuit_members
-			ON member_dates.member_id = inpursuit_members.ID
-			WHERE
-				inpursuit_members.post_type='inpursuit-members' AND
-				inpursuit_members.post_status='publish' AND
-				member_dates.event_type IN ('" . $events . "') AND
-				UNIX_TIMESTAMP(member_dates.event_date) IS NOT NULL AND
-				DATE_ADD(member_dates.event_date, INTERVAL TIMESTAMPDIFF(YEAR, member_dates.event_date, CURRENT_DATE) + 1 YEAR)
-				BETWEEN CURRENT_DATE AND DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY)
-			ORDER BY next_event_date
+			member_dates.ID,
+			member_dates.member_id,
+			member_dates.event_type,
+			CASE
+				WHEN DATE_ADD(member_dates.event_date, INTERVAL TIMESTAMPDIFF(YEAR, member_dates.event_date, CURRENT_DATE) YEAR) >= CURRENT_DATE
+				THEN DATE_ADD(member_dates.event_date, INTERVAL TIMESTAMPDIFF(YEAR, member_dates.event_date, CURRENT_DATE) YEAR)
+				ELSE DATE_ADD(member_dates.event_date, INTERVAL TIMESTAMPDIFF(YEAR, member_dates.event_date, CURRENT_DATE) + 1 YEAR)
+			END AS next_event_date,
+			inpursuit_members.post_title AS member_name
+		FROM $table member_dates
+		LEFT JOIN {$wpdb->prefix}posts inpursuit_members
+		ON member_dates.member_id = inpursuit_members.ID
+		WHERE
+			inpursuit_members.post_type='inpursuit-members' AND
+			inpursuit_members.post_status='publish' AND
+			member_dates.event_type IN ('" . $events . "') AND
+			UNIX_TIMESTAMP(member_dates.event_date) IS NOT NULL AND
+			CASE
+				WHEN DATE_ADD(member_dates.event_date, INTERVAL TIMESTAMPDIFF(YEAR, member_dates.event_date, CURRENT_DATE) YEAR) >= CURRENT_DATE
+				THEN DATE_ADD(member_dates.event_date, INTERVAL TIMESTAMPDIFF(YEAR, member_dates.event_date, CURRENT_DATE) YEAR)
+				ELSE DATE_ADD(member_dates.event_date, INTERVAL TIMESTAMPDIFF(YEAR, member_dates.event_date, CURRENT_DATE) + 1 YEAR)
+			END
+			BETWEEN CURRENT_DATE AND DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY)
+		ORDER BY next_event_date
 		";
 
 		$countquery = "SELECT count(*) as total FROM ($query) as temp;";
