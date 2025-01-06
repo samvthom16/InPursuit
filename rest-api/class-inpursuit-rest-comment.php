@@ -60,13 +60,11 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
   }
 
   public function get_items( $request ) {
-		$comment_db = INPURSUIT_DB_COMMENT::getInstance();
-
-    $data = array();
 
     if( is_user_logged_in() ){
-
-      $params = $request->get_params();
+      $data       = array();
+      $params     = $request->get_params();
+      $comment_db = INPURSUIT_DB_COMMENT::getInstance();
       $categories = isset( $params['comments_category'] ) && $params['comments_category'] ? $params['comments_category'] : "";
 
       if( !current_user_can( 'administrator' ) ){
@@ -90,14 +88,22 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
   			$item = $this->prepare_item_for_response( $row, $request );
   			array_push( $data, $item );
   		}
+
+      $response = new WP_REST_Response( $data, 200 );
+  		$response->header( 'X-WP-TotalPages', $response_data['total_pages'] );
+  		$response->header( 'X-WP-Total', $response_data['total'] );
+  		return $response;
+
     }
 
+    return new WP_Error(
+      'rest_forbidden_context',
+      __( 'Sorry, you are not allowed to view terms for this object.' ),
+      array(
+        'status' => rest_authorization_required_code(),
+      )
+    );
 
-
-		$response = new WP_REST_Response( $data, 200 );
-		$response->header( 'X-WP-TotalPages', $response_data['total_pages'] );
-		$response->header( 'X-WP-Total', $response_data['total'] );
-		return $response;
 	}
 
 	public function get_item( $request ){
