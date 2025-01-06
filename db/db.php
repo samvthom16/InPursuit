@@ -10,7 +10,9 @@
 		'class-inpursuit-db-event-member-relation.php',
 		'class-inpursuit-db-user.php',
 		'class-inpursuit-db-comment.php',
-		'class-inpursuit-db.php'
+		'class-inpursuit-db.php',
+		'class-inpursuit-db-comments-category.php',
+		'class-inpursuit-db-comments-category-relation.php'
 	);
 
 	foreach( $inc_files as $inc_file ){
