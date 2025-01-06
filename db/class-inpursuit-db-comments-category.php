@@ -58,6 +58,19 @@ class INPURSUIT_DB_COMMENTS_CATEGORY extends INPURSUIT_DB_BASE {
 
 	}
 
+	function comment_category_id_exists( $category_id ){
+		global $wpdb;
+		$table = $this->getTable();
+		$count_query = "SELECT COUNT(*) FROM $table WHERE term_id = $category_id";
+
+		if( $this->get_var( $count_query ) ){
+			return true;
+		}
+
+		return false;
+
+	}
+
 	function sanitize( $request ){
 		return array(
 			'name'	=> isset( $request['name'] ) ? $request['name'] : ''

@@ -13,6 +13,7 @@ class INPURSUIT_DB_COMMENTS_CATEGORY_RELATION extends INPURSUIT_DB_BASE {
 
 		add_action( 'inpursuit_before_delete_comment', array( $this, 'before_delete_comment' ) );
 		add_action( 'inpursuit_before_delete_comments_category', array( $this, 'before_delete_comments_category' ) );
+		add_action( 'inpursuit_insert_comment_category_relation', array( $this, 'insert_comment_category_relation' ), 10, 2 );
 
 	}
 
@@ -34,6 +35,41 @@ class INPURSUIT_DB_COMMENTS_CATEGORY_RELATION extends INPURSUIT_DB_BASE {
 		) $charset_collate;";
 
 		$this->query( $sql );
+
+	}
+
+	function insert_comment_category_relation( $comment_id, $request ){
+		$params = $request->get_params();
+		$comment_categories = isset( $params['comments_category'] ) && $params['comments_category'] ? explode(",", $params['comments_category'] ): array();
+
+
+		// USE ONLY 1ST CATEGORY_ID FROM THE ARRAY IF THERE ARE MULTIPLE CATEGORY_IDS IN THE REQUEST
+		$first_comment_category = count( $comment_categories ) && $comment_categories[0] ? $comment_categories[0] : 0;
+
+		$first_comment_category = $this->get_validated_category_id( $first_comment_category );
+
+		// RETURN IF NOT VALID
+		if( !$first_comment_category ){
+			return;
+		}
+
+		// RETURN IF CATEGORY DOESN'T EXIST
+		if( !INPURSUIT_DB_COMMENTS_CATEGORY::getInstance()->comment_category_id_exists( $first_comment_category ) ){
+			return;
+		}
+
+		// RETURN IF COMMENT CATEGORY RELATION EXISTS
+		if( $this->comment_category_relation_exists( $first_comment_category, $comment_id ) ){
+			return;
+		}
+
+		$item = array(
+			'term_id'		 => $first_comment_category,
+			'comment_id' => $comment_id
+		);
+
+		// INSERT INTO TABLE
+		$this->insert( $item );
 
 	}
 
@@ -78,6 +114,47 @@ class INPURSUIT_DB_COMMENTS_CATEGORY_RELATION extends INPURSUIT_DB_BASE {
 		}
 
 		return $comment_categories;
+	}
+
+	function get_comment_ids_by_category_ids( $category_ids ){
+		global $wpdb;
+		$ids	 = array();
+		$table = $this->getTable();
+
+		foreach( explode(",", $category_ids ) as $category ){
+			$category_id = $this->get_validated_category_id( $category );
+
+			if( !$category_id ){
+				continue;
+			}
+
+			array_push( $ids, $category_id );
+
+		}
+
+		if( !count( $ids ) ) return $ids;
+
+		// $comment_categories = $wpdb->get_col( "SELECT comment_id FROM $table WHERE term_id = $term_id" );
+
+		$ids = implode( ",", $ids );
+		$query = "SELECT comment_id FROM $table WHERE term_id IN (".$ids.")";
+
+		$comment_categories = $wpdb->get_col( $query );
+
+		return $comment_categories;
+	}
+
+	function comment_category_relation_exists( $term_id, $comment_id ){
+		global $wpdb;
+		$table = $this->getTable();
+		$count_query = "SELECT COUNT(*) FROM $table WHERE term_id = $term_id AND comment_id = $comment_id";
+
+		if( $this->get_var( $count_query ) ){
+			return true;
+		}
+
+		return false;
+
 	}
 
 }
