@@ -44,6 +44,15 @@ class INPURSUIT_DB_COMMENTS_CATEGORY extends INPURSUIT_DB_BASE {
 		return $query;
 	}
 
+	function generate_settings_schema(){
+		$comment_categories = array();
+		$rows 							= $this->get_results( $this->getResultsQuery( array() ) );
+		foreach( $rows as $category ){
+			$comment_categories[$category->term_id] = $category->name;
+		}
+		return $comment_categories;
+	}
+
 	function comment_category_name_exists( $category_name ){
 		global $wpdb;
 		$table = $this->getTable();
