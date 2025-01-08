@@ -79,7 +79,8 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
 
       // FILTER COMMENTS BY CATEGORY_IDS
       if( $categories ){
-        $params['comment_ids'] = INPURSUIT_DB_COMMENTS_CATEGORY_RELATION::getInstance()->get_comment_ids_by_category_ids( $categories );
+        $comment_ids = INPURSUIT_DB_COMMENTS_CATEGORY_RELATION::getInstance()->get_comment_ids_by_category_ids( $categories );
+        $params['comment_ids'] = $comment_ids ? $comment_ids : array(0);
   		}
 
   		$response_data = $comment_db->getResults( $params );
