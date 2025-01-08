@@ -50,7 +50,8 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 		global $inpursuit_vars;
 
 		$data = array(
-			'name' 		=> get_bloginfo( 'name' ),
+			'name' 							=> get_bloginfo( 'name' ),
+			'comments_category'	=> INPURSUIT_DB_COMMENTS_CATEGORY::getInstance()->generate_settings_schema() 
 		);
 
 		$taxonomies = $inpursuit_vars['taxonomies'];

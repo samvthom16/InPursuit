@@ -52,6 +52,10 @@ class INPURSUIT_DB_COMMENT extends INPURSUIT_DB_BASE{
 			$user_id = $args['user_id'];
 			$query .= " AND user_id=$user_id";
 		}
+		if( isset( $args['comment_ids'] ) && $args['comment_ids'] ){
+			$ids = implode( ',', $args['comment_ids'] );
+			$query .= " AND ID IN ($ids)";
+		}
 
 		return $query;
 	}

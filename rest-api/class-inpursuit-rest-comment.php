@@ -60,13 +60,12 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
   }
 
   public function get_items( $request ) {
-		$comment_db = INPURSUIT_DB_COMMENT::getInstance();
-
-    $data = array();
 
     if( is_user_logged_in() ){
-
-      $params = $request->get_params();
+      $data       = array();
+      $params     = $request->get_params();
+      $comment_db = INPURSUIT_DB_COMMENT::getInstance();
+      $categories = isset( $params['comments_category'] ) && $params['comments_category'] ? $params['comments_category'] : "";
 
       if( !current_user_can( 'administrator' ) ){
 
@@ -78,20 +77,34 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
 
       }
 
+      // FILTER COMMENTS BY CATEGORY_IDS
+      if( $categories ){
+        $comment_ids = INPURSUIT_DB_COMMENTS_CATEGORY_RELATION::getInstance()->get_comment_ids_by_category_ids( $categories );
+        $params['comment_ids'] = $comment_ids ? $comment_ids : array(0);
+  		}
+
   		$response_data = $comment_db->getResults( $params );
 
   		foreach( $response_data['data'] as $row ){
   			$item = $this->prepare_item_for_response( $row, $request );
   			array_push( $data, $item );
   		}
+
+      $response = new WP_REST_Response( $data, 200 );
+  		$response->header( 'X-WP-TotalPages', $response_data['total_pages'] );
+  		$response->header( 'X-WP-Total', $response_data['total'] );
+  		return $response;
+
     }
 
+    return new WP_Error(
+      'rest_forbidden_context',
+      __( 'Sorry, you are not allowed to view terms for this object.' ),
+      array(
+        'status' => rest_authorization_required_code(),
+      )
+    );
 
-
-		$response = new WP_REST_Response( $data, 200 );
-		$response->header( 'X-WP-TotalPages', $response_data['total_pages'] );
-		$response->header( 'X-WP-Total', $response_data['total'] );
-		return $response;
 	}
 
 	public function get_item( $request ){
@@ -108,6 +121,9 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
 
 	function prepare_item_for_response( $item, $request ){
 
+    $comments_category_relation = INPURSUIT_DB_COMMENTS_CATEGORY_RELATION::getInstance();
+    $comments_category = $comments_category_relation->get_comment_categories($item->ID);
+
     return array(
 			'id'				=> $item->ID,
 			'comment'		=> isset( $item->text ) ? $item->text : $item->comment,
@@ -118,7 +134,8 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
         'id'    => $item->user_id,
         'name'  => get_userdata( $item->user_id )->display_name
       ),
-			'post_date'	=> isset( $item->post_date ) ? get_date_from_gmt( $item->post_date ) : get_date_from_gmt( $item->modified_on )
+			'post_date'	=> isset( $item->post_date ) ? get_date_from_gmt( $item->post_date ) : get_date_from_gmt( $item->modified_on ),
+      'comments_category' => $comments_category
 		);
 	}
 
@@ -135,6 +152,13 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
 		$insert_id = $comment_db->insert( $item );
 
     if( $insert_id ){
+      $comments_category_relation = INPURSUIT_DB_COMMENTS_CATEGORY_RELATION::getInstance();
+
+      do_action( 'inpursuit_insert_comment_category_relation', $insert_id, $request );
+
+      // FETCH ALL THE TERMS FOR THE INSERTED COMMENT
+      $item['comment_categories'] = $comments_category_relation->get_comment_categories( $insert_id );
+
       do_action( 'inpursuit_comment_created', $item );
       return new WP_REST_Response( $item, 200 );
 		}
@@ -184,6 +208,9 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
   public function delete_item( $request ) {
 
 		$comment_db = INPURSUIT_DB_COMMENT::getInstance();
+
+    // DELETE COMMENT CATEGORY RELATION BEFORE THE ACTUAL COMMENT IS DELETED
+    do_action( "inpursuit_before_delete_comment", $request['id'] );
 
 		if( $comment_db->delete_row( $request['id'] ) ){
 			return new WP_REST_Response( true, 200 );
