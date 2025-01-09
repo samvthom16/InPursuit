@@ -34,6 +34,7 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 				$item['text'] = $row->text;
 				$item['title']['rendered'] = "Follow-up on " . get_the_title( $row->post_id );
 				$item['edit_url'] = admin_url( 'post.php?action=edit&post=' . $row->post_id );
+				$item['comments_category'] = INPURSUIT_DB_COMMENTS_CATEGORY_RELATION::getInstance()->get_comment_categories( $item['id'] );
 			}
 
 			array_push( $data, $item );
@@ -51,7 +52,7 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 
 		$data = array(
 			'name' 							=> get_bloginfo( 'name' ),
-			'comments_category'	=> INPURSUIT_DB_COMMENTS_CATEGORY::getInstance()->generate_settings_schema() 
+			'comments_category'	=> INPURSUIT_DB_COMMENTS_CATEGORY::getInstance()->generate_settings_schema()
 		);
 
 		$taxonomies = $inpursuit_vars['taxonomies'];
