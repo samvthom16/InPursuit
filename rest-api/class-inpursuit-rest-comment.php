@@ -180,6 +180,10 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
 
 		$id = isset( $request['id'] ) ? $request['id'] : 0;
 
+    if ($id <= 0) {
+      return new WP_Error( 'rest_ip_comment_invalid_id', 'The provided ID is invalid', array( 'status' => 404 ) );
+    }
+
 		$comment_db->update($id, $comment );
 
 		$data = array(
