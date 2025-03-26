@@ -178,10 +178,9 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
 
 		$comment = $request->get_json_params();
 
-		$comment['post_id'] = isset( $request['id'] ) ? $request['id'] : 0;
-		$comment['user_id'] = get_current_user_id();
+		$id = isset( $request['id'] ) ? $request['id'] : 0;
 
-		$comment_db->insert( $comment );
+		$comment_db->update($id, $comment );
 
 		$data = array(
 			'item'	=> $comment
