@@ -179,17 +179,28 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
 		$comment = $request->get_json_params();
 
 		$id = isset( $request['id'] ) ? $request['id'] : 0;
+    $is_comment_updated = isset( $comment['comment'] );
+    $is_date_updated = isset( $comment['modified_on'] );
 
     if ($id <= 0) {
       return new WP_Error( 'rest_ip_comment_invalid_id', 'The provided ID is invalid', array( 'status' => 404 ) );
     }
 
-		$comment_db->update($id, $comment );
+    unset($comment['post']);
+    $comment_db->update($id, $comment);
 
-		$data = array(
-			'item'	=> $comment
-		);
+    $data = array(
+        'item' => $comment
+    );
 
+    if ($is_comment_updated) {
+        do_action('inpursuit_comment_updated', $item);
+    }
+
+    if ($is_date_updated) {
+        $item['modified_on'] = $comment['modified_on'];
+        do_action('inpursuit_comment_rescheduled', $item);
+    }
 		return new WP_REST_Response( $data, 200 );
 
     if ( function_exists( 'slug_some_function_to_update_item' ) ) {
@@ -212,8 +223,12 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
 
 		$comment_db = INPURSUIT_DB_COMMENT::getInstance();
 
+    $item = (array) $comment_db->get_row( $request['id']);
+
     // DELETE COMMENT CATEGORY RELATION BEFORE THE ACTUAL COMMENT IS DELETED
     do_action( "inpursuit_before_delete_comment", $request['id'] );
+    
+    do_action('inpursuit_comment_deleted', $item);
 
 		if( $comment_db->delete_row( $request['id'] ) ){
 			return new WP_REST_Response( true, 200 );
