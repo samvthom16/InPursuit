@@ -1,8 +1,12 @@
 <?php
 
-class INPURSUIT_REST_OTP_AUTH extends INPURSUIT_BASE{
+class INPURSUIT_REST_OTP_AUTH extends INPURSUIT_BASE {
+
+  private $allowed_roles;
 
   function __construct(){
+
+    $this->allowed_roles = array( 'administrator', 'editor' );
 
     add_action( 'rest_api_init', function(){
       register_rest_route( 'inpursuit/v1', 'verify', array(
@@ -33,6 +37,13 @@ class INPURSUIT_REST_OTP_AUTH extends INPURSUIT_BASE{
       $user = get_user_by( 'email', $email_address );
 
       if( $user ){
+
+        // RETURN IF USER ROLE IS NOT ALLOWED
+        if( !$this->isAllowedUserRole( $user ) ){
+          $error->add( 'rest_cannot_send_otp', __( 'Sorry, you are not allowed to send OTP.', 'wp-rest-user' ), array( 'status' => rest_authorization_required_code() ) );
+          return $error;
+        }
+
         $message = "Following is your OTP: $email_otp";
         wp_mail( $email_address, 'OTP for INPURSUIT', $message );
         return new WP_REST_Response( array( 'message'=> "Authentication Successful" ), 123 );
@@ -70,6 +81,12 @@ class INPURSUIT_REST_OTP_AUTH extends INPURSUIT_BASE{
         return $error;
       }
 
+      // RETURN IF USER ROLE IS NOT ALLOWED
+      if( !$this->isAllowedUserRole( $user ) ){
+        $error->add( 'rest_cannot_verify_otp', __( 'Cannot verify OTP.', 'wp-rest-user' ), array( 'status' => rest_authorization_required_code() ) );
+        return $error;
+      }
+
       $app = new WP_Application_Passwords;
       $local_time  = current_datetime();
       $current_time = $local_time->getTimestamp() + $local_time->getOffset();
@@ -91,6 +108,25 @@ class INPURSUIT_REST_OTP_AUTH extends INPURSUIT_BASE{
 
     $error->add( 400, __("Something went wrong", 'wp-rest-user'), array( 'status' => 400 ) );
     return $error;
+  }
+
+  private function isAllowedUserRole( $user ){
+    $is_valid = false;
+
+    $user_roles = !isset( $user->roles ) || empty( $user->roles )  ? array() : $user->roles;
+
+    if( empty( $user_roles ) ){
+      return $is_valid;
+    }
+
+    foreach( $this->allowed_roles as $role ){
+      if( in_array( $role, $user_roles ) ){
+        $is_valid = true;
+        break;
+      }
+    }
+
+    return $is_valid;
   }
 
 }
