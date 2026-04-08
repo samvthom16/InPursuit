@@ -450,6 +450,58 @@ All code changes are tracked in git with detailed commit messages.
 
 ---
 
+---
+
+## Planned: Web Push Notifications ⏳ (NOT YET IMPLEMENTED)
+
+**Status:** Plan approved, implementation deferred to next session.
+
+### Overview
+Add browser web push notifications using `minishlink/web-push` (Composer). Fires when a new member is added or a new event is created — same hooks as the email notifications already in place.
+
+### Files to Create
+| File | Purpose |
+|------|---------|
+| `db/class-inpursuit-db-push-subscription.php` | DB table for browser subscriptions |
+| `rest-api/class-inpursuit-rest-push.php` | 3 REST endpoints (VAPID key, subscribe, unsubscribe) |
+| `lib/push-notifications/class-inpursuit-push-sender.php` | VAPID key mgmt + WebPush dispatch |
+| `lib/push-notifications/push-notifications.php` | Loader |
+
+### Files to Modify
+| File | Change |
+|------|--------|
+| `InPursuit.php` | Add `require_once( __DIR__ . '/vendor/autoload.php' )` before `$inc_files` |
+| `db/db.php` | Add push subscription DB class to `$inc_files` |
+| `rest-api/rest-api.php` | Add push REST class to `$inc_files` |
+| `lib/lib.php` | Add push-notifications loader to `$inc_files` |
+
+### Implementation Order
+1. `composer require minishlink/web-push` from plugin root
+2. Bootstrap autoloader in `InPursuit.php`
+3. DB class + `db/db.php`
+4. REST class + `rest-api/rest-api.php`
+5. Push sender class + `lib/lib.php`
+
+### DB Table — `wp_ip_push_subscriptions`
+- `ID`, `user_id`, `endpoint` (TEXT, UNIQUE 191-prefix), `p256dh` (TEXT), `auth` (VARCHAR 255), `created_on`
+- Methods: `getByEndpoint()`, `getAllSubscriptions()`, `deleteByEndpoint()`
+
+### REST Endpoints (`inpursuit/v1`)
+| Route | Method | Auth | Purpose |
+|-------|--------|------|---------|
+| `push/vapid-public-key` | GET | Public | Returns public VAPID key |
+| `push/subscribe` | POST | `is_user_logged_in` | Save subscription (idempotent) |
+| `push/unsubscribe` | POST | `is_user_logged_in` | Delete subscription by endpoint |
+
+### Push Sender
+- Hooks into `rest_after_insert_inpursuit-members` and `rest_after_insert_inpursuit-events` (same as email notifications, `$creating` guard)
+- `ensureVapidKeys()` — generates + stores VAPID keys in WP options on first run
+- `sendPushToAll( $title, $body )` — fans out to all subscribers, auto-cleans expired subscriptions
+
+**Full plan saved to:** `.claude/plans/polished-sniffing-anchor.md`
+
+---
+
 **Session Complete** ✅
 
 This session successfully hardened the InPursuit plugin against three critical vulnerability categories. The remaining issues are documented and prioritized for future work. All changes are production-ready and can be deployed immediately.
