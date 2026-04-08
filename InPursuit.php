@@ -104,14 +104,6 @@
 		}
 	} );
 
-	add_filter( 'rest_authentication_errors', function( $errors ){
-		$request_server = $_SERVER['REMOTE_ADDR'];
-    $origin = get_http_origin();
-    if ($origin !== 'https://inpursuit.vercel.app') return new WP_Error('forbidden_access', $origin, array(
-        'status' => 403
-    ));
-    return $errors;
-	} );
 	/* CORS ENABLED FOR THE TEST VUE SITE */
 
 
