@@ -6,6 +6,15 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 		$event_db 			= INPURSUIT_DB::getInstance();
 		$params 				= $args->get_params();
 
+		// Validate ID parameter if provided
+		if ( isset( $params['id'] ) ) {
+			$id = intval( $params['id'] );
+			if ( $id <= 0 ) {
+				return new WP_Error( 'invalid_id', 'ID must be a positive integer', array( 'status' => 400 ) );
+			}
+			$params['id'] = $id;
+		}
+
 		if( !current_user_can( 'administrator' ) ){
 			$current_user = wp_get_current_user();
 			$current_user_id = $current_user->ID;
@@ -158,8 +167,21 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 	}
 
 	function getSpecialDates( WP_REST_Request $request ){
+		$params = $request->get_params();
+
+		// Validate pagination parameters
+		$page = intval( $params['page'] ?? 1 );
+		$per_page = intval( $params['per_page'] ?? 10 );
+
+		if ( $page < 1 ) {
+			return new WP_Error( 'invalid_page', 'Page must be 1 or greater', array( 'status' => 400 ) );
+		}
+		if ( $per_page < 1 || $per_page > 100 ) {
+			return new WP_Error( 'invalid_per_page', 'Per page must be between 1 and 100', array( 'status' => 400 ) );
+		}
+
 		$member_model = INPURSUIT_DB_MEMBER_DATES::getInstance();
-		return $member_model->getNextOneMonthEvents( $request->get_params() );
+		return $member_model->getNextOneMonthEvents( array( 'page' => $page, 'per_page' => $per_page ) );
 	}
 
 	function addRestData(){
