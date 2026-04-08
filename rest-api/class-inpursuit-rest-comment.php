@@ -122,19 +122,22 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
 	function prepare_item_for_response( $item, $request ){
 
     $comments_category_relation = INPURSUIT_DB_COMMENTS_CATEGORY_RELATION::getInstance();
-    $comments_category = $comments_category_relation->get_comment_categories($item->ID);
+    $comments_category = array_map( 'intval', $comments_category_relation->get_comment_categories( intval( $item->ID ) ) );
+
+    $user_data = get_userdata( intval( $item->user_id ) );
+    $user_name = $user_data ? esc_html( $user_data->display_name ) : '';
 
     return array(
-			'id'				=> $item->ID,
-			'comment'		=> isset( $item->text ) ? $item->text : $item->comment,
+			'id'				=> intval( $item->ID ),
+			'comment'		=> wp_kses_post( isset( $item->text ) ? $item->text : $item->comment ),
 
-      'member'    => INPURSUIT_REST_MEMBER::getInstance()->prepareItemResponse( $item->post_id ),
+      'member'    => INPURSUIT_REST_MEMBER::getInstance()->prepareItemResponse( intval( $item->post_id ) ),
 
       'user'			=> array(
-        'id'    => $item->user_id,
-        'name'  => get_userdata( $item->user_id )->display_name
+        'id'    => intval( $item->user_id ),
+        'name'  => $user_name
       ),
-			'post_date'	=> isset( $item->post_date ) ? get_date_from_gmt( $item->post_date ) : get_date_from_gmt( $item->modified_on ),
+			'post_date'	=> esc_html( isset( $item->post_date ) ? get_date_from_gmt( $item->post_date ) : get_date_from_gmt( $item->modified_on ) ),
       'comments_category' => $comments_category
 		);
 	}

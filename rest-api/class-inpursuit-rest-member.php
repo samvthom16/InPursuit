@@ -77,7 +77,7 @@ class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 
 				$event_db 			= INPURSUIT_DB::getInstance();
 				$response_data 	= $event_db->getHistory( array(
-					'id' 				=> $post['id'],
+					'id' 				=> intval( $post['id'] ),
 					'per_page' 	=> 1
 				) );
 
@@ -87,7 +87,7 @@ class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 					count( $response_data['data'] ) &&
 					isset( $response_data['data'][0]->post_date )
 				)
-					return get_date_from_gmt( $response_data['data'][0]->post_date );
+					return esc_html( get_date_from_gmt( $response_data['data'][0]->post_date ) );
 
 				return '';
 			}
@@ -143,10 +143,10 @@ class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 				foreach ( $special_events as $event => $value	) {
 
 					$event_date = $wpdb->get_var( $wpdb->prepare(
-							"SELECT DATE(event_date) FROM {$wpdb->prefix}ip_member_dates WHERE member_id = %d AND event_type = %s ", $post['id'], $event
+							"SELECT DATE(event_date) FROM {$wpdb->prefix}ip_member_dates WHERE member_id = %d AND event_type = %s ", intval( $post['id'] ), sanitize_key( $event )
 					) );
 
-					$special_events[$event]	=	$event_date;
+					$special_events[ $event ]	=	$event_date ? esc_html( $event_date ) : '';
 
 				}
 
