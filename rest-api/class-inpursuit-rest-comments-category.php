@@ -14,7 +14,7 @@ class INPURSUIT_REST_COMMENTS_CATEGORY extends WP_REST_Controller {
       array(
         'methods'             => WP_REST_Server::READABLE,
         'callback'            => array( $this, 'get_items' ),
-        'permission_callback' => '__return_true',
+        'permission_callback' => 'is_user_logged_in',
         'args'                => array(),
       ),
       array(
@@ -35,7 +35,7 @@ class INPURSUIT_REST_COMMENTS_CATEGORY extends WP_REST_Controller {
       array(
         'methods'             => WP_REST_Server::READABLE,
         'callback'            => array( $this, 'get_item' ),
-        'permission_callback' => '__return_true'
+        'permission_callback' => 'is_user_logged_in'
       ),
       array(
         'methods'             => WP_REST_Server::EDITABLE,

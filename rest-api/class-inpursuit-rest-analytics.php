@@ -74,7 +74,7 @@ class INPURSUIT_REST_ANALYTICS extends INPURSUIT_REST_BASE{
 	}
 
 	function addRestData(){
-		$this->registerRoute( 'analytics', array( $this, 'getAnalyticsCallback' ) );
+		$this->registerRoute( 'analytics', array( $this, 'getAnalyticsCallback' ), 'is_user_logged_in' );
 
 
 	}

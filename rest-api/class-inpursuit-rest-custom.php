@@ -148,13 +148,13 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 
 	function addRestData(){
 
-		$this->registerRoute( 'history', array( $this, 'getHistoryCallback' ) );
-		$this->registerRoute( 'history/(?P<id>\d+)', array( $this, 'getHistoryCallback' ) );
-		$this->registerRoute( 'settings', array( $this, 'getSettingsCallback' ) );
+		$this->registerRoute( 'history', array( $this, 'getHistoryCallback' ), 'is_user_logged_in' );
+		$this->registerRoute( 'history/(?P<id>\d+)', array( $this, 'getHistoryCallback' ), 'is_user_logged_in' );
+		$this->registerRoute( 'settings', array( $this, 'getSettingsCallback' ), 'is_user_logged_in' );
 
-		$this->registerRoute( 'map', array( $this, 'getMapCallback' ) );
-		$this->registerRoute( 'regions', array( $this, 'getRegionsCallback' ) );
-		$this->registerRoute( 'special-dates', array( $this, 'getSpecialDates' ) );
+		$this->registerRoute( 'map', array( $this, 'getMapCallback' ), 'is_user_logged_in' );
+		$this->registerRoute( 'regions', array( $this, 'getRegionsCallback' ), 'is_user_logged_in' );
+		$this->registerRoute( 'special-dates', array( $this, 'getSpecialDates' ), 'is_user_logged_in' );
 	}
 
 
