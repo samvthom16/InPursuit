@@ -65,7 +65,18 @@ class INPURSUIT_REST_COMMENTS extends WP_REST_Controller {
       $data       = array();
       $params     = $request->get_params();
       $comment_db = INPURSUIT_DB_COMMENT::getInstance();
-      $categories = isset( $params['comments_category'] ) && $params['comments_category'] ? $params['comments_category'] : "";
+
+      // Validate comments_category parameter
+      $categories = isset( $params['comments_category'] ) && $params['comments_category'] ? $params['comments_category'] : array();
+
+      if ( $categories ) {
+        $categories = array_map( 'intval', (array) $categories );
+        $categories = array_filter( $categories, function( $cat ) { return $cat > 0; } );
+
+        if ( empty( $categories ) ) {
+          return new WP_Error( 'invalid_categories', 'Category IDs must be positive integers', array( 'status' => 400 ) );
+        }
+      }
 
       if( !current_user_can( 'administrator' ) ){
 
