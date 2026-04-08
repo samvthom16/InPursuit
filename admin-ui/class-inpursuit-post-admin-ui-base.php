@@ -107,28 +107,7 @@ class INPURSUIT_POST_ADMIN_UI_BASE extends INPURSUIT_BASE{
 
 	function savePost( $post_id, $post, $update ){}
 
-	function assets( $hook ) {
-
-		if( 'toplevel_page_inpursuit' == $hook ){
-
-			wp_enqueue_style( 'tui-calendar', plugins_url( 'InPursuit/dist/css/tui-calendar.min.css' ), array(), INPURSUIT_VERSION );
-
-			// CSS FOR CHOROPLETH MAP
-			wp_enqueue_style( 'choropleth', plugins_url( 'InPursuit/dist/css/choropleth.css' ), array(), INPURSUIT_VERSION );
-
-			wp_enqueue_style( 'inpursuit-dashboard', plugins_url( 'InPursuit/dist/css/dashboard.css' ), array(), INPURSUIT_VERSION );
-
-			wp_enqueue_script( 'vue-related', plugins_url( 'InPursuit/dist/js/vue-related.js' ), array(), null, true );
-
-			wp_enqueue_script( 'inpursuit-app', plugins_url( 'InPursuit/dist/js/final/app-final.js' ), array( 'vue-related' ), null, true);
-
-			wp_localize_script( 'inpursuit-app', 'inpursuitSettings', array(
-    		'root' 	=> esc_url_raw( rest_url() ),
-    		'nonce' => wp_create_nonce( 'wp_rest' )
-			) );
-
-		}
-	}
+	function assets( $hook ) {}
 
 
 

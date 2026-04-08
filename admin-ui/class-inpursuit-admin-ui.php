@@ -17,29 +17,6 @@
 		}
 
 
-		function getMapJsons(){
-	    $jsons = array(
-				'countries' => plugins_url( 'InPursuit/dist/js/map/countries.json' ) ,
-				'india' 		=> plugins_url( 'InPursuit/dist/js/map/india.json' )
-			);
-	    return apply_filters( 'inpursuit-map-jsons', $jsons );;
-	  }
-
-		function combineMapJsons(){
-	    $data = array();
-
-	    $jsons = $this->getMapJsons();
-			foreach( $jsons as $key => $json_file ){
-	      $strJsonFileContents = file_get_contents( $json_file );
-
-	      // Convert to array
-	      $data[ $key ] = json_decode( $strJsonFileContents, true );
-	    }
-
-	    echo wp_json_encode( $data );
-			wp_die();
-	  }
-
 	}
 
 	INPURSUIT_ADMIN_UI::getInstance();

@@ -291,12 +291,6 @@ c02be94 Add input validation to REST custom endpoints
    - Impact: CSRF attacks possible
    - Fix: Implement `wp_verify_nonce()` on POST/PUT/DELETE
 
-5. **End-of-Life Dependencies**
-   - File: `package.json`
-   - Issue: Vue 2 (EOL) and Axios 0.21 (EOL) with known vulnerabilities
-   - Impact: Known security holes in dependencies
-   - Fix: Upgrade Vue 2 → Vue 3, Axios 0.21 → latest
-
 ---
 
 ## Deployment Notes
@@ -368,12 +362,7 @@ All fixes in this session are **safe to deploy immediately**:
    - Generate nonces in frontend
    - Validate on all state-changing operations
 
-5. **Dependency Updates** (1-2 hours)
-   - Upgrade Vue 2 → Vue 3
-   - Update Axios to latest
-   - Test frontend thoroughly
-
-**Estimated Total:** 7-12 hours of development work
+**Estimated Total:** 6-10 hours of development work
 
 ---
 

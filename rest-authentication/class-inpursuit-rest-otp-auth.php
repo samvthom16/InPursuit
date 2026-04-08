@@ -31,7 +31,7 @@ class INPURSUIT_REST_OTP_AUTH extends INPURSUIT_BASE {
 
     if ( isset( $parameters['email_address'] ) && isset( $parameters['email_otp'] ) ) {
 
-      $email_otp 	    = base64_decode( sanitize_text_field( $parameters['email_otp'] ) );
+      $email_otp 	= base64_decode( sanitize_text_field( $parameters['email_otp'] ) );
       $email_address 	= base64_decode( sanitize_text_field( $parameters['email_address'] ) );
 
       $user = get_user_by( 'email', $email_address );
@@ -118,9 +118,20 @@ class INPURSUIT_REST_OTP_AUTH extends INPURSUIT_BASE {
         $error->add( 400, __("User data missing!", 'wp-rest-user'), array( 'status' => 400 ) );
       }
 
+    } else {
+      // Better debugging: specify which parameter is missing
+      if ( !isset( $parameters['email_address'] ) ) {
+        $error->add( 400, __("Email address is required.", 'wp-rest-user'), array( 'status' => 400 ) );
+      } elseif ( !isset( $parameters['email_otp'] ) ) {
+        $error->add( 400, __("OTP is required.", 'wp-rest-user'), array( 'status' => 400 ) );
+      } else {
+        $error->add( 400, __("Something went wrong", 'wp-rest-user'), array( 'status' => 400 ) );
+      }
+      return $error;
     }
 
-    $error->add( 400, __("Something went wrong", 'wp-rest-user'), array( 'status' => 400 ) );
+    // This line should not be reached if above conditions work correctly
+    $error->add( 400, __("Authentication failed", 'wp-rest-user'), array( 'status' => 400 ) );
     return $error;
   }
 
