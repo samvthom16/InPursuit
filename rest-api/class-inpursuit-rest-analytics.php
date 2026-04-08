@@ -39,6 +39,14 @@ class INPURSUIT_REST_ANALYTICS extends INPURSUIT_REST_BASE{
 
 		$period = isset( $args['period'] ) ? intval( $args['period'] ) : 30;
 
+		// Validate period is positive and within reasonable limits
+		if ( $period < 1 ) {
+			return new WP_Error( 'invalid_period', 'Period must be 1 or greater', array( 'status' => 400 ) );
+		}
+		if ( $period > 365 ) {
+			return new WP_Error( 'invalid_period', 'Period must be 365 days or less', array( 'status' => 400 ) );
+		}
+
 		$data = array();
 
 		$db = INPURSUIT_DB::getInstance();
