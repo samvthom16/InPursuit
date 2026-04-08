@@ -6,6 +6,15 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 		$event_db 			= INPURSUIT_DB::getInstance();
 		$params 				= $args->get_params();
 
+		// Validate ID parameter if provided
+		if ( isset( $params['id'] ) ) {
+			$id = intval( $params['id'] );
+			if ( $id <= 0 ) {
+				return new WP_Error( 'invalid_id', 'ID must be a positive integer', array( 'status' => 400 ) );
+			}
+			$params['id'] = $id;
+		}
+
 		if( !current_user_can( 'administrator' ) ){
 			$current_user = wp_get_current_user();
 			$current_user_id = $current_user->ID;
@@ -18,23 +27,23 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 
 		foreach( $response_data['data'] as $row ){
 			$item = array(
-				'id'					=> $row->ID,
-				'post_id'			=> $row->post_id,
-				'user_id'			=> $row->user_id,
-				'author_name'	=> get_the_author_meta( 'display_name', $row->user_id ),
-				'title'				=> array( 'rendered' => $row->text ),
-				'date'				=> get_date_from_gmt( $row->post_date ),
-				'type'				=> $row->type,
+				'id'					=> intval( $row->ID ),
+				'post_id'			=> intval( $row->post_id ),
+				'user_id'			=> intval( $row->user_id ),
+				'author_name'	=> esc_html( get_the_author_meta( 'display_name', $row->user_id ) ),
+				'title'				=> array( 'rendered' => esc_html( $row->text ) ),
+				'date'				=> esc_html( get_date_from_gmt( $row->post_date ) ),
+				'type'				=> sanitize_key( $row->type ),
 				'text'				=> '',
-				'edit_url'		=> admin_url( 'post.php?action=edit&post=' . $row->ID )
+				'edit_url'		=> esc_url_raw( admin_url( 'post.php?action=edit&post=' . intval( $row->ID ) ) )
 			);
 
 
 			if( $row->type == 'comment' ){
-				$item['text'] = $row->text;
-				$item['title']['rendered'] = "Follow-up on " . get_the_title( $row->post_id );
-				$item['edit_url'] = admin_url( 'post.php?action=edit&post=' . $row->post_id );
-				$item['comments_category'] = INPURSUIT_DB_COMMENTS_CATEGORY_RELATION::getInstance()->get_comment_categories( $item['id'] );
+				$item['text'] = wp_kses_post( $row->text );
+				$item['title']['rendered'] = esc_html( "Follow-up on " . get_the_title( $row->post_id ) );
+				$item['edit_url'] = esc_url_raw( admin_url( 'post.php?action=edit&post=' . intval( $row->post_id ) ) );
+				$item['comments_category'] = array_map( 'intval', INPURSUIT_DB_COMMENTS_CATEGORY_RELATION::getInstance()->get_comment_categories( $item['id'] ) );
 			}
 
 			array_push( $data, $item );
@@ -51,8 +60,8 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 		global $inpursuit_vars;
 
 		$data = array(
-			'name' 							=> get_bloginfo( 'name' ),
-			'comments_category'	=> INPURSUIT_DB_COMMENTS_CATEGORY::getInstance()->generate_settings_schema()
+			'name' 							=> esc_html( get_bloginfo( 'name' ) ),
+			'comments_category'	=> array_map( 'esc_html', INPURSUIT_DB_COMMENTS_CATEGORY::getInstance()->generate_settings_schema() )
 		);
 
 		$taxonomies = $inpursuit_vars['taxonomies'];
@@ -61,11 +70,14 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 			//$fieldname = str_replace( "inpursuit-", "", $key );
 			$fieldname = apply_filters( 'inpursuit_rest_field', $key );
 
-			$data[ $fieldname ] = get_terms( array(
+			$terms = get_terms( array(
 				'taxonomy' 		=> $taxonomy['slug'],
 				'hide_empty' 	=> false,
 				'fields'			=> 'id=>name'
 			) );
+
+			// Escape term names
+			$data[ $fieldname ] = array_map( 'esc_html', (array) $terms );
 		}
 
 		$response = new WP_REST_Response( $data );
@@ -95,12 +107,14 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 		$terms = $wp_util->getTerms( 'inpursuit-location', array( 'hide_empty' => 0, 'post_types' => array( 'inpursuit-members' ), ) );
 
 		foreach( $terms as $term ){
-			$slug = $term->slug;
+			$slug = sanitize_key( $term->slug );
+			$lat = floatval( get_term_meta( $term->term_id, 'lat', true ) );
+			$lng = floatval( get_term_meta( $term->term_id, 'lng', true ) );
 			array_push( $map_data['markers'], array(
-				'lat'		=> get_term_meta( $term->term_id, 'lat', true ),
-				'lng'		=> get_term_meta( $term->term_id, 'lng', true ),
-				'html'	=> $term->post_count,
-				'link'	=> admin_url( "edit.php?post_type=inpursuit-members&inpursuit-location=$slug"  )
+				'lat'		=> $lat,
+				'lng'		=> $lng,
+				'html'	=> intval( $term->post_count ),
+				'link'	=> esc_url_raw( admin_url( "edit.php?post_type=inpursuit-members&inpursuit-location=" . sanitize_text_field( $slug ) ) )
 			) );
 		}
 
@@ -116,10 +130,21 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 
 		$jsons = $admin_ui->getMapJsons();
 		foreach( $jsons as $key => $json_file ){
+			// Validate file exists and is readable
+			if( !file_exists( $json_file ) || !is_readable( $json_file ) ){
+				continue;
+			}
+
+			// Sanitize key
+			$sanitized_key = sanitize_key( $key );
+
 			$strJsonFileContents = file_get_contents( $json_file );
 
-			// Convert to array
-			$data[ $key ] = json_decode( $strJsonFileContents, true );
+			// Decode and validate JSON
+			$decoded = json_decode( $strJsonFileContents, true );
+			if( is_array( $decoded ) ){
+				$data[ $sanitized_key ] = $decoded;
+			}
 		}
 
 		$response = new WP_REST_Response( $data );
@@ -142,19 +167,32 @@ class INPURSUIT_REST extends INPURSUIT_REST_BASE{
 	}
 
 	function getSpecialDates( WP_REST_Request $request ){
+		$params = $request->get_params();
+
+		// Validate pagination parameters
+		$page = intval( $params['page'] ?? 1 );
+		$per_page = intval( $params['per_page'] ?? 10 );
+
+		if ( $page < 1 ) {
+			return new WP_Error( 'invalid_page', 'Page must be 1 or greater', array( 'status' => 400 ) );
+		}
+		if ( $per_page < 1 || $per_page > 100 ) {
+			return new WP_Error( 'invalid_per_page', 'Per page must be between 1 and 100', array( 'status' => 400 ) );
+		}
+
 		$member_model = INPURSUIT_DB_MEMBER_DATES::getInstance();
-		return $member_model->getNextOneMonthEvents( $request->get_params() );
+		return $member_model->getNextOneMonthEvents( array( 'page' => $page, 'per_page' => $per_page ) );
 	}
 
 	function addRestData(){
 
-		$this->registerRoute( 'history', array( $this, 'getHistoryCallback' ) );
-		$this->registerRoute( 'history/(?P<id>\d+)', array( $this, 'getHistoryCallback' ) );
-		$this->registerRoute( 'settings', array( $this, 'getSettingsCallback' ) );
+		$this->registerRoute( 'history', array( $this, 'getHistoryCallback' ), 'is_user_logged_in' );
+		$this->registerRoute( 'history/(?P<id>\d+)', array( $this, 'getHistoryCallback' ), 'is_user_logged_in' );
+		$this->registerRoute( 'settings', array( $this, 'getSettingsCallback' ), 'is_user_logged_in' );
 
-		$this->registerRoute( 'map', array( $this, 'getMapCallback' ) );
-		$this->registerRoute( 'regions', array( $this, 'getRegionsCallback' ) );
-		$this->registerRoute( 'special-dates', array( $this, 'getSpecialDates' ) );
+		$this->registerRoute( 'map', array( $this, 'getMapCallback' ), 'is_user_logged_in' );
+		$this->registerRoute( 'regions', array( $this, 'getRegionsCallback' ), 'is_user_logged_in' );
+		$this->registerRoute( 'special-dates', array( $this, 'getSpecialDates' ), 'is_user_logged_in' );
 	}
 
 

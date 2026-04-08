@@ -138,7 +138,7 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 	function get_row( $ID ){
 		global $wpdb;
 		$table = $this->getTable();
-		$query = "SELECT * FROM $table WHERE ID = $ID;";
+		$query = $this->prepare( "SELECT * FROM $table WHERE ID = %d;", intval( $ID ) );
 		return $wpdb->get_row( $query );
 	}
 
@@ -245,10 +245,11 @@ class INPURSUIT_DB_BASE extends INPURSUIT_BASE{
 	// DELETE MULTIPLE ROWS WITH MATCHING ID
 	function delete_rows( $ids_arr ){
 		if( is_array( $ids_arr ) && count( $ids_arr ) ){
-			$ids_str = implode( ',', $ids_arr );
+			$ids = array_map( 'intval', $ids_arr );
+			$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
 			$table = $this->getTable();
-			$query = "DELETE FROM $table WHERE ID IN ($ids_str);";
-			$this->query( $query );
+			$query = "DELETE FROM $table WHERE ID IN ($placeholders);";
+			$this->query( $this->prepare( $query, $ids ) );
 		}
 	}
 

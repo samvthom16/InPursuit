@@ -11,9 +11,13 @@ class INPURSUIT_DB extends INPURSUIT_DB_BASE{
 		$event_member_db = INPURSUIT_DB_EVENT_MEMBER_RELATION::getInstance();
 		$event_member_table = $event_member_db->getTable();
 
-		$query = "SELECT ID, post_title as text, '0' as post_id, post_author, post_date, 'event' as type FROM $posts_table WHERE post_status='publish' AND post_type='$post_type'";
+		$query = $wpdb->prepare(
+			"SELECT ID, post_title as text, '0' as post_id, post_author, post_date, 'event' as type FROM $posts_table WHERE post_status='publish' AND post_type=%s",
+			$post_type
+		);
 		if( $member_id ){
-			$query .= " AND ID IN (SELECT event_id FROM $event_member_table WHERE member_id=$member_id)";
+			$member_id = intval( $member_id );
+			$query .= $wpdb->prepare( " AND ID IN (SELECT event_id FROM $event_member_table WHERE member_id=%d)", $member_id );
 		}
 		return $query;
 	}

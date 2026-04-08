@@ -14,7 +14,7 @@ class INPURSUIT_REST_COMMENTS_CATEGORY extends WP_REST_Controller {
       array(
         'methods'             => WP_REST_Server::READABLE,
         'callback'            => array( $this, 'get_items' ),
-        'permission_callback' => '__return_true',
+        'permission_callback' => 'is_user_logged_in',
         'args'                => array(),
       ),
       array(
@@ -35,7 +35,7 @@ class INPURSUIT_REST_COMMENTS_CATEGORY extends WP_REST_Controller {
       array(
         'methods'             => WP_REST_Server::READABLE,
         'callback'            => array( $this, 'get_item' ),
-        'permission_callback' => '__return_true'
+        'permission_callback' => 'is_user_logged_in'
       ),
       array(
         'methods'             => WP_REST_Server::EDITABLE,
@@ -122,7 +122,7 @@ class INPURSUIT_REST_COMMENTS_CATEGORY extends WP_REST_Controller {
       return new WP_Error( 'db_insert_error', __( 'Could not insert comment category into the database.' ), array( 'status' => 500 ) );
     }
 
-    return new WP_REST_Response( array('term_id' => $term_id, 'name' => $item['name'] ), 200 );
+    return new WP_REST_Response( array('term_id' => intval( $term_id ), 'name' => esc_html( $item['name'] ) ), 200 );
 
   }
 
@@ -169,8 +169,8 @@ class INPURSUIT_REST_COMMENTS_CATEGORY extends WP_REST_Controller {
    }
 
 		$data = array(
-			'term_id' => $term_id,
-      'name'    => $term_name
+			'term_id' => intval( $term_id ),
+      'name'    => esc_html( $term_name )
 		);
 
     return new WP_REST_Response( $data, 200 );
@@ -278,8 +278,8 @@ class INPURSUIT_REST_COMMENTS_CATEGORY extends WP_REST_Controller {
 
   function prepare_item_for_response( $item, $request ){
     return array(
-			'term_id'		=> (int) $item->term_id,
-      'name'      => $item->name
+			'term_id'		=> intval( $item->term_id ),
+      'name'      => esc_html( $item->name )
 		);
 	}
 

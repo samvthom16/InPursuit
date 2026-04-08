@@ -53,6 +53,21 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 
 	function updateCallbackForTerm( $value, $post, $field_name, $request, $object_type ){
 
+		// Validate $value is either positive integer or non-empty string
+		if ( is_numeric( $value ) ) {
+			$value = intval( $value );
+			if ( $value <= 0 ) {
+				return; // Invalid term ID, skip update
+			}
+		} elseif ( is_string( $value ) ) {
+			$value = trim( $value );
+			if ( empty( $value ) ) {
+				return; // Empty string, skip update
+			}
+		} else {
+			return; // Invalid type, skip update
+		}
+
 		$taxonomy = apply_filters( 'inpursuit_rest_callback_field', $field_name );
 
 
@@ -96,8 +111,8 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 
 				$comment_db = INPURSUIT_DB_COMMENT::getInstance();
 				$item = $comment_db->sanitize( array(
-					'comment'	=> "$field_label changed from $old_term_name to $new_term_name",
-					'post'		=> $post->ID
+					'comment'	=> esc_html( "$field_label changed from $old_term_name to $new_term_name" ),
+					'post'		=> intval( $post->ID )
 				) );
 				$comment_db->insert( $item );
 			}
@@ -116,6 +131,14 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
   }
 
   function updateCallbackForMeta( $value, $post, $field_name, $request, $object_type ){
+    // Validate field_name is non-empty string
+    if ( !is_string( $field_name ) || empty( trim( $field_name ) ) ) {
+      return; // Invalid field name, skip update
+    }
+
+    // Sanitize field name to prevent injection
+    $field_name = sanitize_key( $field_name );
+
     update_post_meta( $post->ID, $field_name, $value );
   }
 	/* REST CALLBACK FUNCTIONS FOR META */
@@ -146,7 +169,7 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 		$this->registerRestField(
 			'edit_url',
 			function( $post, $field_name, $request ){
-				return admin_url( 'post.php?action=edit&post=' . $post['id'] );
+				return esc_url_raw( admin_url( 'post.php?action=edit&post=' . intval( $post['id'] ) ) );
 			}
 		);
 
@@ -154,7 +177,7 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 		$this->registerRestField(
 			'author_name',
 			function( $post, $field_name, $request ){
-				return get_the_author_meta( 'display_name', $post['author'] );
+				return esc_html( get_the_author_meta( 'display_name', intval( $post['author'] ) ) );
 			}
 		);
 
@@ -170,21 +193,24 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 	}
 
 	function prepareItemResponse( $post_id ){
-		$post = get_post( $post_id );
+		$post = get_post( intval( $post_id ) );
+		if( !$post ){
+			return array();
+		}
 		return array(
-			'id'              => $post->ID,
+			'id'              => intval( $post->ID ),
 			'title'           => array(
-				'rendered' => $post->post_title
+				'rendered' => esc_html( $post->post_title )
 			),
-			'featured_image'  => INPURSUIT_DB::getInstance()->getFeaturedImageURL( $post_id ),
-			'slug'            => $post->post_name,
-			'type'            => $post->post_type,
+			'featured_image'  => INPURSUIT_DB::getInstance()->getFeaturedImageURL( intval( $post_id ) ),
+			'slug'            => sanitize_key( $post->post_name ),
+			'type'            => sanitize_key( $post->post_type ),
 			'author'					=> intval( $post->post_author ),
-			'date'						=> $post->post_date,
-			'date_gmt'				=> $post->post_date_gmt,
-			'modified'				=> $post->post_modified,
-			'modified_gmt'		=> $post->post_modified_gmt,
-			'status'					=> $post->post_status,
+			'date'						=> esc_html( $post->post_date ),
+			'date_gmt'				=> esc_html( $post->post_date_gmt ),
+			'modified'				=> esc_html( $post->post_modified ),
+			'modified_gmt'		=> esc_html( $post->post_modified_gmt ),
+			'status'					=> sanitize_key( $post->post_status ),
 			//'data'            => $post
 		);
 	}

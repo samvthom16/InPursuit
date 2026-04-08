@@ -94,9 +94,13 @@ class INPURSUIT_DB_MEMBER_DATES extends INPURSUIT_DB_BASE{
 	{
 		global $wpdb;
 		$table = $this->getTable();
-		$events = strtolower(implode("','", $this->getEventTypes()));
+		$event_types = array_keys( $this->getEventTypes() );
+		$placeholders = implode( ',', array_fill( 0, count( $event_types ), '%s' ) );
 
-		$query = "SELECT member_id, event_type, event_date FROM $table WHERE event_type IN ('". $events ."') AND event_date=CURDATE();";
+		$query = $this->prepare(
+			"SELECT member_id, event_type, event_date FROM $table WHERE event_type IN ($placeholders) AND event_date=CURDATE();",
+			$event_types
+		);
 
 		$rows = $wpdb->get_results($query);
 
@@ -116,14 +120,15 @@ class INPURSUIT_DB_MEMBER_DATES extends INPURSUIT_DB_BASE{
 		global $wpdb;
 		$result 	 = [];
 		$table 		 = $this->getTable();
-		$events 	 = strtolower(implode("','", $this->getEventTypes()));
-		$page 		 = isset( $args['page'] ) && $args['page'] ? $args['page'] : 1;
-		$per_page  = isset( $args['per_page'] ) && $args['per_page'] ? $args['per_page'] : 10;
+		$event_types = array_keys( $this->getEventTypes() );
+		$page 		 = isset( $args['page'] ) && $args['page'] ? intval( $args['page'] ) : 1;
+		$per_page  = isset( $args['per_page'] ) && $args['per_page'] ? intval( $args['per_page'] ) : 10;
 		$offset		 = ( $page - 1 ) * $per_page;
 
 		// FETCH ACTIVE MEMBERS IF EVENT_DATE IS VALID AND THE NEXT EVENT IS IN THE NEXT 30 DAYS
-		$query = "
-			SELECT
+		$placeholders = implode( ',', array_fill( 0, count( $event_types ), '%s' ) );
+		$query = $wpdb->prepare(
+			"SELECT
 				member_dates.ID,
 				member_dates.member_id,
 				member_dates.event_type,
@@ -134,16 +139,17 @@ class INPURSUIT_DB_MEMBER_DATES extends INPURSUIT_DB_BASE{
 			WHERE
 				inpursuit_members.post_type='inpursuit-members' AND
 				inpursuit_members.post_status='publish' AND
-				member_dates.event_type IN ('" . $events . "') AND
+				member_dates.event_type IN ($placeholders) AND
 				UNIX_TIMESTAMP(member_dates.event_date) IS NOT NULL AND
 				DATE_ADD(member_dates.event_date, INTERVAL TIMESTAMPDIFF(YEAR, member_dates.event_date, CURRENT_DATE) + 1 YEAR)
 				BETWEEN CURRENT_DATE AND DATE_ADD(CURRENT_DATE, INTERVAL 30 DAY)
-			ORDER BY next_event_date
-		";
+			ORDER BY next_event_date",
+			$event_types
+		);
 
 		$countquery = "SELECT count(*) as total FROM ($query) as temp;";
 		$total 			= $wpdb->get_var( $countquery );
-		$mainquery 	= $query . " LIMIT $offset, $per_page";
+		$mainquery 	= $query . " LIMIT " . intval( $offset ) . "," . intval( $per_page );
 		$rows 			= $wpdb->get_results( $mainquery );
 
 		foreach( $rows as $row ){
