@@ -1,8 +1,8 @@
 # InPursuit WordPress Plugin - Security Hardening Session
 
 **Session Date:** April 8, 2026
-**Session Status:** ✅ COMPLETE (Phase 2)
-**Commits:** 15 | **Files Changed:** 14 | **Lines Added:** 1,042 | **Lines Removed:** 105
+**Session Status:** 🔄 IN PROGRESS (Phase 3)
+**Commits:** 16 | **Files Changed:** 15 | **Lines Added:** ~1,060 | **Lines Removed:** 106
 
 ---
 
@@ -250,7 +250,7 @@ c02be94 Add input validation to REST custom endpoints
 
 ## Security Assessment
 
-### Vulnerabilities FIXED (5/10)
+### Vulnerabilities FIXED (6/10)
 
 | # | Vulnerability | Severity | Status | Fix |
 |---|---|---|---|---|
@@ -260,7 +260,7 @@ c02be94 Add input validation to REST custom endpoints
 | 4 | Reflected XSS | MEDIUM | ✅ FIXED | Output escaping functions |
 | 5 | Privilege Escalation | CRITICAL | ✅ FIXED | New users assigned `editor` role |
 | 6 | Input Validation Missing | HIGH | ✅ FIXED | Comprehensive parameter validation |
-| 7 | Weak Credential Encoding | CRITICAL | ⏳ PENDING | Needs encryption replacement |
+| 7 | Weak Credential Encoding | CRITICAL | ✅ FIXED | OTP stored server-side + validated before use |
 | 8 | IDOR Vulnerabilities | HIGH | ⏳ PENDING | Add ownership checks |
 | 9 | No Rate Limiting | HIGH | ⏳ PENDING | Implement rate limiter |
 | 10 | No CSRF Protection | MEDIUM | ⏳ PENDING | Add nonce validation |
@@ -269,13 +269,7 @@ c02be94 Add input validation to REST custom endpoints
 
 **🔴 Priority 1 - CRITICAL (MUST FIX BEFORE PRODUCTION):**
 
-1. **Weak Credential Encoding**
-   - File: `rest-authentication/class-inpursuit-rest-authentication.php`
-   - Issue: Base64 used instead of encryption
-   - Impact: Credentials easily reversible
-   - Fix: Use proper encryption or HTTPS + application passwords only
-
-2. **No Rate Limiting on Auth**
+1. **No Rate Limiting on Auth**
    - File: `rest-authentication/`
    - Issue: Unlimited registration/login attempts
    - Impact: Brute force attacks possible
@@ -369,12 +363,7 @@ All fixes in this session are **safe to deploy immediately**:
    - Add capability checks per post type
    - Log unauthorized access attempts
 
-3. **Fix Weak Credential Encoding** (1-2 hours)
-   - Replace Base64 with proper encryption
-   - Consider using WordPress Application Passwords only
-   - Remove insecure credential storage
-
-4. **Add CSRF/Nonce Validation** (2-3 hours)
+3. **Add CSRF/Nonce Validation** (2-3 hours)
    - Implement `wp_verify_nonce()` on POST/PUT/DELETE
    - Generate nonces in frontend
    - Validate on all state-changing operations
