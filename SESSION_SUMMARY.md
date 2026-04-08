@@ -505,6 +505,16 @@ Browser web push notifications using `minishlink/web-push ^9.0` (Composer). Fire
 - DB table created on plugin load ✅
 - VAPID keys auto-generated on first request ✅
 
+### Push Triggers (all 3 implemented)
+
+| Event | Title | Body |
+|-------|-------|------|
+| New member created | `New Member Added` | Member name |
+| New event created | `New Event Created` | Event name |
+| New comment created | `New Comment` | `[Member name]: [first 10 words...]` |
+
+Comment hook uses `inpursuit_comment_created` action (same as email notifications). Commit: `95e42ac`
+
 ### Remaining: Frontend Integration (NOT YET DONE)
 Frontend at `https://inpursuit.vercel.app` still needs:
 1. `service-worker.js` — listens for push events and shows notification
