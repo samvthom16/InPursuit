@@ -36,6 +36,22 @@ class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 		$event_id = $request->get_param( 'event_id' );
 		$show_flag = $request->get_param( 'show_event_attendants' );
 
+		// Validate event_id if provided
+		if( $event_id ) {
+			$event_id = intval( $event_id );
+			if( $event_id <= 0 ) {
+				$event_id = null;
+			}
+		}
+
+		// Validate show_event_attendants (should be 0 or 1)
+		if( $show_flag ) {
+			$show_flag = intval( $show_flag );
+			if( $show_flag != 1 ) {
+				$show_flag = 0;
+			}
+		}
+
 		//$event_member_db = INPURSUIT_DB_EVENT_MEMBER_RELATION::getInstance();
 		if( $event_id && $show_flag == 1 ){
 			$member_db = INPURSUIT_DB_MEMBER::getInstance();
@@ -47,10 +63,14 @@ class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 		foreach( $field_names as $taxonomy => $new_field ){
 			$term_id = $request->get_param( $new_field );
 			if( $term_id ){
-				array_push( $args['tax_query'], array(
-					'taxonomy' => $taxonomy,
-					'terms'    => $term_id,
-				) );
+				// Validate term_id is a positive integer
+				$term_id = intval( $term_id );
+				if( $term_id > 0 ) {
+					array_push( $args['tax_query'], array(
+						'taxonomy' => $taxonomy,
+						'terms'    => $term_id,
+					) );
+				}
 			}
 		}
 
@@ -99,6 +119,17 @@ class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 			function( $post, $field_name, $request ){
 				$member_db = INPURSUIT_DB_MEMBER::getInstance();
 				$event_id = $request->get_param( 'event_id' );
+
+				// Validate event_id is a positive integer
+				if( $event_id ) {
+					$event_id = intval( $event_id );
+					if( $event_id <= 0 ) {
+						return false;
+					}
+				} else {
+					return false;
+				}
+
 				$members_id_arr = $member_db->getIDsForEvent( $event_id );
 				if( count( $members_id_arr ) && in_array( $post['id'], $members_id_arr ) ) return true;
 				return false;
@@ -156,8 +187,36 @@ class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 			function( $value, $post, $field_name, $request ){
 				$params = $request->get_params();
 				if(	array_key_exists("special_events", $params)	) {
-					$member_dates_db = INPURSUIT_DB_MEMBER_DATES::getInstance();
-					$member_dates_db->updateToMember( $post->ID, $params["special_events"] );
+					$special_events = $params["special_events"];
+
+					// Validate special_events is an array
+					if( !is_array( $special_events ) ) {
+						return;
+					}
+
+					// Validate each event type and date
+					$valid_event_types = array( 'birthday', 'wedding' );
+					$validated_events = array();
+
+					foreach( $special_events as $event_type => $event_date ) {
+						// Validate event type is allowed
+						if( !in_array( $event_type, $valid_event_types ) ) {
+							continue;
+						}
+
+						// Validate date format (YYYY-MM-DD or similar valid date)
+						if( !empty( $event_date ) && !strtotime( $event_date ) ) {
+							continue;
+						}
+
+						$validated_events[ $event_type ] = $event_date;
+					}
+
+					// Only update if there are valid events
+					if( !empty( $validated_events ) ) {
+						$member_dates_db = INPURSUIT_DB_MEMBER_DATES::getInstance();
+						$member_dates_db->updateToMember( $post->ID, $validated_events );
+					}
 				}
 			}
 		);
