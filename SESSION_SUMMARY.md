@@ -127,6 +127,7 @@ Priority 3 - REST API:
 - Array parameters properly handled in IN clauses
 - 7 database files updated
 - **Files:** db/class-inpursuit-db-*.php
+- **Docs:** SQL_INJECTION_FIXES.md
 
 ### 2. ✅ Sensitive Endpoints Gated (FIXED)
 - History endpoint requires login
@@ -136,6 +137,18 @@ Priority 3 - REST API:
 - Comments endpoints require login
 - Settings endpoint requires login
 - **Files:** rest-api/class-inpursuit-rest-*.php
+- **Docs:** ENDPOINT_SECURITY_HARDENING.md
+
+### 3. ✅ Output Escaping for XSS Prevention (FIXED)
+- All REST API responses properly escaped
+- Comments escaped with `wp_kses_post()` (allows safe HTML)
+- Text fields escaped with `esc_html()`
+- URLs escaped with `esc_url_raw()`
+- Numeric fields type-cast with `intval()`/`floatval()`
+- Keys/slugs sanitized with `sanitize_key()`
+- 6 REST API files updated
+- **Files:** rest-api/class-inpursuit-rest-*.php
+- **Docs:** OUTPUT_ESCAPING_FIXES.md
 
 ## Next Priority Fixes
 
@@ -144,18 +157,23 @@ Priority 3 - REST API:
    - Add email verification and admin approval
    - Replace base64 encoding with proper encryption
    - Add rate limiting to auth endpoints
+   - **Status:** NOT STARTED
 
 2. 🟠 HIGH: Fix IDOR vulnerabilities
    - Add ownership checks for attendance modifications
    - Verify user can modify specific posts
+   - **Status:** NOT STARTED
 
-3. 🟠 HIGH: Output escaping
-   - Escape comments to prevent stored XSS
-   - Escape all REST API responses
-
-4. 🟡 MEDIUM: Add input validation
+3. 🟠 HIGH: Add input validation
    - Validate all form inputs
    - Sanitize all taxonomy operations
+   - **Status:** NOT STARTED
 
-5. 🟡 MEDIUM: Add nonce validation
+4. 🟡 MEDIUM: Add nonce validation
    - Implement CSRF protection on state-changing operations
+   - **Status:** NOT STARTED
+
+5. 🟡 MEDIUM: Update Vue 2 & Axios
+   - Migrate Vue 2 → Vue 3
+   - Update Axios 0.21 → latest (security patches)
+   - **Status:** NOT STARTED
