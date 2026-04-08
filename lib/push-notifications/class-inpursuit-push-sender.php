@@ -12,6 +12,7 @@ class INPURSUIT_PUSH_SENDER extends INPURSUIT_BASE {
 	function __construct() {
 		add_action( 'rest_after_insert_' . INPURSUIT_MEMBERS_POST_TYPE, array( $this, 'onMemberCreated' ), 10, 3 );
 		add_action( 'rest_after_insert_' . INPURSUIT_EVENTS_POST_TYPE, array( $this, 'onEventCreated' ), 10, 3 );
+		add_action( 'inpursuit_comment_created', array( $this, 'onCommentCreated' ) );
 	}
 
 	function onMemberCreated( $post, $request, $creating ) {
@@ -20,6 +21,12 @@ class INPURSUIT_PUSH_SENDER extends INPURSUIT_BASE {
 			'New Member Added',
 			esc_html( $post->post_title )
 		);
+	}
+
+	function onCommentCreated( $item ) {
+		$member_name = esc_html( get_the_title( $item['post_id'] ) );
+		$excerpt     = esc_html( wp_trim_words( $item['comment'], 10, '...' ) );
+		$this->sendPushToAll( 'New Comment', "$member_name: $excerpt" );
 	}
 
 	function onEventCreated( $post, $request, $creating ) {
