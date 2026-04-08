@@ -90,26 +90,28 @@ class INPURSUIT_REST_MEMBER extends INPURSUIT_REST_POST_BASE{
 			}
 		);
 
-		// AUTHOR AGE
+		// LAST ATTENDED EVENT DATE
 		$this->registerRestField(
 			'last_seen',
 			function( $post, $field_name, $request ){
+				global $wpdb;
+				$event_member_db = INPURSUIT_DB_EVENT_MEMBER_RELATION::getInstance();
+				$relation_table  = $event_member_db->getTable();
+				$posts_table     = $wpdb->posts;
 
-				$event_db 			= INPURSUIT_DB::getInstance();
-				$response_data 	= $event_db->getHistory( array(
-					'id' 				=> intval( $post['id'] ),
-					'per_page' 	=> 1
+				$post_date = $wpdb->get_var( $wpdb->prepare(
+					"SELECT p.post_date FROM $posts_table p
+					INNER JOIN $relation_table emr ON p.ID = emr.event_id
+					WHERE emr.member_id = %d
+					AND p.post_status = 'publish'
+					AND p.post_type = %s
+					ORDER BY p.post_date DESC
+					LIMIT 1",
+					intval( $post['id'] ),
+					INPURSUIT_EVENTS_POST_TYPE
 				) );
 
-				if(
-					isset( $response_data['data'] ) &&
-					is_array( $response_data['data'] ) &&
-					count( $response_data['data'] ) &&
-					isset( $response_data['data'][0]->post_date )
-				)
-					return esc_html( get_date_from_gmt( $response_data['data'][0]->post_date ) );
-
-				return '';
+				return $post_date ? esc_html( get_date_from_gmt( $post_date ) ) : '';
 			}
 		);
 
