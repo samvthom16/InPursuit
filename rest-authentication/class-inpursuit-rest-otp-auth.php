@@ -44,6 +44,9 @@ class INPURSUIT_REST_OTP_AUTH extends INPURSUIT_BASE {
           return $error;
         }
 
+        // Store OTP temporarily (15 minutes expiration) for validation
+        set_transient( "inpursuit_otp_{$email_address}", $email_otp, 15 * MINUTE_IN_SECONDS );
+
         $message = "Following is your OTP: $email_otp";
         wp_mail( $email_address, 'OTP for INPURSUIT', $message );
         return new WP_REST_Response( array( 'message'=> "Authentication Successful" ), 123 );
@@ -66,8 +69,16 @@ class INPURSUIT_REST_OTP_AUTH extends INPURSUIT_BASE {
 
     $error = new WP_Error();
 
-    if( isset( $parameters['email_address'] ) ){
+    if( isset( $parameters['email_address'] ) && isset( $parameters['email_otp'] ) ){
       $email_address 	=  base64_decode( sanitize_text_field( $parameters['email_address'] ) );
+      $email_otp       =  base64_decode( sanitize_text_field( $parameters['email_otp'] ) );
+
+      // Validate OTP matches what was stored when sent
+      $stored_otp = get_transient( "inpursuit_otp_{$email_address}" );
+      if ( !$stored_otp || $stored_otp !== $email_otp ) {
+        $error->add( 400, __("Invalid or expired OTP. Please request a new one.", 'wp-rest-user'), array( 'status' => 400 ) );
+        return $error;
+      }
 
       if( !class_exists('WP_Application_Passwords') ){
         $error->add( 400, __("WP Application Passwords is disabled.", 'wp-rest-user'), array( 'status' => 400 ) );
@@ -86,6 +97,9 @@ class INPURSUIT_REST_OTP_AUTH extends INPURSUIT_BASE {
         $error->add( 'rest_cannot_verify_otp', __( 'Cannot verify OTP.', 'wp-rest-user' ), array( 'status' => rest_authorization_required_code() ) );
         return $error;
       }
+
+      // Delete OTP after successful validation (prevent reuse)
+      delete_transient( "inpursuit_otp_{$email_address}" );
 
       $app = new WP_Application_Passwords;
       $local_time  = current_datetime();
