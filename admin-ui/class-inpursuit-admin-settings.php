@@ -2,6 +2,8 @@
 
 class INPURSUIT_ADMIN_SETTINGS extends INPURSUIT_BASE {
 
+	private $navigationTabs;
+
 	function __construct()
 	{
 		$this->setNavigationTabs();
