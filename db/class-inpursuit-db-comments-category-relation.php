@@ -107,7 +107,8 @@ class INPURSUIT_DB_COMMENTS_CATEGORY_RELATION extends INPURSUIT_DB_BASE {
 	function get_comment_categories( $comment_id ){
 		global $wpdb;
 		$table = $this->getTable();
-		$comment_categories = $wpdb->get_col( "SELECT term_id FROM $table WHERE comment_id = $comment_id" );
+		$query = $this->prepare( "SELECT term_id FROM $table WHERE comment_id = %d", intval( $comment_id ) );
+		$comment_categories = $wpdb->get_col( $query );
 
 		if( $comment_categories ){
 			return array_map('intval', $comment_categories );
@@ -134,10 +135,12 @@ class INPURSUIT_DB_COMMENTS_CATEGORY_RELATION extends INPURSUIT_DB_BASE {
 
 		if( !count( $ids ) ) return $ids;
 
-		// $comment_categories = $wpdb->get_col( "SELECT comment_id FROM $table WHERE term_id = $term_id" );
-
-		$ids = implode( ",", $ids );
-		$query = "SELECT comment_id FROM $table WHERE term_id IN (".$ids.")";
+		// Use parameterized query with placeholders
+		$placeholders = implode( ',', array_fill( 0, count( $ids ), '%d' ) );
+		$query = $this->prepare(
+			"SELECT comment_id FROM $table WHERE term_id IN ($placeholders)",
+			$ids
+		);
 
 		$comment_categories = $wpdb->get_col( $query );
 
@@ -147,7 +150,11 @@ class INPURSUIT_DB_COMMENTS_CATEGORY_RELATION extends INPURSUIT_DB_BASE {
 	function comment_category_relation_exists( $term_id, $comment_id ){
 		global $wpdb;
 		$table = $this->getTable();
-		$count_query = "SELECT COUNT(*) FROM $table WHERE term_id = $term_id AND comment_id = $comment_id";
+		$count_query = $this->prepare(
+			"SELECT COUNT(*) FROM $table WHERE term_id = %d AND comment_id = %d",
+			intval( $term_id ),
+			intval( $comment_id )
+		);
 
 		if( $this->get_var( $count_query ) ){
 			return true;

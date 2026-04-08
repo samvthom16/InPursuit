@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C \"C:\\\\Users\\\\LH Media\\\\ClaudeCode\\\\InPursuit-Wp-Plugin\" status)"
+    ]
+  }
+}

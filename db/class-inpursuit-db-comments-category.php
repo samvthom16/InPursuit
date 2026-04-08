@@ -29,7 +29,7 @@ class INPURSUIT_DB_COMMENTS_CATEGORY extends INPURSUIT_DB_BASE {
 	function get_row( $term_id ){
 		global $wpdb;
 		$table = $this->getTable();
-		$query = "SELECT * FROM $table WHERE term_id = $term_id;";
+		$query = $this->prepare( "SELECT * FROM $table WHERE term_id = %d;", intval( $term_id ) );
 		return $wpdb->get_row( $query );
 	}
 
@@ -56,8 +56,8 @@ class INPURSUIT_DB_COMMENTS_CATEGORY extends INPURSUIT_DB_BASE {
 	function comment_category_name_exists( $category_name ){
 		global $wpdb;
 		$table = $this->getTable();
-		$category_name = strtolower($category_name);
-		$count_query = "SELECT COUNT(*) FROM $table WHERE LOWER(name) = '$category_name' ";
+		$category_name = strtolower( sanitize_text_field( $category_name ) );
+		$count_query = $this->prepare( "SELECT COUNT(*) FROM $table WHERE LOWER(name) = %s", $category_name );
 
 		if( $this->get_var( $count_query ) ){
 			return true;
@@ -70,7 +70,7 @@ class INPURSUIT_DB_COMMENTS_CATEGORY extends INPURSUIT_DB_BASE {
 	function comment_category_id_exists( $category_id ){
 		global $wpdb;
 		$table = $this->getTable();
-		$count_query = "SELECT COUNT(*) FROM $table WHERE term_id = $category_id";
+		$count_query = $this->prepare( "SELECT COUNT(*) FROM $table WHERE term_id = %d", intval( $category_id ) );
 
 		if( $this->get_var( $count_query ) ){
 			return true;
