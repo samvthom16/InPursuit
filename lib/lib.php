@@ -2,7 +2,8 @@
 
 $inc_files = array(
   'class-inpursuit-wp-util.php',
-  'email-notifications/email-notifications.php'
+  'email-notifications/email-notifications.php',
+  'push-notifications/push-notifications.php',
 );
 
 foreach( $inc_files as $inc_file ){

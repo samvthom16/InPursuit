@@ -14,6 +14,8 @@
 	define( 'INPURSUIT_MEMBERS_POST_TYPE', 'inpursuit-members' );
 	define( 'INPURSUIT_EVENTS_POST_TYPE', 'inpursuit-events' );
 
+	require_once( __DIR__ . '/vendor/autoload.php' );
+
 	$inc_files = array(
 		'class-inpursuit-base.php',
 		'db/db.php',
@@ -85,19 +87,21 @@
     return $protocol . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 	}
 
-	/* CORS ENABLED FOR THE TEST VUE SITE * DIDNT WORK AS EXPECTED
-	add_action('init', function(){
-		$origin = get_http_origin();
-    if ( $origin === 'https://inpursuit.vercel.app' ) {
-			header("Access-Control-Allow-Origin: yourfrontenddomain");
-			header("Access-Control-Allow-Methods: POST, GET, OPTIONS, PUT, DELETE");
-			header("Access-Control-Allow-Credentials: true");
-			header('Access-Control-Allow-Headers: Origin, X-Requested-With, X-WP-Nonce, Content-Type, Accept, Authorization');
-			if ('OPTIONS' == $_SERVER['REQUEST_METHOD']) {
-				status_header(200);
+	add_action( 'init', function() {
+		$origin  = get_http_origin();
+		$allowed = 'https://inpursuit.vercel.app';
+
+		if ( $origin === $allowed ) {
+			header( "Access-Control-Allow-Origin: $allowed" );
+			header( 'Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE' );
+			header( 'Access-Control-Allow-Credentials: true' );
+			header( 'Access-Control-Allow-Headers: Origin, X-Requested-With, X-WP-Nonce, Content-Type, Accept, Authorization' );
+
+			if ( $_SERVER['REQUEST_METHOD'] === 'OPTIONS' ) {
+				status_header( 200 );
 				exit();
 			}
-    }
+		}
 	} );
 
 	add_filter( 'rest_authentication_errors', function( $errors ){
