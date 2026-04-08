@@ -53,6 +53,21 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
 
 	function updateCallbackForTerm( $value, $post, $field_name, $request, $object_type ){
 
+		// Validate $value is either positive integer or non-empty string
+		if ( is_numeric( $value ) ) {
+			$value = intval( $value );
+			if ( $value <= 0 ) {
+				return; // Invalid term ID, skip update
+			}
+		} elseif ( is_string( $value ) ) {
+			$value = trim( $value );
+			if ( empty( $value ) ) {
+				return; // Empty string, skip update
+			}
+		} else {
+			return; // Invalid type, skip update
+		}
+
 		$taxonomy = apply_filters( 'inpursuit_rest_callback_field', $field_name );
 
 
@@ -116,6 +131,14 @@ class INPURSUIT_REST_POST_BASE extends INPURSUIT_REST_BASE{
   }
 
   function updateCallbackForMeta( $value, $post, $field_name, $request, $object_type ){
+    // Validate field_name is non-empty string
+    if ( !is_string( $field_name ) || empty( trim( $field_name ) ) ) {
+      return; // Invalid field name, skip update
+    }
+
+    // Sanitize field name to prevent injection
+    $field_name = sanitize_key( $field_name );
+
     update_post_meta( $post->ID, $field_name, $value );
   }
 	/* REST CALLBACK FUNCTIONS FOR META */
