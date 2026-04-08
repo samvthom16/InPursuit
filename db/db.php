@@ -12,7 +12,8 @@
 		'class-inpursuit-db-comment.php',
 		'class-inpursuit-db.php',
 		'class-inpursuit-db-comments-category.php',
-		'class-inpursuit-db-comments-category-relation.php'
+		'class-inpursuit-db-comments-category-relation.php',
+		'class-inpursuit-db-push-subscription.php',
 	);
 
 	foreach( $inc_files as $inc_file ){
