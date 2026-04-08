@@ -97,6 +97,18 @@ class INPURSUIT_REST_AUTHENTICATION extends INPURSUIT_BASE{
   		return $error;
   	}
 
+  	// Validate username length
+  	if ( strlen( $username ) < 3 || strlen( $username ) > 60 ) {
+  		$error->add( 400, __("Username must be between 3 and 60 characters.", 'wp-rest-user'), array( 'status' => 400 ) );
+  		return $error;
+  	}
+
+  	// Validate password length
+  	if ( strlen( $password ) < 6 ) {
+  		$error->add( 400, __("Password must be at least 6 characters.", 'wp-rest-user'), array( 'status' => 400 ) );
+  		return $error;
+  	}
+
     $user = wp_authenticate_username_password( null, $username, $password );
     if( is_wp_error( $user ) ){
       $error->add( 400, __("Invalid credentials.", 'wp-rest-user'), array( 'status' => 400 ) );
@@ -142,6 +154,24 @@ class INPURSUIT_REST_AUTHENTICATION extends INPURSUIT_BASE{
   	}
   	if ( empty( $password ) ) {
   		$error->add( 404, __("Password is required.", 'wp-rest-user'), array( 'status' => 400 ) );
+  		return $error;
+  	}
+
+  	// Validate email format
+  	if ( !is_email( $email ) ) {
+  		$error->add( 400, __("Invalid email format.", 'wp-rest-user'), array( 'status' => 400 ) );
+  		return $error;
+  	}
+
+  	// Validate username length
+  	if ( strlen( $username ) < 3 || strlen( $username ) > 60 ) {
+  		$error->add( 400, __("Username must be between 3 and 60 characters.", 'wp-rest-user'), array( 'status' => 400 ) );
+  		return $error;
+  	}
+
+  	// Validate password length
+  	if ( strlen( $password ) < 6 ) {
+  		$error->add( 400, __("Password must be at least 6 characters.", 'wp-rest-user'), array( 'status' => 400 ) );
   		return $error;
   	}
 
