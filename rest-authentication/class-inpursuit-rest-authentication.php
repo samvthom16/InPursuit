@@ -154,7 +154,7 @@ class INPURSUIT_REST_AUTHENTICATION extends INPURSUIT_BASE{
   			$user = get_user_by('id', $user_id);
 
   			// SET USER ROLE
-  			$user->set_role('administrator');
+  			$user->set_role('editor');
 
   			$response['code'] = 200;
   			$response['message'] = __("User '" . $username . "' Registration was Successful", "wp-rest-user");
