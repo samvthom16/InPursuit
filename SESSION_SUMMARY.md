@@ -2,13 +2,13 @@
 
 **Session Date:** April 8, 2026
 **Session Status:** 🔄 IN PROGRESS (Phase 3)
-**Commits:** 16 | **Files Changed:** 15 | **Lines Added:** ~1,060 | **Lines Removed:** 106
+**Commits:** 19 | **Files Changed:** 93 | **Lines Added:** ~1,079 | **Lines Removed:** 32,575
 
 ---
 
 ## Session Overview
 
-Comprehensive security hardening of the InPursuit WordPress plugin with focus on preventing SQL injection, XSS, and unauthorized data access. Three critical vulnerability categories addressed with full documentation.
+Comprehensive security hardening of the InPursuit WordPress plugin with focus on preventing SQL injection, XSS, and unauthorized data access. Vue frontend removed from plugin (moved to separate application). Bug fix applied to `last_seen` member field.
 
 ---
 
@@ -218,25 +218,30 @@ if (strlen($username) < 3 || strlen($username) > 60) return new WP_Error(...);
 | Output Escaping | 6 | +733/-50 | 40+ escaping operations |
 | Privilege Escalation Fix | 1 | +1/-1 | Admin role → editor role |
 | Input Validation | 6 | +250/-22 | 35+ validation operations |
+| Vue Frontend Removal | 76 | +17/-32,464 | All Vue code removed from plugin |
+| Bug Fix: last_seen | 1 | +17/-15 | Now uses actual attendance data |
 | Documentation | 3 | +908/0 | 908 lines of docs |
 | Session Summary | 1 | +491/0 | Updated progress tracking |
 
 ### Total Session Impact
 
 ```
-Total Files Modified:        14
-Total Commits:               15
-Total Lines Added:           1,042
-Total Lines Removed:         105
-Net Code Change:            +937 lines
+Total Files Modified:        19 commits
+Total Lines Added:           ~1,079
+Total Lines Removed:         ~32,575
+Net Code Change:             -31,496 lines (Vue removal dominates)
 Security Fixes:              8 vulnerability categories
-Validation Operations:        35+ parameter validations
+Validation Operations:       35+ parameter validations
 ```
 
-### Commit History (Phase 2)
+### Commit History
 
 ```
-[current] Update session summary with privilege escalation and input validation fixes
+8f2a3bc Fix last_seen to use most recent attended event date
+eac0258 Remove Vue frontend from plugin — frontend is now a separate application
+2f8a84f Update session summary: 6/10 vulnerabilities fixed
+c3c52e1 Add OTP validation to authentication endpoints
+6ddfe97 Update session summary with privilege escalation and input validation fixes
 7176505 Add input validation to authentication endpoints
 cb99ff8 Add input validation to REST POST base callback functions
 e0d776a Add input validation for analytics period parameter
@@ -245,6 +250,57 @@ a0edffe Add input validation for comments_category parameter
 c02be94 Add input validation to REST custom endpoints
 5272498 Fix privilege escalation: assign new users editor role instead of administrator
 ```
+
+---
+
+### ✅ 8. Vue Frontend Removed
+
+**Status:** All Vue code removed from plugin
+
+**Scope:**
+- 76 files deleted/modified
+- `dist/js/` — 62 Vue JS files (app, admin, components, pages, mixins, form-fields, lib, webpack bundles)
+- `dist/css/` — 3 CSS files (tui-calendar, choropleth, dashboard)
+- `webpack.config.js` and `package.json` deleted
+- PHP enqueue calls and map JSON helpers removed
+- Vue SPA mount template replaced with placeholder
+
+**Reason:** Frontend moved to a separate standalone application. Plugin now serves purely as a REST API backend.
+
+**Files Changed:**
+- ✅ `dist/js/` — deleted entirely
+- ✅ `dist/css/` — deleted entirely
+- ✅ `webpack.config.js` — deleted
+- ✅ `package.json` — deleted
+- ✅ `admin-ui/class-inpursuit-post-admin-ui-base.php` — removed Vue script/style enqueue calls
+- ✅ `admin-ui/class-inpursuit-admin-ui.php` — removed `getMapJsons()` and `combineMapJsons()`
+- ✅ `admin-ui/templates/inpursuit.php` — replaced Vue SPA mount point with plain placeholder
+
+**Note:** `dist/images/` retained — still referenced by `db/class-inpursuit-db.php` for default profile images.
+
+---
+
+### ✅ 9. last_seen Field Bug Fix
+
+**Status:** `last_seen` in members API now returns correct date
+
+**Scope:**
+- `rest-api/class-inpursuit-rest-member.php`
+
+**Problem:** `last_seen` was pulling from `getHistory()` which returned a mix of events and comments, ordered by general activity — not specifically events the member attended.
+
+**Fix:** Replaced with a direct JOIN query:
+```sql
+SELECT p.post_date FROM wp_posts p
+INNER JOIN wp_ip_event_member_relation emr ON p.ID = emr.event_id
+WHERE emr.member_id = %d
+AND p.post_status = 'publish'
+AND p.post_type = 'inpursuit-events'
+ORDER BY p.post_date DESC
+LIMIT 1
+```
+
+**Impact:** `last_seen` now accurately reflects the date of the last event the member physically attended.
 
 ---
 
