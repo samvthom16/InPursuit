@@ -18,6 +18,7 @@ class INPURSUIT_EVENT_ADMIN_UI extends INPURSUIT_POST_ADMIN_UI_BASE{
 		$this->setTaxonomiesForDropdown( array(
 			'inpursuit-event-type' 	=> 'Event Type',
 			'inpursuit-location' 		=> 'Location',
+			'inpursuit-group'				=> 'Life Group',
 		) );
 
 

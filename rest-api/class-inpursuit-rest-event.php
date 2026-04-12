@@ -11,6 +11,7 @@ class INPURSUIT_REST_EVENT extends INPURSUIT_REST_POST_BASE{
 		$this->setFieldNames( array(
 			'inpursuit-event-type' => 'event_type',
 			'inpursuit-location'		=> 'location',
+			'inpursuit-group'				=> 'group',
 		) );
 
 		add_filter( 'rest_inpursuit-events_query', array( $this, 'filterRestData' ), 10, 2 );
