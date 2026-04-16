@@ -152,8 +152,7 @@ class INPURSUIT_DB_COMMENTS_CATEGORY_RELATION extends INPURSUIT_DB_BASE {
 		$table = $this->getTable();
 		$count_query = $this->prepare(
 			"SELECT COUNT(*) FROM $table WHERE term_id = %d AND comment_id = %d",
-			intval( $term_id ),
-			intval( $comment_id )
+			array( intval( $term_id ), intval( $comment_id ) )
 		);
 
 		if( $this->get_var( $count_query ) ){
